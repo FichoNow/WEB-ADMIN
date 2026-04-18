@@ -5,7 +5,7 @@ export interface LoginUserData {
   role: UserRole
   email: string
   companyName: string
-  mustChangePassword: boolean
+  must_change_password: boolean
 }
 
 export interface LoginResponse {
