@@ -3,15 +3,13 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-const API_URL = process.env.API_URL ?? 'http://localhost:3000'
+import { loginRequest } from '@/app/services/auth-service'
+import type { LoginResponse } from '@/app/types/auth/login-response'
+import type { LoginState } from '@/app/types/auth/login-state'
 
-export type LoginState =
-  | {
-      error: string
-    }
-  | undefined
+export type { LoginState }
 
-export async function login(prevState: LoginState, formData: FormData): Promise<LoginState> {
+export async function login(_prevState: LoginState, formData: FormData): Promise<LoginState> {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
@@ -19,33 +17,12 @@ export async function login(prevState: LoginState, formData: FormData): Promise<
     return { error: 'Email y contraseña son obligatorios' }
   }
 
-  let data: {
-    accessToken: string
-    refreshToken: string
-    userData: {
-      name: string
-      role: string
-      email: string
-      companyName: string
-      mustChangePassword: boolean
-    }
-  }
+  let data: LoginResponse
 
   try {
-    const res = await fetch(`${API_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    })
-
-    if (!res.ok) {
-      if (res.status === 401) return { error: 'Credenciales incorrectas' }
-      return { error: 'Error, vuelve a probar en unos instantes' }
-    }
-
-    const json = await res.json()
-    data = json.data
-  } catch {
+    data = await loginRequest(email, password)
+  } catch (err) {
+    if (err instanceof Error) return { error: err.message }
     return { error: 'Error de conexión. Comprueba tu internet.' }
   }
 

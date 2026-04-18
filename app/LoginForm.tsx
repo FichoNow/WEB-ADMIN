@@ -1,7 +1,8 @@
 'use client'
 
 import { useActionState } from 'react'
-import { login, type LoginState } from './actions/auth'
+import { login } from './actions/auth'
+import type { LoginState } from './types/auth/login-state'
 
 export default function LoginForm() {
   const [state, action, pending] = useActionState<LoginState, FormData>(login, undefined)
