@@ -1,16 +1,18 @@
 'use client'
 
-import { useActionState } from 'react'
-import { login } from './actions/auth'
-import type { LoginState } from './types/auth/login-state'
+import { useActionState } from "react";
+import { login } from "./actions/auth";
+import type { LoginState } from "./types/auth/login-state";
 
 export default function LoginForm() {
-  const [state, action, pending] = useActionState<LoginState, FormData>(login, undefined)
+  const [state, action, pending] = useActionState<LoginState, FormData>(
+    login,
+    undefined,
+  );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-bg">
       <div className="w-full max-w-sm px-6 py-12 flex flex-col gap-10">
-
         {/* Brand */}
         <div className="flex flex-col items-center gap-1.5">
           <h1 className="text-4xl font-light tracking-tight text-text-primary">
@@ -23,7 +25,6 @@ export default function LoginForm() {
 
         {/* Form */}
         <form action={action} noValidate className="flex flex-col gap-4">
-
           {state?.error && (
             <p className="text-sm text-error bg-error/10 border border-error/30 rounded-xl px-4 py-3">
               {state.error}
@@ -66,11 +67,10 @@ export default function LoginForm() {
             disabled={pending}
             className="mt-2 w-full rounded-xl py-3 text-sm font-medium bg-primary text-on-primary hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {pending ? 'Iniciando sesión...' : 'Iniciar sesión'}
+            {pending ? "Iniciando sesión..." : "Iniciar sesión"}
           </button>
-
         </form>
       </div>
     </div>
-  )
+  );
 }

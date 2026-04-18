@@ -1,52 +1,55 @@
 'use server'
 
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-import { loginRequest } from '@/app/services/auth-service'
-import type { LoginResponse } from '@/app/types/auth/login-response'
-import type { LoginState } from '@/app/types/auth/login-state'
+import { loginRequest } from "@/app/repositories/auth-repository";
+import type { LoginResponse } from "@/app/types/auth/login-response";
+import type { LoginState } from "@/app/types/auth/login-state";
 
-export type { LoginState }
-
-export async function login(_prevState: LoginState, formData: FormData): Promise<LoginState> {
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
+export async function login(
+  _prevState: LoginState,
+  formData: FormData,
+): Promise<LoginState> {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
   if (!email || !password) {
-    return { error: 'Email y contraseña son obligatorios' }
+    return { error: "Email y contraseña son obligatorios" };
   }
 
-  let data: LoginResponse
+  let data: LoginResponse;
 
   try {
-    data = await loginRequest(email, password)
+    data = await loginRequest(email, password);
   } catch (err) {
-    if (err instanceof Error) return { error: err.message }
-    return { error: 'Error de conexión. Comprueba tu internet.' }
+    if (err instanceof Error) return { error: err.message };
+    return { error: "Error de conexión. Comprueba tu internet." };
   }
 
-  if (data.userData.role !== 'ADMINISTRATOR') {
-    return { error: 'No tienes permiso para acceder al panel de administración' }
+  if (data.userData.role !== "ADMINISTRATOR") {
+    return {
+      error: "No tienes permiso para acceder al panel de administración",
+    };
   }
 
-  const cookieStore = await cookies()
+  const cookieStore = await cookies();
 
-  cookieStore.set('accessToken', data.accessToken, {
+  cookieStore.set("accessToken", data.accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
     maxAge: 60 * 15,
-  })
+  });
 
-  cookieStore.set('refreshToken', data.refreshToken, {
+  cookieStore.set("refreshToken", data.refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
     maxAge: 60 * 60 * 24 * 7,
-  })
+  });
 
-  redirect('/dashboard')
+  redirect("/dashboard");
 }

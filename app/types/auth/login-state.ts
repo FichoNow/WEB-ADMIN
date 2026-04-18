@@ -1,3 +1,1 @@
-export type LoginState =
-  | { error: string }
-  | undefined
+export type LoginState = { error: string } | undefined;
