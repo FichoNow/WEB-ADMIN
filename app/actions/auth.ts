@@ -27,7 +27,7 @@ export async function login(
     return { error: "Error de conexión. Comprueba tu internet." };
   }
 
-  if (data.userData.role !== "ADMINISTRATOR") {
+  if (data.userData.role !== "ADMINISTRATOR" && data.userData.role !== "SUPERADMIN") {
     return {
       error: "No tienes permiso para acceder al panel de administración",
     };
