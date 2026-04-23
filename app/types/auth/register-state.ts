@@ -1,1 +1,1 @@
-export type RegisterState = { error: string } | { success: true } | undefined;
+export type RegisterState = { error: string } | { fieldError: { field: string; message: string } } | { success: true } | undefined;

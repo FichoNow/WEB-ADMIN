@@ -1,12 +1,15 @@
+import type { LoginRequest } from '@/app/types/auth/login-request'
 import type { LoginResponse } from '@/app/types/auth/login-response'
+import type { RegisterRequest } from '@/app/types/auth/register-request'
+import type { RegisterResponse } from '@/app/types/auth/register-response'
 
 const API_URL = process.env.API_URL ?? 'http://localhost:3000'
 
-export async function loginRequest(email: string, password: string): Promise<LoginResponse> {
+export async function loginRequest(body: LoginRequest): Promise<LoginResponse> {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify(body),
   })
 
   if (!res.ok) {
@@ -18,23 +21,7 @@ export async function loginRequest(email: string, password: string): Promise<Log
   return json.data as LoginResponse
 }
 
-type RegisterRequestBody = {
-  company: {
-    name: string
-    cif_nif: string
-    email: string
-    address_line: string
-    city: string
-    postal_code: string
-  }
-  user: {
-    name: string
-    email: string
-    password: string
-  }
-}
-
-export async function registerRequest(body: RegisterRequestBody): Promise<void> {
+export async function registerRequest(body: RegisterRequest): Promise<RegisterResponse> {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -43,6 +30,11 @@ export async function registerRequest(body: RegisterRequestBody): Promise<void> 
 
   if (!res.ok) {
     if (res.status === 409) throw new Error('Ya existe un usuario con ese email.')
-    throw new Error('Error al crear la empresa. Inténtalo de nuevo.')
+    const json = await res.json().catch(() => null)
+    const msg = json?.error?.message
+    throw new Error(msg ?? 'Error al crear la empresa. Inténtalo de nuevo.')
   }
+
+  const json = await res.json()
+  return json.data as RegisterResponse
 }

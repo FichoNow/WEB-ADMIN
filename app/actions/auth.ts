@@ -21,7 +21,7 @@ export async function login(
   let data: LoginResponse;
 
   try {
-    data = await loginRequest(email, password);
+    data = await loginRequest({ email, password });
   } catch (err) {
     if (err instanceof Error) return { error: err.message };
     return { error: "Error de conexión. Comprueba tu internet." };

@@ -1,9 +1,9 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getOverview } from '@/app/repositories/admin-repository'
-import type { OverviewDepartment } from '@/app/types/admin/overview-response'
+import { getCompanyInfo } from '@/app/repositories/admin-repository'
+import type { CompanyInfoDepartment } from '@/app/types/admin/company-info-response'
 
-function DepartmentCard({ department }: { department: OverviewDepartment }) {
+function DepartmentCard({ department }: { department: CompanyInfoDepartment }) {
   return (
     <div className="group flex items-center justify-between px-6 py-5 rounded-2xl bg-surface border border-divider hover:border-primary/40 hover:bg-surface-variant transition-all duration-200 cursor-pointer">
       <span className="text-sm font-medium text-text-primary">{department.name}</span>
@@ -29,7 +29,7 @@ export default async function OverviewPanel() {
   let overview
 
   try {
-    overview = await getOverview(token)
+    overview = await getCompanyInfo(token)
   } catch {
     redirect('/')
   }
