@@ -5,39 +5,40 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* Backgrounds (Matte dark) */
-  --color-bg:              #09090B;
-  --color-surface:         #18181B;
-  --color-surface-variant: #27272A;
+  /* Backgrounds */
+  --color-bg:              #121212;
+  --color-surface:         #1E1E1E;
+  --color-surface-variant: #2C2C2C;
 
-  /* Primary (Professional matte blue) & Accents */
-  --color-primary:         #3B82F6;
-  --color-primary-dark:    #2563EB;
+  /* Primary & Accents */
+  --color-primary:         #4F81E8;
+  --color-primary-dark:    #3A6DD4;
   --color-on-primary:      #FFFFFF;
-  --color-accent:          #EAB308;
+  --color-accent:          #FFB74D;
 
   /* Semantic */
-  --color-success:         #22C55E;
-  --color-warning:         #F59E0B;
-  --color-error:           #EF4444;
+  --color-success:         #81C784;
+  --color-warning:         #FFB74D;
+  --color-error:           #E57373;
 
   /* Text */
-  --color-text-primary:    #FAFAFA;
-  --color-text-secondary:  #A1A1AA;
-  --color-text-hint:       #71717A;
+  --color-text-primary:    #E0E0E0;
+  --color-text-secondary:  #9E9E9E;
+  --color-text-hint:       #757575;
 
   /* Inputs & dividers */
-  --color-input-stroke:         #27272A;
-  --color-input-stroke-focused: #3B82F6;
-  --color-divider:              #27272A;
+  --color-input-stroke:         #333333;
+  --color-input-stroke-focused: #4F81E8;
+  --color-divider:              #333333;
 }
 
 body {
   background-color: var(--color-bg);
   color: var(--color-text-primary);
   font-family: Arial, Helvetica, sans-serif;
-  overflow-x: hidden;
+  overflow-x: hidden; user-select: none; -webkit-user-select: none;
 }
+input, textarea { user-select: auto; -webkit-user-select: auto; }
 
 /* Sober UI elements */
 .card-border {
@@ -56,3 +57,41 @@ body {
   background-color: var(--color-surface-variant);
 }
 
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Global Scrollbar Settings */
+:root {
+  color-scheme: dark;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-variant) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-surface-variant);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-text-hint);
+}

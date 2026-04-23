@@ -13,14 +13,21 @@ export default function LoginModal({ onClose }: Props) {
     login,
     undefined,
   )
-
   // Cerrar con Escape
   useEffect(() => {
+    // Bloquear scroll del fondo
+    document.body.style.overflow = 'hidden'
+
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
+    
+    return () => {
+      // Restaurar scroll al cerrar
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', handler)
+    }
   }, [onClose])
 
   return (
@@ -45,7 +52,7 @@ export default function LoginModal({ onClose }: Props) {
         {/* Brand */}
         <div className="flex flex-col items-center gap-1">
           <h2 className="text-3xl font-light tracking-tight text-text-primary">
-            Fichaje<span className="text-primary">App</span>
+            Ficho<span className="text-primary">Now</span>
           </h2>
           <p className="text-xs font-light tracking-widest text-text-secondary uppercase">
             Panel de administración
