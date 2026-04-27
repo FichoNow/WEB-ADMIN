@@ -17,7 +17,7 @@ export default function LandingPage() {
       
       <Navbar>
         <Button onClick={() => setShowLogin(true)}>
-          Iniciar sesión
+          Gestionar empresa
         </Button>
       </Navbar>
 
@@ -65,35 +65,191 @@ export default function LandingPage() {
           </motion.div>
         </div>
 
-        {/* Temporary Abstract Dashboard Presentation */}
+        {/* Real Dashboard Presentation (Hero) */}
         <motion.div 
           initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="max-w-5xl mx-auto relative z-10 pt-8"
         >
-          <div className="w-full h-[300px] md:h-[400px] bg-[#111] rounded-t-3xl border-t border-x border-divider shadow-[0_-20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative">
+          <div className="w-full h-[300px] md:h-[450px] bg-bg rounded-t-3xl border-t border-x border-divider shadow-[0_-20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative text-[10px] md:text-xs">
             <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-50"></div>
-            {/* Fake Browser Top */}
-            <div className="h-12 border-b border-divider flex items-center px-6 gap-2 bg-[#151515]">
-              <div className="w-3 h-3 rounded-full bg-divider"></div>
-              <div className="w-3 h-3 rounded-full bg-divider"></div>
-              <div className="w-3 h-3 rounded-full bg-divider"></div>
-            </div>
-            {/* Fake Dashboard Content */}
-            <div className="flex-1 p-6 md:p-10 flex gap-6 opacity-30">
-              <div className="w-48 hidden md:flex flex-col gap-4 border-r border-divider pr-6">
-                <div className="h-4 w-24 bg-surface-variant rounded"></div>
-                <div className="h-4 w-full bg-surface-variant rounded mt-4"></div>
-                <div className="h-4 w-full bg-surface-variant rounded"></div>
-                <div className="h-4 w-3/4 bg-surface-variant rounded"></div>
-              </div>
-              <div className="flex-1 flex flex-col gap-6">
-                <div className="h-8 w-48 bg-surface-variant rounded"></div>
-                <div className="flex gap-4">
-                  <div className="flex-1 h-32 bg-surface-variant rounded-xl border border-divider"></div>
-                  <div className="flex-1 h-32 bg-surface-variant rounded-xl border border-divider"></div>
-                  <div className="flex-1 h-32 bg-surface-variant rounded-xl border border-divider"></div>
+            
+            {/* App Topbar */}
+            <div className="h-12 border-b border-divider flex items-center px-4 md:px-6 justify-between bg-surface shrink-0 z-10">
+              <div className="flex items-center gap-6">
+                <div className="flex gap-2">
+                  <div className="w-3 h-3 rounded-full bg-error/80"></div>
+                  <div className="w-3 h-3 rounded-full bg-warning/80"></div>
+                  <div className="w-3 h-3 rounded-full bg-success/80"></div>
                 </div>
-                <div className="flex-1 w-full bg-surface-variant rounded-xl border border-divider"></div>
+                <div className="font-bold text-text-primary text-sm ml-4 hidden sm:block">
+                  Ficho<span className="text-primary">Now</span>
+                </div>
+                <div className="hidden md:flex items-center gap-2 bg-bg px-3 py-1.5 rounded-lg border border-divider text-text-hint w-64 ml-4">
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                  Buscar empleados o proyectos...
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <svg className="w-4 h-4 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                  <span className="absolute top-0 right-0 w-1.5 h-1.5 bg-primary rounded-full border border-surface"></span>
+                </div>
+                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-primary to-primary-dark flex items-center justify-center text-white font-bold text-[9px] shadow-sm">
+                  JF
+                </div>
+              </div>
+            </div>
+
+            <div className="flex-1 flex overflow-hidden">
+              {/* Sidebar */}
+              <div className="w-48 border-r border-divider bg-surface/50 flex-col shrink-0 hidden md:flex">
+                <div className="px-4 py-4 border-b border-divider/50 flex flex-col gap-2">
+                  <div>
+                    <p className="text-[8px] font-medium tracking-widest text-text-hint uppercase mb-0.5">Empresa</p>
+                    <p className="text-xs font-semibold text-text-primary truncate">TechCorp S.L.</p>
+                  </div>
+                </div>
+                <nav className="flex-1 px-2 py-3 flex flex-col gap-1">
+                  <div className="flex items-center gap-2.5 w-full rounded-lg bg-primary/10 text-primary px-3 py-2 font-medium">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                    Estadísticas
+                  </div>
+                  <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary hover:bg-surface-variant/50 px-3 py-2 font-medium">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    Empleados
+                  </div>
+                  <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary hover:bg-surface-variant/50 px-3 py-2 font-medium">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Horarios
+                  </div>
+                </nav>
+              </div>
+
+              {/* Main Content Area */}
+              <div className="flex-1 bg-bg p-6 md:p-8 flex flex-col gap-6 overflow-hidden">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <h1 className="text-xl md:text-2xl font-light text-text-primary tracking-tight">Rendimiento semanal</h1>
+                    <p className="text-text-secondary text-[10px] md:text-xs mt-1">Visión general del estado de la plantilla (12 - 18 Abril).</p>
+                  </div>
+                  <div className="hidden sm:flex gap-3">
+                    <div className="px-3 py-1.5 rounded-lg border border-divider bg-surface text-text-primary font-medium flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-success shadow-[0_0_8px_rgba(129,199,132,0.6)]"></span> 142 Online
+                    </div>
+                    <div className="px-4 py-1.5 rounded-lg bg-primary text-on-primary font-medium flex items-center gap-2 shadow-lg shadow-primary/20">
+                      Descargar CSV
+                    </div>
+                  </div>
+                </div>
+
+                {/* Metrics Grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-surface rounded-xl border border-divider p-4 flex flex-col gap-2 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="flex justify-between items-start text-text-secondary">
+                      <span className="font-medium">Horas trabajadas</span>
+                      <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div className="text-2xl md:text-3xl font-light text-text-primary mt-1 tabular-nums">4,248<span className="text-sm text-text-hint ml-1">h</span></div>
+                    <div className="flex items-center gap-1 text-[10px] text-success font-medium">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                      +12.5% vs anterior
+                    </div>
+                  </div>
+                  <div className="bg-surface rounded-xl border border-divider p-4 flex flex-col gap-2">
+                    <div className="flex justify-between items-start text-text-secondary">
+                      <span className="font-medium">Ausencias activas</span>
+                      <svg className="w-4 h-4 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    </div>
+                    <div className="text-2xl md:text-3xl font-light text-text-primary mt-1 tabular-nums">8</div>
+                    <div className="flex items-center gap-1 text-[10px] text-text-secondary font-medium">
+                      5 médicas, 3 vacaciones
+                    </div>
+                  </div>
+                  <div className="bg-surface rounded-xl border border-divider p-4 flex flex-col gap-2">
+                    <div className="flex justify-between items-start text-text-secondary">
+                      <span className="font-medium">Puntualidad</span>
+                      <svg className="w-4 h-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div className="text-2xl md:text-3xl font-light text-text-primary mt-1 tabular-nums">96.4%</div>
+                    <div className="flex items-center gap-1 text-[10px] text-warning font-medium">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>
+                      -1.2% vs media
+                    </div>
+                  </div>
+                  <div className="bg-surface rounded-xl border border-divider p-4 flex flex-col gap-2">
+                    <div className="flex justify-between items-start text-text-secondary">
+                      <span className="font-medium">Horas extras</span>
+                      <svg className="w-4 h-4 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <div className="text-2xl md:text-3xl font-light text-warning mt-1 tabular-nums">142<span className="text-sm text-warning/50 ml-1">h</span></div>
+                    <div className="flex items-center gap-1 text-[10px] text-error font-medium">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>
+                      Excede límite
+                    </div>
+                  </div>
+                </div>
+
+                {/* Nice Chart Section */}
+                <div className="flex-1 bg-surface rounded-xl border border-divider p-5 flex flex-col gap-4 relative overflow-hidden">
+                  <div className="flex justify-between items-center z-10">
+                    <h3 className="font-medium text-text-primary">Evolución de horas semanales</h3>
+                    <div className="flex gap-4 text-[10px]">
+                      <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-primary"></span> Horas regulares</div>
+                      <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-warning"></span> Extras</div>
+                    </div>
+                  </div>
+                  
+                  {/* Decorative Chart SVG */}
+                  <div className="flex-1 w-full relative z-10 mt-2 flex items-end justify-between px-2 gap-2">
+                    {/* Background grid lines */}
+                    <div className="absolute inset-0 flex flex-col justify-between border-t border-divider/50 pt-2 pointer-events-none">
+                      <div className="h-px w-full bg-divider/30"></div>
+                      <div className="h-px w-full bg-divider/30"></div>
+                      <div className="h-px w-full bg-divider/30"></div>
+                      <div className="h-px w-full bg-divider/30"></div>
+                    </div>
+
+                    {/* Bars */}
+                    {[
+                      { height: '60%', extra: '5%', label: 'Lun' },
+                      { height: '80%', extra: '15%', label: 'Mar' },
+                      { height: '75%', extra: '10%', label: 'Mié' },
+                      { height: '90%', extra: '20%', label: 'Jue' },
+                      { height: '85%', extra: '10%', label: 'Vie' },
+                      { height: '30%', extra: '20%', label: 'Sáb' },
+                      { height: '10%', extra: '5%', label: 'Dom' },
+                    ].map((day, i) => (
+                      <div key={i} className="flex-1 flex flex-col justify-end items-center gap-2 group h-full z-10">
+                        <div className="w-full max-w-[32px] md:max-w-[48px] flex flex-col justify-end gap-0.5 h-full relative">
+                          <motion.div 
+                            initial={{ height: 0 }} animate={{ height: day.extra }} transition={{ duration: 1, delay: 0.5 + i * 0.1, ease: "easeOut" }}
+                            className="w-full bg-gradient-to-t from-warning/80 to-warning rounded-t-sm" 
+                          />
+                          <motion.div 
+                            initial={{ height: 0 }} animate={{ height: day.height }} transition={{ duration: 1, delay: 0.5 + i * 0.1, ease: "easeOut" }}
+                            className="w-full bg-gradient-to-t from-primary/80 to-primary rounded-t-sm relative group-hover:brightness-125 transition-all" 
+                          >
+                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface border border-divider px-2 py-1 rounded text-[9px] text-text-primary opacity-0 group-hover:opacity-100 transition-opacity shadow-lg whitespace-nowrap pointer-events-none">
+                              {day.label}
+                            </div>
+                          </motion.div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {/* X Axis Labels */}
+                  <div className="w-full flex justify-between px-2 text-text-hint text-[9px] z-10 pt-2">
+                    <span className="flex-1 text-center">Lun</span>
+                    <span className="flex-1 text-center">Mar</span>
+                    <span className="flex-1 text-center">Mié</span>
+                    <span className="flex-1 text-center">Jue</span>
+                    <span className="flex-1 text-center">Vie</span>
+                    <span className="flex-1 text-center">Sáb</span>
+                    <span className="flex-1 text-center">Dom</span>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -473,25 +629,25 @@ export default function LandingPage() {
             <div className="w-full max-w-2xl bg-bg rounded-2xl border border-divider shadow-2xl overflow-hidden shrink-0 flex flex-col text-[10px]">
               {/* Fake Topbar */}
               <div className="h-12 border-b border-divider flex items-center px-6 justify-between bg-bg shrink-0">
-                <div className="font-bold text-text-primary text-sm flex items-center gap-1">
-                  Ficha<span className="text-primary">Now</span>
+                <div className="font-bold text-text-primary text-sm">
+                  Ficho<span className="text-primary">Now</span>
                 </div>
                 <div className="flex items-center gap-4 text-text-secondary text-xs">
-                  <span className="flex items-center gap-1">
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                    Volver a la web
+                  <span className="flex items-center gap-1 cursor-default">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    <span className="hidden sm:inline">Volver a la web</span>
                   </span>
-                  <span className="flex items-center gap-1">
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                    Cerrar sesión
+                  <span className="flex items-center gap-1 cursor-default">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    <span className="hidden sm:inline">Cerrar sesión</span>
                   </span>
                 </div>
               </div>
 
               {/* Main App Area */}
-              <div className="flex h-[480px]">
+              <div className="flex h-[380px] sm:h-[480px]">
                 {/* Fake Sidebar */}
-                <div className="w-48 border-r border-divider bg-surface flex flex-col shrink-0">
+                <div className="w-48 border-r border-divider bg-surface flex-col shrink-0 hidden sm:flex">
                   <div className="px-4 py-4 border-b border-divider flex flex-col gap-3">
                     <div>
                       <p className="text-[8px] font-medium tracking-widest text-text-hint uppercase mb-0.5">Empresa</p>
@@ -542,7 +698,7 @@ export default function LandingPage() {
                     <p className="text-xs text-text-secondary">Selecciona un módulo para gestionar tu departamento.</p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto pb-4 pr-1">
                     {/* Empleados */}
                     <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
                       <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
