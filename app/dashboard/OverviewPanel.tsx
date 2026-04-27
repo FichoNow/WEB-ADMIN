@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getCompanyInfo } from '@/app/repositories/admin-repository'
@@ -5,36 +6,35 @@ import type { CompanyInfoDepartment } from '@/app/types/admin/company-info-respo
 
 function DepartmentCard({ department }: { department: CompanyInfoDepartment }) {
   return (
-    <div className="group flex items-center justify-between px-6 py-5 rounded-2xl bg-surface border border-divider hover:border-primary/40 hover:bg-surface-variant transition-all duration-200 cursor-pointer">
-      <span className="text-sm font-medium text-text-primary">{department.name}</span>
-      <svg
-        className="w-4 h-4 text-text-hint group-hover:text-primary transition-colors duration-200"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.5}
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-      </svg>
-    </div>
+    <Link href={`/dashboard/${department.id}`}>
+      <div className="group flex items-center justify-between px-6 py-5 rounded-2xl bg-surface border border-divider hover:border-primary/40 hover:bg-surface-variant transition-all duration-200 cursor-pointer">
+        <span className="text-sm font-medium text-text-primary">{department.name}</span>
+        <svg
+          className="w-4 h-4 text-text-hint group-hover:text-primary transition-colors duration-200"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={1.5}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </div>
+    </Link>
   )
 }
 
 export default async function OverviewPanel() {
   const cookieStore = await cookies()
-  const token = cookieStore.get('accessToken')?.value
-
-  if (!token) redirect('/')
+  const role = cookieStore.get('userRole')?.value
+  const isSuperAdmin = role === 'SUPERADMIN'
 
   let overview
 
   try {
-    overview = await getCompanyInfo(token)
+    overview = await getCompanyInfo()
   } catch {
     redirect('/')
   }
-
-  const isSuperAdmin = overview.departments.length > 1
 
   return (
     <div className="min-h-screen bg-bg px-6 py-16 flex flex-col items-center">

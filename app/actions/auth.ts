@@ -51,5 +51,13 @@ export async function login(
     maxAge: 60 * 60 * 24 * 7,
   });
 
+  cookieStore.set("userRole", data.userData.role, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
   redirect("/dashboard");
 }

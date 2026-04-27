@@ -1,14 +1,12 @@
+import { fetchPublic } from '@/app/lib/api'
 import type { LoginRequest } from '@/app/types/auth/login-request'
 import type { LoginResponse } from '@/app/types/auth/login-response'
 import type { RegisterRequest } from '@/app/types/auth/register-request'
 import type { RegisterResponse } from '@/app/types/auth/register-response'
 
-const API_URL = process.env.API_URL ?? 'http://localhost:3000'
-
 export async function loginRequest(body: LoginRequest): Promise<LoginResponse> {
-  const res = await fetch(`${API_URL}/auth/login`, {
+  const res = await fetchPublic('/auth/login', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
 
@@ -22,9 +20,8 @@ export async function loginRequest(body: LoginRequest): Promise<LoginResponse> {
 }
 
 export async function registerRequest(body: RegisterRequest): Promise<RegisterResponse> {
-  const res = await fetch(`${API_URL}/auth/register`, {
+  const res = await fetchPublic('/auth/register', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
 
