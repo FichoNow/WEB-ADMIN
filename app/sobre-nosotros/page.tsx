@@ -29,7 +29,7 @@ export default function SobreNosotros() {
               onClick={() => setShowLogin(true)}
               className="px-4 py-2 rounded-md text-sm font-medium bg-primary text-white hover:bg-primary-dark transition-colors"
             >
-              Iniciar sesión
+              Gestionar empresa
             </button>
           </div>
         </div>
