@@ -1,9 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
-import LoginModal from './LoginModal'
-import RegisterModal from './RegisterModal'
+import LoginModal from '@/components/LoginModal'
+import RegisterModal from '@/components/RegisterModal'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
+import { Button } from '@/components/ui/button'
+import { motion } from 'framer-motion'
 
 export default function LandingPage() {
   const [showLogin, setShowLogin] = useState(false)
@@ -12,56 +15,61 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-bg text-text-primary font-sans selection:bg-primary/30">
       
-      {/* Top Navbar */}
-      <nav className="border-b border-divider bg-bg/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-lg font-semibold tracking-tight text-text-primary">
-              Ficho<span className="text-primary">Now</span>
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setShowLogin(true)}
-              className="px-4 py-2 rounded-md text-sm font-medium bg-primary text-white hover:bg-primary-dark transition-colors"
-            >
-              Iniciar sesión
-            </button>
-          </div>
-        </div>
-      </nav>
+      <Navbar>
+        <Button onClick={() => setShowLogin(true)}>
+          Iniciar sesión
+        </Button>
+      </Navbar>
 
       {/* Hero Section (Centered with Abstract UI) */}
       <section className="pt-24 lg:pt-32 px-6 border-b border-divider bg-surface/30 relative overflow-hidden">
         {/* Decorative Grid Background */}
         <div className="absolute inset-0 z-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+        {/* Animated Spotlight */}
+        <motion.div 
+          animate={{ opacity: [0.03, 0.07, 0.03], scale: [1, 1.05, 1] }} 
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-30%] left-1/2 -translate-x-1/2 w-[1200px] h-[800px] bg-primary/30 blur-[200px] rounded-full pointer-events-none z-0" 
+        />
         
         <div className="max-w-4xl mx-auto text-center relative z-10 mb-16">
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-text-primary leading-[1.1] mb-6">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-text-primary leading-[1.1] mb-6"
+          >
             Control horario<br />
             <span className="text-text-secondary">sin fricciones.</span>
-          </h1>
-          <p className="text-lg md:text-xl text-text-secondary mb-10 max-w-2xl mx-auto">
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-lg md:text-xl text-text-secondary mb-10 max-w-2xl mx-auto"
+          >
             La plataforma definitiva para gestionar fichajes, ausencias y horarios de tu equipo. Rápida, intuitiva y cumpliendo con la normativa actual.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button
-              className="w-full sm:w-auto px-8 py-3.5 rounded-md text-sm font-medium bg-primary text-white hover:bg-primary-dark transition-colors"
-            >
+          </motion.p>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <Button size="lg" className="w-full sm:w-auto px-8">
               Solicitar demostración
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
               onClick={() => setShowRegister(true)}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-md text-sm font-medium border-2 border-text-secondary/50 text-text-primary hover:border-text-primary transition-colors"
+              className="w-full sm:w-auto px-8 border-2"
             >
               Crea tu empresa
-            </button>
-          </div>
+            </Button>
+          </motion.div>
         </div>
 
         {/* Temporary Abstract Dashboard Presentation */}
-        <div className="max-w-5xl mx-auto relative z-10 pt-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-5xl mx-auto relative z-10 pt-8"
+        >
           <div className="w-full h-[300px] md:h-[400px] bg-[#111] rounded-t-3xl border-t border-x border-divider shadow-[0_-20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative">
             <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-50"></div>
             {/* Fake Browser Top */}
@@ -89,12 +97,15 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Feature Showcase: Clock In (Fichaje) */}
-      <section className="py-24 px-6 border-b border-divider bg-bg">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+      <section className="py-24 px-6 border-b border-divider bg-bg overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16"
+        >
           {/* Text Content */}
           <div className="flex-1 text-center lg:text-left">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-surface border border-divider mb-6">
@@ -108,30 +119,37 @@ export default function LandingPage() {
             <p className="text-lg text-text-secondary leading-relaxed mb-8 max-w-2xl mx-auto lg:mx-0">
               Una experiencia móvil diseñada para que los empleados registren su tiempo sin fricciones. Imputación de horas por proyectos, registro de pausas y gestión inteligente de la jornada.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-2xl mx-auto lg:mx-0">
-              <div className="flex items-start gap-3">
+            <motion.div 
+              initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }}
+              variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.3 } } }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-2xl mx-auto lg:mx-0"
+            >
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 <span className="text-sm text-text-secondary">Imputación directa de horas a proyectos.</span>
-              </div>
+              </motion.div>
 
-              <div className="flex items-start gap-3">
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 <span className="text-sm text-text-secondary">Registro de descansos remunerados.</span>
-              </div>
-              <div className="flex items-start gap-3">
+              </motion.div>
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 <span className="text-sm text-text-secondary">Cronómetro exacto al segundo.</span>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
 
           {/* Minimalist Mobile Device Frame */}
-          <div className="flex-1 w-full flex justify-center lg:justify-end">
-            <div className="relative w-[340px] h-[720px] border-[8px] border-surface-variant bg-[#1A1A1A] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col shrink-0">
+          <motion.div 
+            whileHover={{ y: -12, scale: 1.02 }} transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            className="flex-1 w-full flex justify-center lg:justify-end cursor-default"
+          >
+            <div className="relative w-[300px] h-[600px] border-[8px] border-surface-variant bg-[#1A1A1A] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col shrink-0">
               
               {/* Minimalist Camera/Notch area */}
               <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-20">
-                <div className="w-28 h-6 bg-surface-variant rounded-b-2xl"></div>
+                <div className="w-24 h-6 bg-surface-variant rounded-b-2xl"></div>
               </div>
 
               {/* Status Bar Fake */}
@@ -166,7 +184,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                   <div className="text-center">
-                    <span className="text-5xl font-light text-text-primary tabular-nums tracking-tighter">
+                    <span className="text-4xl font-light text-text-primary tabular-nums tracking-tighter">
                       01:01:23
                     </span>
                   </div>
@@ -208,13 +226,16 @@ export default function LandingPage() {
                 <div className="w-24 h-1 bg-text-hint rounded-full opacity-50"></div>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Feature Showcase: Calendar */}
-      <section className="py-24 px-6 border-b border-divider bg-surface/30">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-16">
+      <section className="py-24 px-6 border-b border-divider bg-surface/30 overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-16"
+        >
           {/* Text Content */}
           <div className="flex-1 text-center lg:text-left">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-surface border border-divider mb-6">
@@ -228,32 +249,39 @@ export default function LandingPage() {
             <p className="text-lg text-text-secondary leading-relaxed mb-8 max-w-2xl mx-auto lg:mx-0">
               Despídase de los correos interminables y las hojas de cálculo. Nuestro calendario integrado permite a los empleados solicitar vacaciones y reportar bajas médicas en segundos.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-2xl mx-auto lg:mx-0">
-              <div className="flex items-start gap-3">
+            <motion.div 
+              initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }}
+              variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.3 } } }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-2xl mx-auto lg:mx-0"
+            >
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 <span className="text-sm text-text-secondary">Aprobación en un solo clic para managers.</span>
-              </div>
-              <div className="flex items-start gap-3">
+              </motion.div>
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 <span className="text-sm text-text-secondary">Todo el equipo alineado en una vista única.</span>
-              </div>
-              <div className="flex items-start gap-3">
+              </motion.div>
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 <span className="text-sm text-text-secondary">Tipos de ausencia totalmente personalizables.</span>
-              </div>
-              <div className="flex items-start gap-3">
+              </motion.div>
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 <span className="text-sm text-text-secondary">Cálculo automático de días disponibles.</span>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
 
-          <div className="flex-1 w-full flex justify-center lg:justify-start">
-            <div className="relative w-[340px] h-[720px] border-[8px] border-surface-variant bg-[#1A1A1A] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col shrink-0">
+          <motion.div 
+            whileHover={{ y: -12, scale: 1.02 }} transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            className="flex-1 w-full flex justify-center lg:justify-start cursor-default"
+          >
+            <div className="relative w-[300px] h-[600px] border-[8px] border-surface-variant bg-[#1A1A1A] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col shrink-0">
 
               {/* Notch */}
               <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-20">
-                <div className="w-28 h-6 bg-surface-variant rounded-b-2xl"></div>
+                <div className="w-24 h-6 bg-surface-variant rounded-b-2xl"></div>
               </div>
 
               {/* Status Bar */}
@@ -384,13 +412,16 @@ export default function LandingPage() {
                 <div className="w-24 h-1 bg-text-hint rounded-full opacity-50"></div>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Feature Showcase: Admin Panel */}
-      <section className="py-24 px-6 border-b border-divider bg-bg">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+      <section className="py-24 px-6 border-b border-divider bg-bg overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16"
+        >
           {/* Text Content */}
           <div className="flex-1 text-center lg:text-left">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-surface border border-divider mb-6">
@@ -405,95 +436,163 @@ export default function LandingPage() {
             <p className="text-lg text-text-secondary leading-relaxed mb-8 max-w-2xl mx-auto lg:mx-0">
               Acceda desde la web a una plataforma centralizada para monitorizar toda su empresa en tiempo real. Gestione usuarios, apruebe solicitudes y consulte reportes sin salir del panel.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-2xl mx-auto lg:mx-0">
-              <div className="flex items-start gap-3">
+            <motion.div 
+              initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }}
+              variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.3 } } }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-2xl mx-auto lg:mx-0"
+            >
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 <span className="text-sm text-text-secondary">Vista global de todos los departamentos.</span>
-              </div>
-              <div className="flex items-start gap-3">
+              </motion.div>
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 <span className="text-sm text-text-secondary">Aprobación de solicitudes en un clic.</span>
-              </div>
-              <div className="flex items-start gap-3">
+              </motion.div>
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 <span className="text-sm text-text-secondary">Gestión de usuarios y permisos.</span>
-              </div>
-              <div className="flex items-start gap-3">
+              </motion.div>
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                 <span className="text-sm text-text-secondary">Reportes en tiempo real exportables.</span>
-              </div>
-            </div>
+              </motion.div>
+              <motion.div variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }} className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                <span className="text-sm text-text-secondary">Estadísticas y gráficas de rendimiento.</span>
+              </motion.div>
+            </motion.div>
           </div>
 
           {/* Fake Admin Dashboard UI */}
-          <div className="flex-1 w-full flex justify-center lg:justify-end">
-            <div className="w-full max-w-lg bg-[#151515] rounded-2xl border border-divider shadow-2xl overflow-hidden shrink-0">
-              <div className="h-10 bg-[#111] border-b border-divider flex items-center px-4 gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-divider"></div>
-                <div className="w-2.5 h-2.5 rounded-full bg-divider"></div>
-                <div className="w-2.5 h-2.5 rounded-full bg-divider"></div>
-                <div className="ml-3 flex-1 h-5 bg-surface-variant rounded-md max-w-xs"></div>
-              </div>
-              <div className="flex h-64">
-                <div className="w-40 border-r border-divider p-4 flex flex-col gap-3 shrink-0">
-                  <div className="h-3 w-20 bg-primary/40 rounded mb-2"></div>
-                  <div className="h-7 w-full bg-primary/20 rounded-lg flex items-center px-2 gap-2">
-                    <div className="w-3 h-3 rounded bg-primary/50"></div>
-                    <div className="h-2 w-12 bg-primary/50 rounded"></div>
-                  </div>
-                  <div className="h-7 w-full bg-surface-variant/50 rounded-lg flex items-center px-2 gap-2">
-                    <div className="w-3 h-3 rounded bg-surface-variant"></div>
-                    <div className="h-2 w-14 bg-surface-variant rounded"></div>
-                  </div>
-                  <div className="h-7 w-full bg-surface-variant/50 rounded-lg flex items-center px-2 gap-2">
-                    <div className="w-3 h-3 rounded bg-surface-variant"></div>
-                    <div className="h-2 w-10 bg-surface-variant rounded"></div>
-                  </div>
-                  <div className="h-7 w-full bg-surface-variant/50 rounded-lg flex items-center px-2 gap-2">
-                    <div className="w-3 h-3 rounded bg-surface-variant"></div>
-                    <div className="h-2 w-16 bg-surface-variant rounded"></div>
-                  </div>
+          <motion.div 
+            whileHover={{ y: -8, scale: 1.02, rotateX: 4, rotateY: -2 }} transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            className="flex-1 w-full flex justify-center lg:justify-end cursor-default"
+            style={{ perspective: 1200 }}
+          >
+            <div className="w-full max-w-2xl bg-bg rounded-2xl border border-divider shadow-2xl overflow-hidden shrink-0 flex flex-col text-[10px]">
+              {/* Fake Topbar */}
+              <div className="h-12 border-b border-divider flex items-center px-6 justify-between bg-bg shrink-0">
+                <div className="font-bold text-text-primary text-sm flex items-center gap-1">
+                  Ficha<span className="text-primary">Now</span>
                 </div>
-                <div className="flex-1 p-5 flex flex-col gap-4">
-                  <div className="h-4 w-32 bg-surface-variant rounded"></div>
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-surface rounded-xl p-3 border border-divider">
-                      <div className="h-2 w-10 bg-surface-variant rounded mb-2"></div>
-                      <div className="h-4 w-8 bg-primary/40 rounded"></div>
+                <div className="flex items-center gap-4 text-text-secondary text-xs">
+                  <span className="flex items-center gap-1">
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    Volver a la web
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    Cerrar sesión
+                  </span>
+                </div>
+              </div>
+
+              {/* Main App Area */}
+              <div className="flex h-[480px]">
+                {/* Fake Sidebar */}
+                <div className="w-48 border-r border-divider bg-surface flex flex-col shrink-0">
+                  <div className="px-4 py-4 border-b border-divider flex flex-col gap-3">
+                    <div>
+                      <p className="text-[8px] font-medium tracking-widest text-text-hint uppercase mb-0.5">Empresa</p>
+                      <p className="text-xs font-semibold text-text-primary truncate">Empresa Demo</p>
                     </div>
-                    <div className="bg-surface rounded-xl p-3 border border-divider">
-                      <div className="h-2 w-12 bg-surface-variant rounded mb-2"></div>
-                      <div className="h-4 w-6 bg-success/40 rounded"></div>
-                    </div>
-                    <div className="bg-surface rounded-xl p-3 border border-divider">
-                      <div className="h-2 w-8 bg-surface-variant rounded mb-2"></div>
-                      <div className="h-4 w-10 bg-warning/40 rounded"></div>
+                    <div>
+                      <p className="text-[8px] font-medium tracking-widest text-text-hint uppercase mb-0.5">Departamento</p>
+                      <p className="text-xs font-semibold text-text-secondary truncate">Operaciones</p>
                     </div>
                   </div>
-                  <div className="flex-1 bg-surface rounded-xl border border-divider p-3 flex flex-col gap-2">
-                    <div className="flex gap-2">
-                      <div className="h-2 w-16 bg-surface-variant rounded"></div>
-                      <div className="h-2 w-12 bg-surface-variant rounded ml-auto"></div>
+                  <nav className="flex-1 px-2 py-3 flex flex-col gap-0.5">
+                    <div className="flex items-center gap-2.5 w-full rounded-lg bg-primary/15 text-primary px-3 py-2 text-xs font-medium">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                      Inicio
                     </div>
-                    {[1,2,3].map(i => (
-                      <div key={i} className="flex items-center gap-3 py-1.5 border-t border-divider/50">
-                        <div className="w-5 h-5 rounded-full bg-surface-variant shrink-0"></div>
-                        <div className="h-2 w-20 bg-surface-variant rounded"></div>
-                        <div className="h-2 w-12 bg-surface-variant/60 rounded ml-auto"></div>
-                        <div className="h-4 w-10 bg-primary/20 rounded-full"></div>
-                      </div>
-                    ))}
+                    <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary px-3 py-2 text-xs font-medium">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                      Empleados
+                    </div>
+                    <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary px-3 py-2 text-xs font-medium">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                      Proyectos
+                    </div>
+                    <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary px-3 py-2 text-xs font-medium">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      Fichajes
+                    </div>
+                    <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary px-3 py-2 text-xs font-medium">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                      Solicitudes
+                    </div>
+                    <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary px-3 py-2 text-xs font-medium">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z M4.22 4.22l15.56 15.56" /></svg>
+                      Horarios
+                    </div>
+                    <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary px-3 py-2 text-xs font-medium">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                      Estadísticas
+                    </div>
+                  </nav>
+                </div>
+
+                {/* Fake Content Area */}
+                <div className="flex-1 p-6 bg-bg flex flex-col gap-6 overflow-hidden">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-[10px] font-medium tracking-widest text-primary uppercase">Inicio</p>
+                    <h1 className="text-2xl font-light tracking-tight text-text-primary">Vista general</h1>
+                    <p className="text-xs text-text-secondary">Selecciona un módulo para gestionar tu departamento.</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Empleados */}
+                    <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
+                      <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                      <h3 className="text-xs font-semibold text-text-primary mb-1">Empleados</h3>
+                      <p className="text-[10px] text-text-secondary">Gestiona la plantilla, altas y bajas del equipo.</p>
+                    </div>
+                    {/* Proyectos */}
+                    <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
+                      <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                      <h3 className="text-xs font-semibold text-text-primary mb-1">Proyectos</h3>
+                      <p className="text-[10px] text-text-secondary">Administra proyectos y la imputación de horas.</p>
+                    </div>
+                    {/* Fichajes */}
+                    <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
+                      <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      <h3 className="text-xs font-semibold text-text-primary mb-1">Fichajes</h3>
+                      <p className="text-[10px] text-text-secondary">Revisa y ajusta los registros de jornada.</p>
+                    </div>
+                    {/* Solicitudes */}
+                    <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
+                      <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                      <h3 className="text-xs font-semibold text-text-primary mb-1">Solicitudes</h3>
+                      <p className="text-[10px] text-text-secondary">Aprueba vacaciones y ausencias del personal.</p>
+                    </div>
+                    {/* Horarios */}
+                    <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
+                      <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z M4.22 4.22l15.56 15.56" /></svg>
+                      <h3 className="text-xs font-semibold text-text-primary mb-1">Horarios</h3>
+                      <p className="text-[10px] text-text-secondary">Configura horarios y turnos de trabajo.</p>
+                    </div>
+                    {/* Estadísticas */}
+                    <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
+                      <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                      <h3 className="text-xs font-semibold text-text-primary mb-1">Estadísticas</h3>
+                      <p className="text-[10px] text-text-secondary">Analiza datos y rendimiento del equipo.</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Feature Pills */}
       <section className="py-24 px-6 border-b border-divider bg-surface/30">
-        <div className="max-w-7xl mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-7xl mx-auto"
+        >
           <div className="mb-16">
             <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-4">
               Todo lo que necesita su empresa
@@ -530,63 +629,11 @@ export default function LandingPage() {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-divider bg-[#111] pt-16 pb-8 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-            <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-xl font-bold tracking-tight text-text-primary">
-                  Ficho<span className="text-primary">Now</span>
-                </span>
-                <span className="px-2.5 py-0.5 rounded-full bg-surface-variant text-[10px] font-medium text-text-secondary border border-divider">
-                  Enterprise
-                </span>
-              </div>
-              <p className="text-sm text-text-secondary max-w-sm mb-6 leading-relaxed">
-                La plataforma definitiva para gestionar fichajes, ausencias y horarios de tu equipo. Rápida, intuitiva y cumpliendo con la normativa actual.
-              </p>
-              <div className="flex items-center gap-4">
-                <a href="https://github.com/FichajeApp" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-surface border border-divider flex items-center justify-center text-text-secondary hover:text-text-primary hover:border-primary/50 transition-colors" aria-label="GitHub">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-            
-            <div className="col-span-1">
-              <h4 className="text-sm font-bold text-text-primary mb-5">Producto</h4>
-              <ul className="flex flex-col gap-3.5 text-sm text-text-secondary">
-                <li><a href="#" className="hover:text-primary transition-colors">Funcionalidades</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Precios</a></li>
-              </ul>
-            </div>
-            
-            <div className="col-span-1">
-              <h4 className="text-sm font-bold text-text-primary mb-5">Compañía</h4>
-              <ul className="flex flex-col gap-3.5 text-sm text-text-secondary">
-                <li><Link href="/sobre-nosotros" className="hover:text-primary transition-colors">Sobre nosotros</Link></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Contacto</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="pt-8 border-t border-divider/50 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-text-hint">
-              &copy; {new Date().getFullYear()} Ficho<span className="text-primary">Now</span>. Todos los derechos reservados.
-            </p>
-            <div className="flex items-center gap-6 text-sm text-text-hint">
-              <a href="#" className="hover:text-text-primary transition-colors">Términos legales</a>
-              <a href="#" className="hover:text-text-primary transition-colors">Política de privacidad</a>
-              <a href="#" className="hover:text-text-primary transition-colors">Seguridad</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+
+      <Footer />
 
       {/* Login Modal */}
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}

@@ -20,39 +20,35 @@ function Alert({ state }: { state: EmployeeActionState }) {
   return null
 }
 
-// Badge de rol del empleado
 function RoleBadge({ role }: { role: string }) {
   const isAdmin = role === 'ADMINISTRATOR'
   return (
-    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${isAdmin ? 'bg-primary/20 text-primary' : 'bg-surface-variant text-text-secondary'}`}>
+    <Badge variant={isAdmin ? 'default' : 'secondary'} className="text-[10px]">
       {isAdmin ? 'Admin' : 'Usuario'}
-    </span>
+    </Badge>
   )
 }
 
-// Contenedor de modal genérico
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
-  useEffect(() => {
-    const cerrar = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', cerrar)
-    return () => window.removeEventListener('keydown', cerrar)
-  }, [onClose])
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
+// Contenedor de modal genérico usando Shadcn
+function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-xl bg-surface rounded-2xl border border-divider shadow-2xl flex flex-col max-h-[90vh]">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-divider">
-          <h2 className="text-lg font-semibold text-text-primary">{title}</h2>
-          <button onClick={onClose} className="text-text-hint hover:text-text-primary transition-colors">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-[600px] bg-surface border-divider">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-semibold text-text-primary">{title}</DialogTitle>
+          <DialogDescription className="hidden">Modal for {title}</DialogDescription>
+        </DialogHeader>
+        <div className="max-h-[70vh] overflow-y-auto px-1 py-2">
+          {children}
         </div>
-        <div className="overflow-y-auto px-6 py-6 flex flex-col gap-4">{children}</div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -98,37 +94,41 @@ function CreateModal({ departmentId, onClose }: { departmentId: number; onClose:
       <div className="flex flex-col gap-3 max-h-72 overflow-y-auto pr-1">
         {rows.map((row, i) => (
           <div key={i} className="grid grid-cols-2 gap-2 p-3 bg-bg rounded-xl border border-divider">
-            <input value={row.name} onChange={e => updateRow(i, 'name', e.target.value)} placeholder="Nombre" className={input} />
-            <input value={row.email} onChange={e => updateRow(i, 'email', e.target.value)} type="email" placeholder="Email" className={input} />
-            <input value={row.password} onChange={e => updateRow(i, 'password', e.target.value)} type="password" placeholder="Contraseña" className={input} />
+            <Input value={row.name} onChange={e => updateRow(i, 'name', e.target.value)} placeholder="Nombre" />
+            <Input value={row.email} onChange={e => updateRow(i, 'email', e.target.value)} type="email" placeholder="Email" />
+            <Input value={row.password} onChange={e => updateRow(i, 'password', e.target.value)} type="password" placeholder="Contraseña" />
             <div className="flex gap-2">
-              <select value={row.role} onChange={e => updateRow(i, 'role', e.target.value as EmployeeRole)} className={`${input} flex-1`}>
-                <option value="USER">Usuario</option>
-                <option value="ADMINISTRATOR">Admin</option>
-              </select>
+              <Select value={row.role} onValueChange={value => updateRow(i, 'role', value as EmployeeRole)}>
+                <SelectTrigger className="flex-1 w-full bg-surface">
+                  <SelectValue placeholder="Rol" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="USER">Usuario</SelectItem>
+                  <SelectItem value="ADMINISTRATOR">Admin</SelectItem>
+                </SelectContent>
+              </Select>
               {rows.length > 1 && (
-                <button onClick={() => removeRow(i)} className="px-2 text-error hover:text-error/80 transition-colors">
+                <Button variant="destructive" size="icon" onClick={() => removeRow(i)} className="shrink-0">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                </button>
+                </Button>
               )}
             </div>
           </div>
         ))}
       </div>
 
-      <button onClick={addRow} className="text-sm text-primary hover:text-primary-dark flex items-center gap-1 self-start transition-colors">
+      <Button variant="ghost" onClick={addRow} className="self-start gap-2">
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
         </svg>
         Añadir otro
-      </button>
+      </Button>
 
-      <button onClick={handleSubmit} disabled={loading}
-        className="w-full py-3 rounded-xl text-sm font-medium bg-primary text-on-primary hover:bg-primary-dark disabled:opacity-50 transition-colors">
+      <Button onClick={handleSubmit} disabled={loading} className="w-full" size="lg">
         {loading ? 'Creando...' : rows.length === 1 ? 'Crear empleado' : `Crear ${rows.length} empleados`}
-      </button>
+      </Button>
     </div>
   )
 }
@@ -152,35 +152,44 @@ function EditModal({ employee, departmentId, onClose }: { employee: EmployeeList
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1.5 col-span-2">
           <label className={label}>Nombre</label>
-          <input name="name" type="text" defaultValue={employee.name} className={input} />
+          <Input name="name" type="text" defaultValue={employee.name} />
         </div>
         <div className="flex flex-col gap-1.5 col-span-2">
           <label className={label}>Email</label>
-          <input name="email" type="email" defaultValue={employee.email} className={input} />
+          <Input name="email" type="email" defaultValue={employee.email} />
         </div>
         <div className="flex flex-col gap-1.5">
           <label className={label}>Nueva contraseña <span className="text-text-hint">(opcional)</span></label>
-          <input name="password" type="password" placeholder="Mín. 8 caracteres" className={input} />
+          <Input name="password" type="password" placeholder="Mín. 8 caracteres" />
         </div>
         <div className="flex flex-col gap-1.5">
           <label className={label}>Rol</label>
-          <select name="role" defaultValue={employee.role} className={input}>
-            <option value="USER">Usuario</option>
-            <option value="ADMINISTRATOR">Administrador</option>
-          </select>
+          <Select name="role" defaultValue={employee.role}>
+            <SelectTrigger className="w-full bg-surface">
+              <SelectValue placeholder="Rol" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="USER">Usuario</SelectItem>
+              <SelectItem value="ADMINISTRATOR">Administrador</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex flex-col gap-1.5">
           <label className={label}>Estado</label>
-          <select name="is_active" defaultValue={String(employee.is_active)} className={input}>
-            <option value="true">Activo</option>
-            <option value="false">Inactivo</option>
-          </select>
+          <Select name="is_active" defaultValue={String(employee.is_active)}>
+            <SelectTrigger className="w-full bg-surface">
+              <SelectValue placeholder="Estado" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="true">Activo</SelectItem>
+              <SelectItem value="false">Inactivo</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
-      <button type="submit" disabled={pending}
-        className="w-full py-3 rounded-xl text-sm font-medium bg-primary text-on-primary hover:bg-primary-dark disabled:opacity-50 transition-colors">
+      <Button type="submit" disabled={pending} className="w-full" size="lg">
         {pending ? 'Guardando...' : 'Guardar cambios'}
-      </button>
+      </Button>
     </form>
   )
 }
@@ -198,13 +207,12 @@ export default function EmployeesClient({ employees, departmentId }: { employees
           <p className="text-xs font-medium tracking-widest text-primary uppercase">Empleados</p>
           <h1 className="text-3xl font-light tracking-tight text-text-primary">Gestión de empleados</h1>
         </div>
-        <button onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-primary text-on-primary hover:bg-primary-dark transition-colors">
+        <Button onClick={() => setShowCreate(true)} className="gap-2 rounded-xl">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           Nuevo empleado
-        </button>
+        </Button>
       </div>
 
       <div className="h-px bg-divider" />
@@ -234,12 +242,11 @@ export default function EmployeesClient({ employees, departmentId }: { employees
                 </div>
               </div>
               {/* Botón editar */}
-              <button onClick={() => setEditEmployee(emp)}
-                className="p-2 rounded-lg text-text-hint hover:text-primary hover:bg-primary/10 transition-colors">
+              <Button variant="ghost" size="icon" onClick={() => setEditEmployee(emp)}>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                 </svg>
-              </button>
+              </Button>
             </div>
           ))}
         </div>

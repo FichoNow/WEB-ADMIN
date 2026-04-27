@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 const SECTIONS = [
   {
     key: '',
-    label: 'Resumen',
+    label: 'Inicio',
     icon: (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -58,23 +58,41 @@ const SECTIONS = [
       </svg>
     ),
   },
+  {
+    key: 'statistics',
+    label: 'Estadísticas',
+    icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+    ),
+  },
 ]
 
 interface Props {
   departmentId: string
   departmentName: string
+  companyName: string
 }
 
-export default function Sidebar({ departmentId, departmentName }: Props) {
+import { buttonVariants } from '@/components/ui/button'
+
+export default function Sidebar({ departmentId, departmentName, companyName }: Props) {
   const pathname = usePathname()
   const base = `/dashboard/${departmentId}`
 
   return (
     <aside className="w-64 shrink-0 border-r border-divider bg-surface flex flex-col min-h-screen">
       {/* Department header */}
-      <div className="px-5 py-6 border-b border-divider">
-        <p className="text-[10px] font-medium tracking-widest text-text-hint uppercase mb-1">Departamento</p>
-        <p className="text-sm font-semibold text-text-primary truncate">{departmentName}</p>
+      <div className="px-5 py-6 border-b border-divider flex flex-col gap-4">
+        <div>
+          <p className="text-[10px] font-medium tracking-widest text-text-hint uppercase mb-1">Empresa</p>
+          <p className="text-sm font-semibold text-text-primary truncate">{companyName}</p>
+        </div>
+        <div>
+          <p className="text-[10px] font-medium tracking-widest text-text-hint uppercase mb-1">Departamento</p>
+          <p className="text-sm font-semibold text-text-secondary truncate">{departmentName}</p>
+        </div>
       </div>
 
       {/* Nav items */}
@@ -89,11 +107,10 @@ export default function Sidebar({ departmentId, departmentName }: Props) {
             <Link
               key={key}
               href={href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${
-                isActive
-                  ? 'bg-primary/15 text-primary font-medium'
-                  : 'text-text-secondary hover:bg-surface-variant hover:text-text-primary'
-              }`}
+              className={buttonVariants({
+                variant: isActive ? 'secondary' : 'ghost',
+                className: `justify-start gap-3 w-full rounded-xl ${isActive ? 'bg-primary/15 text-primary hover:bg-primary/25' : 'text-text-secondary hover:text-text-primary'}`
+              })}
             >
               {icon}
               {label}

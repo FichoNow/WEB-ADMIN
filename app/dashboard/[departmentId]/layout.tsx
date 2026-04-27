@@ -11,19 +11,21 @@ export default async function DepartmentLayout({ children, params }: Props) {
   const { departmentId } = await params
 
   let departmentName = 'Departamento'
+  let companyName = 'Empresa'
 
   try {
     const info = await getCompanyInfo()
     const dept = info.departments.find(d => d.id === Number(departmentId))
     if (!dept) redirect('/dashboard')
     departmentName = dept.name
+    companyName = info.company.name
   } catch {
     redirect('/dashboard')
   }
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)]">
-      <Sidebar departmentId={departmentId} departmentName={departmentName} />
+      <Sidebar departmentId={departmentId} departmentName={departmentName} companyName={companyName} />
       <main className="flex-1 bg-bg overflow-auto">
         {children}
       </main>
