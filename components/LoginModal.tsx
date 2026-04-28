@@ -23,14 +23,11 @@ export default function LoginModal({ onClose }: Props) {
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle className="text-3xl font-light tracking-tight text-center flex flex-col items-center gap-1">
-            <span>Ficho<span className="text-primary">Now</span></span>
-            <span className="text-xs font-light tracking-widest text-muted-foreground uppercase mt-1">
-              Panel de administración
-            </span>
+          <DialogTitle className="text-xl font-medium tracking-tight">
+            Iniciar sesión
           </DialogTitle>
-          <DialogDescription className="sr-only">
-            Inicia sesión en tu panel de administración.
+          <DialogDescription className="text-text-secondary text-sm">
+            Accede a tu panel de administración.
           </DialogDescription>
         </DialogHeader>
 

@@ -16,13 +16,13 @@ export default function LandingPage() {
     <div className="min-h-screen bg-bg text-text-primary font-sans selection:bg-primary/30">
       
       <Navbar>
-        <Button onClick={() => setShowLogin(true)}>
+        <Button onClick={() => setShowLogin(true)} className="text-white">
           Gestionar empresa
         </Button>
       </Navbar>
 
       {/* Hero Section (Centered with Abstract UI) */}
-      <section className="pt-24 lg:pt-32 px-6 border-b border-divider bg-surface/30 relative overflow-hidden">
+      <section className="pt-16 lg:pt-24 px-6 border-b border-divider bg-surface/30 relative overflow-hidden">
         {/* Decorative Grid Background */}
         <div className="absolute inset-0 z-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
         {/* Animated Spotlights */}
@@ -56,14 +56,14 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button size="lg" className="w-full sm:w-auto px-8 shadow-[0_0_24px_rgba(var(--primary),0.4)] hover:shadow-[0_0_32px_rgba(var(--primary),0.6)] transition-all">
+            <Button size="lg" className="w-full sm:w-auto px-10 h-11 text-base text-white shadow-[0_0_24px_rgba(var(--primary),0.4)] hover:shadow-[0_0_32px_rgba(var(--primary),0.6)] transition-all">
               Solicitar demostración
             </Button>
             <Button
               variant="outline"
               size="lg"
               onClick={() => setShowRegister(true)}
-              className="w-full sm:w-auto px-8 border-2 hover:bg-primary/5 transition-colors"
+              className="w-full sm:w-auto px-10 h-11 text-base border-2 hover:bg-primary/5 transition-colors"
             >
               Crea tu empresa
             </Button>
