@@ -26,7 +26,7 @@ export default async function DepartmentLayout({ children, params }: Props) {
   return (
     <div className="flex min-h-[calc(100vh-4rem)]">
       <Sidebar departmentId={departmentId} departmentName={departmentName} companyName={companyName} />
-      <main className="flex-1 bg-bg overflow-auto">
+      <main className="flex-1 bg-bg pb-12">
         {children}
       </main>
     </div>

@@ -77,12 +77,13 @@ export default async function DepartmentPage({ params }: { params: Promise<{ dep
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {MODULES.map((mod) => (
           <Link key={mod.key} href={`/dashboard/${departmentId}/${mod.key}`}>
-            <div className="group flex flex-col p-6 rounded-2xl bg-surface border border-divider hover:border-primary/40 hover:bg-surface-variant transition-all duration-200 cursor-pointer h-full">
-              <div className="w-10 h-10 rounded-xl bg-bg border border-divider flex items-center justify-center text-text-secondary group-hover:text-primary group-hover:bg-primary/10 transition-colors duration-200 mb-4">
+            <div className="group relative flex flex-col p-6 rounded-2xl bg-surface border border-divider hover:border-primary/50 hover:bg-surface-variant transition-all duration-300 cursor-pointer h-full hover:-translate-y-1 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative z-10 w-10 h-10 rounded-xl bg-bg border border-divider flex items-center justify-center text-text-secondary group-hover:scale-110 group-hover:text-primary group-hover:bg-primary/10 transition-all duration-300 mb-4">
                 {mod.icon}
               </div>
-              <h3 className="text-base font-semibold text-text-primary mb-1 group-hover:text-primary transition-colors">{mod.title}</h3>
-              <p className="text-sm text-text-secondary">{mod.description}</p>
+              <h3 className="relative z-10 text-base font-semibold text-text-primary mb-1 group-hover:text-primary transition-colors">{mod.title}</h3>
+              <p className="relative z-10 text-sm text-text-secondary">{mod.description}</p>
             </div>
           </Link>
         ))}

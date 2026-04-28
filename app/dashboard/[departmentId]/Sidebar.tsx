@@ -82,7 +82,7 @@ export default function Sidebar({ departmentId, departmentName, companyName }: P
   const base = `/dashboard/${departmentId}`
 
   return (
-    <aside className="w-64 shrink-0 border-r border-divider bg-surface flex flex-col min-h-screen">
+    <aside className="w-64 shrink-0 border-r border-divider bg-surface flex flex-col h-[calc(100vh-4rem)] sticky top-16 z-40 overflow-y-auto">
       {/* Department header */}
       <div className="px-5 py-6 border-b border-divider flex flex-col gap-4">
         <div>
@@ -109,9 +109,12 @@ export default function Sidebar({ departmentId, departmentName, companyName }: P
               href={href}
               className={buttonVariants({
                 variant: isActive ? 'secondary' : 'ghost',
-                className: `justify-start gap-3 w-full rounded-xl ${isActive ? 'bg-primary/15 text-primary hover:bg-primary/25' : 'text-text-secondary hover:text-text-primary'}`
+                className: `relative justify-start gap-3 w-full rounded-xl transition-all duration-200 ${isActive ? 'bg-primary/15 text-primary hover:bg-primary/25' : 'text-text-secondary hover:bg-surface-variant hover:text-text-primary'}`
               })}
             >
+              {isActive && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+              )}
               {icon}
               {label}
             </Link>

@@ -25,11 +25,16 @@ export default function LandingPage() {
       <section className="pt-24 lg:pt-32 px-6 border-b border-divider bg-surface/30 relative overflow-hidden">
         {/* Decorative Grid Background */}
         <div className="absolute inset-0 z-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
-        {/* Animated Spotlight */}
+        {/* Animated Spotlights */}
         <motion.div 
-          animate={{ opacity: [0.03, 0.07, 0.03], scale: [1, 1.05, 1] }} 
+          animate={{ opacity: [0.08, 0.15, 0.08], scale: [1, 1.05, 1] }} 
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-30%] left-1/2 -translate-x-1/2 w-[1200px] h-[800px] bg-primary/30 blur-[200px] rounded-full pointer-events-none z-0" 
+          className="absolute top-[-20%] left-1/4 w-[800px] h-[600px] bg-primary/40 blur-[160px] rounded-full pointer-events-none z-0" 
+        />
+        <motion.div 
+          animate={{ opacity: [0.05, 0.1, 0.05], scale: [1, 1.1, 1] }} 
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute top-[10%] right-1/4 w-[600px] h-[500px] bg-brand-accent/30 blur-[160px] rounded-full pointer-events-none z-0" 
         />
         
         <div className="max-w-4xl mx-auto text-center relative z-10 mb-16">
@@ -51,14 +56,14 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button size="lg" className="w-full sm:w-auto px-8">
+            <Button size="lg" className="w-full sm:w-auto px-8 shadow-[0_0_24px_rgba(var(--primary),0.4)] hover:shadow-[0_0_32px_rgba(var(--primary),0.6)] transition-all">
               Solicitar demostración
             </Button>
             <Button
               variant="outline"
               size="lg"
               onClick={() => setShowRegister(true)}
-              className="w-full sm:w-auto px-8 border-2"
+              className="w-full sm:w-auto px-8 border-2 hover:bg-primary/5 transition-colors"
             >
               Crea tu empresa
             </Button>
@@ -766,27 +771,29 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Feature: Organización */}
-            <div className="card-border rounded-3xl p-8 flex flex-col hover:border-primary/30 transition-colors duration-300">
-              <div className="w-12 h-12 rounded-xl bg-surface border border-divider flex items-center justify-center mb-6">
+            <div className="group card-border rounded-3xl p-8 flex flex-col hover:border-primary/40 transition-all duration-500 hover:-translate-y-1 relative overflow-hidden bg-surface/50 hover:bg-surface">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 w-12 h-12 rounded-xl bg-bg border border-divider flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-300">
                 <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-text-primary mb-3">Organización de plantilla</h3>
-              <p className="text-text-secondary leading-relaxed">
+              <h3 className="relative z-10 text-xl font-bold text-text-primary mb-3">Organización de plantilla</h3>
+              <p className="relative z-10 text-text-secondary leading-relaxed">
                 Cree departamentos, grupos de trabajo y asigne roles específicos para cada mánager de su organización.
               </p>
             </div>
 
             {/* Feature: Cumplimiento */}
-            <div className="card-border rounded-3xl p-8 flex flex-col hover:border-primary/30 transition-colors duration-300">
-              <div className="w-12 h-12 rounded-xl bg-surface border border-divider flex items-center justify-center mb-6">
+            <div className="group card-border rounded-3xl p-8 flex flex-col hover:border-primary/40 transition-all duration-500 hover:-translate-y-1 relative overflow-hidden bg-surface/50 hover:bg-surface">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 w-12 h-12 rounded-xl bg-bg border border-divider flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-300">
                 <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-text-primary mb-3">Cumplimiento normativo</h3>
-              <p className="text-text-secondary leading-relaxed">
+              <h3 className="relative z-10 text-xl font-bold text-text-primary mb-3">Cumplimiento normativo</h3>
+              <p className="relative z-10 text-text-secondary leading-relaxed">
                 Registros inmutables y generación automática de reportes legales listos para cualquier inspección de trabajo.
               </p>
             </div>
