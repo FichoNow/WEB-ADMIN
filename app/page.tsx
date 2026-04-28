@@ -480,36 +480,36 @@ export default function LandingPage() {
                   {/* Days — laborables en azul, 8 y 9 en rojo (ausencia), fines de semana sin círculo */}
                   <div className="grid grid-cols-7 gap-y-1.5 text-center text-xs font-medium">
                     <div></div><div></div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">1</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">2</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">3</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">1</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">2</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">3</div>
                     <div className="w-8 h-8 mx-auto flex items-center justify-center text-text-secondary">4</div>
                     <div className="w-8 h-8 mx-auto flex items-center justify-center text-text-secondary">5</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">6</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">7</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">8</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">9</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">10</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">6</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">7</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">8</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">9</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">10</div>
                     <div className="w-8 h-8 mx-auto flex items-center justify-center text-text-secondary">11</div>
                     <div className="w-8 h-8 mx-auto flex items-center justify-center text-text-secondary">12</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">13</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">14</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">15</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">16</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">17</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">13</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">14</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">15</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">16</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary/20 text-primary flex items-center justify-center">17</div>
                     <div className="w-8 h-8 mx-auto flex items-center justify-center text-text-secondary">18</div>
                     <div className="w-8 h-8 mx-auto flex items-center justify-center text-text-secondary">19</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-error/20 text-error flex items-center justify-center">20</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-error/20 text-error flex items-center justify-center">21</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-error/20 text-error flex items-center justify-center">22</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-primary text-white flex items-center justify-center font-bold shadow-md shadow-primary/30">23</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-success/20 text-success flex items-center justify-center">24</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-error/20 text-error flex items-center justify-center">20</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-error/20 text-error flex items-center justify-center">21</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-error/20 text-error flex items-center justify-center">22</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-primary text-white flex items-center justify-center font-bold shadow-md shadow-primary/30">23</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-success/20 text-success flex items-center justify-center">24</div>
                     <div className="w-8 h-8 mx-auto flex items-center justify-center text-text-secondary">25</div>
                     <div className="w-8 h-8 mx-auto flex items-center justify-center text-text-secondary">26</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-success/20 text-success flex items-center justify-center">27</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-success/20 text-success flex items-center justify-center">28</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-success/20 text-success flex items-center justify-center">29</div>
-                    <div className="w-8 h-8 mx-auto rounded-full bg-success/20 text-success flex items-center justify-center">30</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-success/20 text-success flex items-center justify-center">27</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-success/20 text-success flex items-center justify-center">28</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-success/20 text-success flex items-center justify-center">29</div>
+                    <div className="w-6 h-6 mx-auto rounded-full bg-success/20 text-success flex items-center justify-center">30</div>
                   </div>
 
                   {/* Divider */}
