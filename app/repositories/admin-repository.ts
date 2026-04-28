@@ -1,11 +1,10 @@
 import { fetchWithAuth } from '@/app/lib/api'
-import type { CompanyInfoResponse } from '@/app/types/admin/company-info-response'
-import type { CreateEmployeeBody, UpdateEmployeeBody, EmployeeResponse, EmployeeListItem } from '@/app/types/admin/employee'
-import type {
-  AdminRequestListItem,
-  ReviewRequestBody,
-  ReviewRequestResponse,
-} from '@/app/types/admin/request'
+import type { CompanyInfoResponse } from '@/app/types/admin/api/company-info-response'
+import type { CreateEmployeeBody, UpdateEmployeeBody } from '@/app/types/admin/api/employee-request'
+import type { EmployeeResponse, EmployeeListItem } from '@/app/types/admin/api/employee-response'
+import type { AdminRequestListItem } from '@/app/types/admin/api/admin-request-response'
+import type { ReviewRequestBody } from '@/app/types/admin/api/review-request-body'
+import type { ReviewRequestResponse } from '@/app/types/admin/api/review-request-response'
 
 export async function getCompanyInfo(): Promise<CompanyInfoResponse> {
   const res = await fetchWithAuth('/admin/company-info')

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { getRequests } from "@/app/repositories/admin-repository"
+import type { AdminRequestListItem } from "@/app/types/admin/api/admin-request-response"
 import RequestsClient from "./RequestsClient"
 
 interface Props {
@@ -10,7 +11,7 @@ export default async function RequestsPage({ params }: Props) {
   const { departmentId } = await params
   const deptId = Number(departmentId)
 
-  let requests
+  let requests: AdminRequestListItem[]
 
   try {
     requests = await getRequests(deptId)

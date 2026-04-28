@@ -3,7 +3,7 @@
 import { useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { loginSchema, type LoginFormValues } from '@/app/schemas/auth/login-schema'
+import { loginSchema, type LoginFormValues } from '@/app/types/auth/schemas/login-schema'
 import { login } from '@/app/actions/auth'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'

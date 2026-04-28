@@ -5,11 +5,7 @@ import {
   approveRequest,
   rejectRequest,
 } from "@/app/repositories/admin-repository"
-
-export type RequestActionState =
-  | { success: string }
-  | { error: string }
-  | undefined
+import type { RequestActionState } from "@/app/types/admin/states/request-state"
 
 export async function approveRequestAction(
   departmentId: number,

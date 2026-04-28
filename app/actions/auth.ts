@@ -4,9 +4,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { loginRequest } from "@/app/repositories/auth-repository";
-import { loginSchema } from "@/app/schemas/auth/login-schema";
-import type { LoginResponse } from "@/app/types/auth/login-response";
-import type { LoginState } from "@/app/types/auth/login-state";
+import { loginSchema } from "@/app/types/auth/schemas/login-schema";
+import type { LoginResponse } from "@/app/types/auth/api/login-response";
+import type { LoginState } from "@/app/types/auth/states/login-state";
 
 export async function login(
   _prevState: LoginState,

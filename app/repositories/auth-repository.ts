@@ -1,8 +1,8 @@
 import { fetchPublic } from '@/app/lib/api'
-import type { LoginRequest } from '@/app/types/auth/login-request'
-import type { LoginResponse } from '@/app/types/auth/login-response'
-import type { RegisterRequest } from '@/app/types/auth/register-request'
-import type { RegisterResponse } from '@/app/types/auth/register-response'
+import type { LoginRequest } from '@/app/types/auth/api/login-request'
+import type { LoginResponse } from '@/app/types/auth/api/login-response'
+import type { RegisterRequest } from '@/app/types/auth/api/register-request'
+import type { RegisterResponse } from '@/app/types/auth/api/register-response'
 
 export async function loginRequest(body: LoginRequest): Promise<LoginResponse> {
   const res = await fetchPublic('/auth/login', {

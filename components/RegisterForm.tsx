@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   registerSchema,
   type RegisterFormValues,
-} from "@/app/schemas/auth/register-schema";
+} from "@/app/types/auth/schemas/register-schema";
 import { register } from "@/app/actions/register";
 import {
   Dialog,

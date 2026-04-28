@@ -1,8 +1,8 @@
 "use server";
 
 import { registerRequest } from "@/app/repositories/auth-repository";
-import { registerSchema } from "@/app/schemas/auth/register-schema";
-import type { RegisterState } from "@/app/types/auth/register-state";
+import { registerSchema } from "@/app/types/auth/schemas/register-schema";
+import type { RegisterState } from "@/app/types/auth/states/register-state";
 
 export async function register(
   _prevState: RegisterState,
