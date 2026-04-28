@@ -219,7 +219,21 @@ export default function EmployeesClient({ employees, departmentId }: { employees
 
       {/* Lista de empleados */}
       {employees.length === 0 ? (
-        <p className="text-sm text-text-hint py-8 text-center">No hay empleados en este departamento todavía.</p>
+        <div className="flex flex-col items-center justify-center py-16 px-4 bg-surface/30 border border-dashed border-divider rounded-2xl">
+          <div className="w-12 h-12 rounded-full bg-surface border border-divider flex items-center justify-center text-text-hint mb-4">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <h3 className="text-base font-semibold text-text-primary mb-1">Sin empleados</h3>
+          <p className="text-sm text-text-hint text-center max-w-sm mb-6">Aún no hay ningún empleado registrado en este departamento. Añade el primero para empezar a gestionar los fichajes.</p>
+          <Button onClick={() => setShowCreate(true)} className="gap-2">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Añadir primer empleado
+          </Button>
+        </div>
       ) : (
         <div className="flex flex-col gap-2">
           {employees.map(emp => (
