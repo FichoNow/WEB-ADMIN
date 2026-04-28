@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import LoginModal from '@/components/LoginModal'
-import RegisterModal from '@/components/RegisterModal'
+import LoginForm from '@/components/LoginForm'
+import RegisterForm from '@/components/RegisterForm'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
@@ -805,10 +805,10 @@ export default function LandingPage() {
       <Footer />
 
       {/* Login Modal */}
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+      {showLogin && <LoginForm onClose={() => setShowLogin(false)} />}
 
       {/* Register Modal */}
-      {showRegister && <RegisterModal onClose={() => setShowRegister(false)} />}
+      {showRegister && <RegisterForm onClose={() => setShowRegister(false)} onShowLogin={() => { setShowRegister(false); setShowLogin(true) }} />}
     </div>
   )
 }

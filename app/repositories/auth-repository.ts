@@ -26,10 +26,11 @@ export async function registerRequest(body: RegisterRequest): Promise<RegisterRe
   })
 
   if (!res.ok) {
-    if (res.status === 409) throw new Error('Ya existe un usuario con ese email.')
     const json = await res.json().catch(() => null)
-    const msg = json?.error?.message
-    throw new Error(msg ?? 'Error al crear la empresa. Inténtalo de nuevo.')
+    const code = json?.error?.code
+    if (code === 'EMAIL_ALREADY_EXISTS') throw new Error('Ya existe un usuario con ese email.')
+    if (code === 'CIF_NIF_ALREADY_EXISTS') throw new Error('Ya existe una empresa con ese CIF/NIF.')
+    throw new Error(json?.error?.message ?? 'Error al crear la empresa. Inténtalo de nuevo.')
   }
 
   const json = await res.json()

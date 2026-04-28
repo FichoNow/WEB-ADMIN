@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { loginRequest } from "@/app/repositories/auth-repository";
+import { loginSchema } from "@/app/schemas/auth/login-schema";
 import type { LoginResponse } from "@/app/types/auth/login-response";
 import type { LoginState } from "@/app/types/auth/login-state";
 
@@ -11,12 +12,13 @@ export async function login(
   _prevState: LoginState,
   formData: FormData,
 ): Promise<LoginState> {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const result = loginSchema.safeParse(Object.fromEntries(formData));
 
-  if (!email || !password) {
-    return { error: "Email y contraseña son obligatorios" };
+  if (!result.success) {
+    return { error: result.error.issues[0].message };
   }
+
+  const { email, password } = result.data;
 
   let data: LoginResponse;
 
