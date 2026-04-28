@@ -84,10 +84,6 @@ export default function LandingPage() {
                 <div className="font-bold text-text-primary text-sm ml-4 hidden sm:block">
                   Ficho<span className="text-primary">Now</span>
                 </div>
-                <div className="hidden md:flex items-center gap-2 bg-bg px-3 py-1.5 rounded-lg border border-divider text-text-hint w-64 ml-4">
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                  Buscar empleados o proyectos...
-                </div>
               </div>
               <div className="flex items-center gap-4">
                 <div className="relative">
@@ -127,12 +123,16 @@ export default function LandingPage() {
 
               {/* Main Content Area */}
               <div className="flex-1 bg-bg p-6 md:p-8 flex flex-col gap-6 overflow-hidden">
-                <div className="flex justify-between items-end">
+                <div className="flex justify-between items-end md:items-center">
                   <div>
                     <h1 className="text-xl md:text-2xl font-light text-text-primary tracking-tight">Rendimiento semanal</h1>
                     <p className="text-text-secondary text-[10px] md:text-xs mt-1">Visión general del estado de la plantilla (12 - 18 Abril).</p>
                   </div>
-                  <div className="hidden sm:flex gap-3">
+                  <div className="hidden md:flex gap-3 items-center">
+                    <div className="flex items-center gap-2 bg-bg px-3 py-1.5 rounded-lg border border-divider text-text-hint w-64">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                      Buscar empleados o proyectos...
+                    </div>
                     <div className="px-3 py-1.5 rounded-lg border border-divider bg-surface text-text-primary font-medium flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-success shadow-[0_0_8px_rgba(129,199,132,0.6)]"></span> 142 Online
                     </div>
@@ -628,19 +628,25 @@ export default function LandingPage() {
           >
             <div className="w-full max-w-2xl bg-bg rounded-2xl border border-divider shadow-2xl overflow-hidden shrink-0 flex flex-col text-[10px]">
               {/* Fake Topbar */}
-              <div className="h-12 border-b border-divider flex items-center px-6 justify-between bg-bg shrink-0">
-                <div className="font-bold text-text-primary text-sm">
-                  Ficho<span className="text-primary">Now</span>
+              <div className="h-12 border-b border-divider flex items-center px-4 md:px-6 justify-between bg-surface shrink-0 z-10">
+                <div className="flex items-center gap-6">
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-error/80"></div>
+                    <div className="w-3 h-3 rounded-full bg-warning/80"></div>
+                    <div className="w-3 h-3 rounded-full bg-success/80"></div>
+                  </div>
+                  <div className="font-bold text-text-primary text-sm ml-4 hidden sm:block">
+                    Ficho<span className="text-primary">Now</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-4 text-text-secondary text-xs">
-                  <span className="flex items-center gap-1 cursor-default">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                    <span className="hidden sm:inline">Volver a la web</span>
-                  </span>
-                  <span className="flex items-center gap-1 cursor-default">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-                    <span className="hidden sm:inline">Cerrar sesión</span>
-                  </span>
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <svg className="w-4 h-4 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                    <span className="absolute top-0 right-0 w-1.5 h-1.5 bg-primary rounded-full border border-surface"></span>
+                  </div>
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-primary to-primary-dark flex items-center justify-center text-white font-bold text-[9px] shadow-sm">
+                    JF
+                  </div>
                 </div>
               </div>
 
@@ -651,7 +657,7 @@ export default function LandingPage() {
                   <div className="px-4 py-4 border-b border-divider flex flex-col gap-3">
                     <div>
                       <p className="text-[8px] font-medium tracking-widest text-text-hint uppercase mb-0.5">Empresa</p>
-                      <p className="text-xs font-semibold text-text-primary truncate">Empresa Demo</p>
+                      <p className="text-xs font-semibold text-text-primary truncate">TechCorp S.L.</p>
                     </div>
                     <div>
                       <p className="text-[8px] font-medium tracking-widest text-text-hint uppercase mb-0.5">Departamento</p>

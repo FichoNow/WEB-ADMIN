@@ -6,7 +6,7 @@ function isValidJwt(token: string): boolean {
   return parts.length === 3 && parts.every(p => p.length > 0)
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const token = request.cookies.get('accessToken')?.value
 
   if (!token || !isValidJwt(token)) {
