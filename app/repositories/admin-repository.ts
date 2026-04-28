@@ -1,6 +1,11 @@
 import { fetchWithAuth } from '@/app/lib/api'
 import type { CompanyInfoResponse } from '@/app/types/admin/company-info-response'
 import type { CreateEmployeeBody, UpdateEmployeeBody, EmployeeResponse, EmployeeListItem } from '@/app/types/admin/employee'
+import type {
+  AdminRequestListItem,
+  ReviewRequestBody,
+  ReviewRequestResponse,
+} from '@/app/types/admin/request'
 
 export async function getCompanyInfo(): Promise<CompanyInfoResponse> {
   const res = await fetchWithAuth('/admin/company-info')
@@ -40,4 +45,51 @@ export async function updateEmployee(id: number, body: UpdateEmployeeBody): Prom
   }
   const json = await res.json()
   return json.data as EmployeeResponse
+}
+
+export async function getRequests(departmentId: number): Promise<AdminRequestListItem[]> {
+  const res = await fetchWithAuth(`/admin/requests?departmentId=${departmentId}`)
+
+  if (!res.ok) {
+    throw new Error('No se pudo cargar la lista de solicitudes')
+  }
+
+  const json = await res.json()
+  return json.data as AdminRequestListItem[]
+}
+
+export async function approveRequest(
+  id: number,
+  body: ReviewRequestBody,
+): Promise<ReviewRequestResponse> {
+  const res = await fetchWithAuth(`/admin/requests/${id}/approve`, {
+    method: 'PATCH',
+    body: JSON.stringify(body),
+  })
+
+  if (!res.ok) {
+    const json = await res.json().catch(() => null)
+    throw new Error(json?.error?.message ?? 'Error al aprobar la solicitud')
+  }
+
+  const json = await res.json()
+  return json.data as ReviewRequestResponse
+}
+
+export async function rejectRequest(
+  id: number,
+  body: ReviewRequestBody,
+): Promise<ReviewRequestResponse> {
+  const res = await fetchWithAuth(`/admin/requests/${id}/reject`, {
+    method: 'PATCH',
+    body: JSON.stringify(body),
+  })
+
+  if (!res.ok) {
+    const json = await res.json().catch(() => null)
+    throw new Error(json?.error?.message ?? 'Error al rechazar la solicitud')
+  }
+
+  const json = await res.json()
+  return json.data as ReviewRequestResponse
 }

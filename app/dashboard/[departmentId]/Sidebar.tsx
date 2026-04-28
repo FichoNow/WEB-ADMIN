@@ -93,6 +93,13 @@ export default function Sidebar({ departmentId, departmentName, companyName }: P
           <p className="text-[10px] font-medium tracking-widest text-text-hint uppercase mb-1">Departamento</p>
           <p className="text-sm font-semibold text-text-secondary truncate">{departmentName}</p>
         </div>
+        
+        <Link
+          href="/dashboard"
+          className="text-xs font-medium text-primary hover:text-primary-dark transition-colors"
+        >
+          Cambiar departamento
+        </Link>
       </div>
 
       {/* Nav items */}
