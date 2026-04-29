@@ -17,7 +17,7 @@ interface Props {
   onClose: () => void
 }
 
-export default function ReviewModal({ mode, request, typeName, departmentId, onClose }: Props) {
+export default function ReviewForm({ mode, request, typeName, departmentId, onClose }: Props) {
   const router = useRouter()
   const [comment, setComment] = useState('')
   const [error, setError] = useState('')

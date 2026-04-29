@@ -7,7 +7,7 @@ import type {
 } from "@/app/types/admin/api/admin-request-response";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import ReviewModal from "./ReviewModal";
+import ReviewForm from "./ReviewForm";
 
 const typeLabels: Record<string, string> = {
   VACATION: "Vacaciones",
@@ -186,7 +186,7 @@ export default function RequestsClient({ requests, departmentId }: Props) {
       )}
 
       {review && (
-        <ReviewModal
+        <ReviewForm
           mode={review.mode}
           request={review.request}
           typeName={typeLabels[review.request.type] ?? review.request.type}
@@ -195,5 +195,5 @@ export default function RequestsClient({ requests, departmentId }: Props) {
         />
       )}
     </>
-  );
+  )
 }

@@ -1,23 +1,12 @@
 'use client'
 
-import { useTransition } from 'react'
-import { useForm, useFieldArray } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
-import { createBulkEmployeesAction, updateEmployeeAction } from '@/app/actions/admin/employees'
-import {
-  createEmployeesSchema, editEmployeeSchema,
-  type CreateEmployeesFormValues, type EditEmployeeFormValues,
-} from '@/app/types/admin/schemas/employee-schema'
+import { useState } from 'react'
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import CreateEmployeeForm from './CreateEmployeeForm'
+import EditEmployeeForm from './EditEmployeeForm'
 
 function RoleBadge({ role }: { role: string }) {
   return (
@@ -27,209 +16,12 @@ function RoleBadge({ role }: { role: string }) {
   )
 }
 
-function CreateModal({ departmentId, onClose }: { departmentId: number; onClose: () => void }) {
-  const router = useRouter()
-  const [isPending, startTransition] = useTransition()
-  const form = useForm<CreateEmployeesFormValues>({
-    resolver: zodResolver(createEmployeesSchema),
-    defaultValues: { rows: [{ name: '', email: '', password: '', role: 'USER' }] },
-  })
-  const { fields, append, remove } = useFieldArray({ control: form.control, name: 'rows' })
-  const globalError = form.formState.errors.root?.message
-
-  const onSubmit = (values: CreateEmployeesFormValues) => {
-    startTransition(async () => {
-      const result = await createBulkEmployeesAction(departmentId, values.rows)
-      if (result && 'error' in result) {
-        form.setError('root', { message: result.error })
-        return
-      }
-      router.refresh()
-      onClose()
-    })
-  }
-
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        {globalError && (
-          <Alert variant="destructive">
-            <AlertDescription>{globalError}</AlertDescription>
-          </Alert>
-        )}
-
-        <div className="flex flex-col gap-3 max-h-72 overflow-y-auto pr-1">
-          {fields.map((field, i) => (
-            <div key={field.id} className="grid grid-cols-2 gap-2 p-3 bg-bg rounded-xl border border-divider">
-              <FormField control={form.control} name={`rows.${i}.name`} render={({ field }) => (
-                <FormItem>
-                  <FormControl><Input placeholder="Nombre" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name={`rows.${i}.email`} render={({ field }) => (
-                <FormItem>
-                  <FormControl><Input type="email" placeholder="Email" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name={`rows.${i}.password`} render={({ field }) => (
-                <FormItem>
-                  <FormControl><Input type="password" placeholder="Contraseña" {...field} /></FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <div className="flex gap-2">
-                <FormField control={form.control} name={`rows.${i}.role`} render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger className="w-full bg-surface">
-                          <SelectValue placeholder="Rol" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="USER">Usuario</SelectItem>
-                        <SelectItem value="ADMINISTRATOR">Admin</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )} />
-                {fields.length > 1 && (
-                  <Button type="button" variant="destructive" size="icon" onClick={() => remove(i)} className="shrink-0">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </Button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={() => append({ name: '', email: '', password: '', role: 'USER' })}
-          className="self-start gap-2"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Añadir otro
-        </Button>
-
-        <Button type="submit" disabled={isPending} className="w-full" size="lg">
-          {isPending ? 'Creando...' : fields.length === 1 ? 'Crear empleado' : `Crear ${fields.length} empleados`}
-        </Button>
-      </form>
-    </Form>
-  )
+interface Props {
+  employees: EmployeeListItem[]
+  departmentId: number
 }
 
-function EditModal({ employee, departmentId, onClose }: { employee: EmployeeListItem; departmentId: number; onClose: () => void }) {
-  const router = useRouter()
-  const [isPending, startTransition] = useTransition()
-  const form = useForm<EditEmployeeFormValues>({
-    resolver: zodResolver(editEmployeeSchema),
-    defaultValues: {
-      name:      employee.name,
-      email:     employee.email,
-      password:  '',
-      role:      employee.role,
-      is_active: String(employee.is_active) as 'true' | 'false',
-    },
-  })
-  const globalError = form.formState.errors.root?.message
-
-  const onSubmit = (values: EditEmployeeFormValues) => {
-    startTransition(async () => {
-      const result = await updateEmployeeAction(departmentId, employee.id, values)
-      if (result && 'error' in result) {
-        form.setError('root', { message: result.error })
-        return
-      }
-      router.refresh()
-      onClose()
-    })
-  }
-
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        {globalError && (
-          <Alert variant="destructive">
-            <AlertDescription>{globalError}</AlertDescription>
-          </Alert>
-        )}
-
-        <div className="grid grid-cols-2 gap-3">
-          <FormField control={form.control} name="name" render={({ field }) => (
-            <FormItem className="col-span-2">
-              <FormLabel>Nombre</FormLabel>
-              <FormControl><Input {...field} /></FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="email" render={({ field }) => (
-            <FormItem className="col-span-2">
-              <FormLabel>Email</FormLabel>
-              <FormControl><Input type="email" {...field} /></FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="password" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nueva contraseña <span className="text-text-hint">(opcional)</span></FormLabel>
-              <FormControl><Input type="password" placeholder="Mín. 8 caracteres" {...field} /></FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="role" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Rol</FormLabel>
-              <Select value={field.value} onValueChange={field.onChange}>
-                <FormControl>
-                  <SelectTrigger className="w-full bg-surface">
-                    <SelectValue placeholder="Rol" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="USER">Usuario</SelectItem>
-                  <SelectItem value="ADMINISTRATOR">Administrador</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="is_active" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Estado</FormLabel>
-              <Select value={field.value} onValueChange={field.onChange}>
-                <FormControl>
-                  <SelectTrigger className="w-full bg-surface">
-                    <SelectValue placeholder="Estado" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="true">Activo</SelectItem>
-                  <SelectItem value="false">Inactivo</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )} />
-        </div>
-
-        <Button type="submit" disabled={isPending} className="w-full" size="lg">
-          {isPending ? 'Guardando...' : 'Guardar cambios'}
-        </Button>
-      </form>
-    </Form>
-  )
-}
-
-export default function EmployeesClient({ employees, departmentId }: { employees: EmployeeListItem[]; departmentId: number }) {
+export default function EmployeesClient({ employees, departmentId }: Props) {
   const [showCreate, setShowCreate] = useState(false)
   const [editEmployee, setEditEmployee] = useState<EmployeeListItem | null>(null)
 
@@ -300,33 +92,33 @@ export default function EmployeesClient({ employees, departmentId }: { employees
         </div>
       )}
 
-      {showCreate && (
-        <Dialog open={true} onOpenChange={(open) => !open && setShowCreate(false)}>
-          <DialogContent className="sm:max-w-[600px] bg-surface border-divider">
-            <DialogHeader>
-              <DialogTitle className="text-lg font-semibold text-text-primary">Nuevo empleado</DialogTitle>
-              <DialogDescription className="hidden">Crear empleados</DialogDescription>
-            </DialogHeader>
-            <div className="max-h-[70vh] overflow-y-auto px-1 py-2">
-              <CreateModal departmentId={departmentId} onClose={() => setShowCreate(false)} />
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
+      <Dialog open={showCreate} onOpenChange={(open) => !open && setShowCreate(false)}>
+        <DialogContent className="sm:max-w-[600px] bg-surface border-divider">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-text-primary">Nuevo empleado</DialogTitle>
+            <DialogDescription className="hidden">Crear empleados</DialogDescription>
+          </DialogHeader>
+          <div className="max-h-[70vh] overflow-y-auto px-1 py-2">
+            <CreateEmployeeForm departmentId={departmentId} onClose={() => setShowCreate(false)} />
+          </div>
+        </DialogContent>
+      </Dialog>
 
-      {editEmployee && (
-        <Dialog open={true} onOpenChange={(open) => !open && setEditEmployee(null)}>
-          <DialogContent className="sm:max-w-[600px] bg-surface border-divider">
-            <DialogHeader>
-              <DialogTitle className="text-lg font-semibold text-text-primary">Editar · {editEmployee.name}</DialogTitle>
-              <DialogDescription className="hidden">Editar empleado</DialogDescription>
-            </DialogHeader>
-            <div className="max-h-[70vh] overflow-y-auto px-1 py-2">
-              <EditModal employee={editEmployee} departmentId={departmentId} onClose={() => setEditEmployee(null)} />
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
+      <Dialog open={!!editEmployee} onOpenChange={(open) => !open && setEditEmployee(null)}>
+        <DialogContent className="sm:max-w-[600px] bg-surface border-divider">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold text-text-primary">
+              Editar · {editEmployee?.name}
+            </DialogTitle>
+            <DialogDescription className="hidden">Editar empleado</DialogDescription>
+          </DialogHeader>
+          <div className="max-h-[70vh] overflow-y-auto px-1 py-2">
+            {editEmployee && (
+              <EditEmployeeForm employee={editEmployee} departmentId={departmentId} onClose={() => setEditEmployee(null)} />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
