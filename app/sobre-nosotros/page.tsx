@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import LoginModal from '@/components/LoginModal'
+import LoginModal from '@/components/LoginForm'
 
 export default function SobreNosotros() {
   const [showLogin, setShowLogin] = useState(false)
