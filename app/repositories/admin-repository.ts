@@ -5,6 +5,7 @@ import type { EmployeeResponse, EmployeeListItem } from '@/app/types/admin/api/e
 import type { AdminRequestListItem } from '@/app/types/admin/api/admin-request-response'
 import type { ReviewRequestBody } from '@/app/types/admin/api/review-request-body'
 import type { ReviewRequestResponse } from '@/app/types/admin/api/review-request-response'
+import type { StatsResponse } from '@/app/types/admin/api/stats-response'
 
 export async function getCompanyInfo(): Promise<CompanyInfoResponse> {
   const res = await fetchWithAuth('/admin/company-info')
@@ -91,4 +92,33 @@ export async function rejectRequest(
 
   const json = await res.json()
   return json.data as ReviewRequestResponse
+}
+
+export async function getDepartmentStats(
+  departmentId: number,
+  month?: number,
+  year?: number,
+): Promise<StatsResponse> {
+  const params = new URLSearchParams({ departmentId: String(departmentId) })
+  if (month) params.set('month', String(month))
+  if (year)  params.set('year',  String(year))
+  const res = await fetchWithAuth(`/admin/stats/department?${params}`)
+  if (!res.ok) throw new Error('No se pudieron cargar las estadísticas del departamento')
+  const json = await res.json()
+  return json.data as StatsResponse
+}
+
+export async function getUserStats(
+  departmentId: number,
+  userId: number,
+  month?: number,
+  year?: number,
+): Promise<StatsResponse> {
+  const params = new URLSearchParams({ departmentId: String(departmentId) })
+  if (month) params.set('month', String(month))
+  if (year)  params.set('year',  String(year))
+  const res = await fetchWithAuth(`/admin/stats/user/${userId}?${params}`)
+  if (!res.ok) throw new Error('No se pudieron cargar las estadísticas del empleado')
+  const json = await res.json()
+  return json.data as StatsResponse
 }

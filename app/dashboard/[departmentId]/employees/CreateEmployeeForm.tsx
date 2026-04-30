@@ -75,7 +75,9 @@ export default function CreateEmployeeForm({ departmentId, onClose }: Props) {
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="w-full bg-surface">
-                          <SelectValue placeholder="Rol" />
+                          <SelectValue placeholder="Rol">
+                            {field.value === 'ADMINISTRATOR' ? 'Admin' : field.value === 'USER' ? 'Usuario' : field.value}
+                          </SelectValue>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

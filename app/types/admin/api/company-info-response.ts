@@ -1,5 +1,12 @@
+export interface CompanyInfoDepartment {
+  id: number
+  name: string
+}
+
 export interface CompanyInfoResponse {
-  companyName: string
-  totalEmployees: number
-  totalDepartments: number
+  company: {
+    id: number
+    name: string
+  }
+  departments: CompanyInfoDepartment[]
 }

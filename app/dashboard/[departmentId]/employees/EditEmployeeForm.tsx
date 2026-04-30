@@ -82,7 +82,11 @@ export default function EditEmployeeForm({ employee, departmentId, onClose }: Pr
               <FormLabel>Rol</FormLabel>
               <Select value={field.value} onValueChange={field.onChange}>
                 <FormControl>
-                  <SelectTrigger className="w-full bg-surface"><SelectValue placeholder="Rol" /></SelectTrigger>
+                  <SelectTrigger className="w-full bg-surface">
+                    <SelectValue placeholder="Rol">
+                      {field.value === 'ADMINISTRATOR' ? 'Administrador' : field.value === 'USER' ? 'Usuario' : field.value}
+                    </SelectValue>
+                  </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="USER">Usuario</SelectItem>
@@ -97,7 +101,11 @@ export default function EditEmployeeForm({ employee, departmentId, onClose }: Pr
               <FormLabel>Estado</FormLabel>
               <Select value={field.value} onValueChange={field.onChange}>
                 <FormControl>
-                  <SelectTrigger className="w-full bg-surface"><SelectValue placeholder="Estado" /></SelectTrigger>
+                  <SelectTrigger className="w-full bg-surface">
+                    <SelectValue placeholder="Estado">
+                      {field.value === 'true' ? 'Activo' : field.value === 'false' ? 'Inactivo' : field.value}
+                    </SelectValue>
+                  </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   <SelectItem value="true">Activo</SelectItem>

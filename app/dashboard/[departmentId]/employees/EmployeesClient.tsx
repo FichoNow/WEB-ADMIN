@@ -29,7 +29,6 @@ export default function EmployeesClient({ employees, departmentId }: Props) {
     <>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs font-medium tracking-widest text-primary uppercase">Empleados</p>
           <h1 className="text-3xl font-light tracking-tight text-text-primary">Gestión de empleados</h1>
         </div>
         <Button onClick={() => setShowCreate(true)} className="gap-2 rounded-xl">
