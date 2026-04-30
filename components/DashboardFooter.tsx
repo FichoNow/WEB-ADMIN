@@ -7,9 +7,6 @@ export default function DashboardFooter() {
             <span className="text-xl font-bold tracking-tight text-text-primary">
               Ficho<span className="text-primary">Now</span>
             </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-surface-variant text-[10px] font-medium text-text-secondary border border-divider">
-              Enterprise
-            </span>
           </div>
           <p className="text-sm text-text-secondary max-w-sm mb-6 leading-relaxed">
             La plataforma definitiva para gestionar fichajes, ausencias y horarios de tu equipo. Rápida, intuitiva y cumpliendo con la normativa actual.

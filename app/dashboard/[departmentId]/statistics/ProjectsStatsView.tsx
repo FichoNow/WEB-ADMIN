@@ -20,19 +20,20 @@ interface Props {
 }
 
 function StatCard({
-  title, value, sub, icon, borderColor = 'border-l-primary',
+  title, value, sub, icon, borderColor = 'bg-primary',
 }: {
   title: string; value: string; sub: string; icon: React.ReactNode; borderColor?: string
 }) {
   return (
-    <Card className={`bg-surface border border-divider rounded-2xl ring-0 border-l-4 ${borderColor}`}>
-      <CardHeader className="p-4 pb-2">
+    <Card className="bg-surface border border-divider rounded-2xl ring-0 overflow-hidden relative group hover:bg-surface-variant/40 transition-all duration-300">
+      <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${borderColor.replace('border-l-', 'bg-')} shadow-[0_0_10px_rgba(0,0,0,0.1)]`} />
+      <CardHeader className="p-4 pl-6 pb-2">
         <CardTitle className="flex items-center gap-2 text-xs text-text-hint">
           {icon}
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-0 flex flex-col gap-1">
+      <CardContent className="p-4 pl-6 pt-0 flex flex-col gap-1">
         <div className="text-3xl font-light text-text-primary tabular-nums">{value}</div>
         <p className="text-xs text-text-hint">{sub}</p>
       </CardContent>

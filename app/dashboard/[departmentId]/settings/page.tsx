@@ -14,6 +14,8 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Settings2, CheckCircle2 } from 'lucide-react'
 import { useState } from 'react'
+import PageHeader from '@/components/PageHeader'
+import { motion } from 'framer-motion'
 
 interface Props {
   params: Promise<{ departmentId: string }>
@@ -47,64 +49,83 @@ export default function DepartmentSettingsPage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-8 py-12 flex flex-col gap-8">
-      <div className="flex items-center gap-4">
-        <div className="p-3 bg-primary/10 rounded-2xl border border-primary/20">
-          <Settings2 className="w-6 h-6 text-primary" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-text-primary">Ajustes del departamento</h1>
-          <p className="text-sm text-text-secondary mt-0.5">Configura las opciones de este departamento</p>
-        </div>
-      </div>
+    <div className="flex flex-col gap-10">
+      <PageHeader
+        title="Configuración"
+        description="Administra los parámetros generales y la identidad de este departamento."
+      />
 
-      <Card className="bg-surface/60 border-divider/50 rounded-2xl">
-        <CardHeader className="p-6 border-b border-divider/20">
-          <CardTitle className="text-sm font-black uppercase tracking-widest text-text-hint">Nombre</CardTitle>
-          <CardDescription className="text-sm text-text-secondary">
-            Cambia el nombre visible del departamento
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          {success && (
-            <div className="flex items-center gap-2 p-3 mb-4 rounded-xl bg-success/10 border border-success/20 text-success text-sm font-medium">
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
-              Nombre actualizado correctamente
-            </div>
-          )}
-          {globalError && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertDescription>{globalError}</AlertDescription>
-            </Alert>
-          )}
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nuevo nombre</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Ej: Tecnología"
-                        className="bg-surface border-divider/50"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex justify-end">
-                <Button type="submit" disabled={isPending} className="px-8">
-                  {isPending ? 'Guardando...' : 'Guardar cambios'}
-                </Button>
+      <div className="max-w-3xl">
+        <Card className="bg-surface border border-divider/50 rounded-[2.5rem] overflow-hidden shadow-sm">
+          <CardHeader className="px-8 sm:px-10 py-8 border-b border-divider/50 bg-surface-variant/30">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary border border-primary/10 shadow-inner">
+                <Settings2 className="w-6 h-6" />
               </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+              <div>
+                <CardTitle className="text-xl font-bold text-text-primary">Perfil del Departamento</CardTitle>
+                <CardDescription className="text-sm text-text-secondary mt-1">Información pública y de identificación.</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="px-8 sm:px-10 py-10">
+            {success && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center gap-3 p-4 mb-8 rounded-2xl bg-success/10 border border-success/20 text-success text-sm font-bold shadow-sm"
+              >
+                <CheckCircle2 className="w-5 h-5 shrink-0" />
+                Los cambios se han guardado correctamente
+              </motion.div>
+            )}
+            {globalError && (
+              <Alert variant="destructive" className="mb-8 rounded-2xl shadow-sm">
+                <AlertDescription>{globalError}</AlertDescription>
+              </Alert>
+            )}
+            
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8">
+                <div className="flex flex-col gap-6">
+                  <div className="flex items-center gap-2 border-b border-divider/50 pb-3">
+                    <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-text-hint">Datos Generales</h3>
+                  </div>
+                  
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-bold text-text-secondary ml-1">Nombre del departamento</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Ej: Recursos Humanos"
+                            className="h-14 bg-surface-variant/30 border-divider/50 rounded-2xl px-5 text-base focus-visible:bg-surface focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-inner"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                        <p className="text-[11px] text-text-hint mt-2 ml-1">Este nombre será visible para todos los empleados del departamento.</p>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="pt-8 border-t border-divider/50 flex justify-end">
+                  <Button 
+                    type="submit" 
+                    disabled={isPending} 
+                    className="h-12 w-full sm:w-auto px-10 text-sm font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    {isPending ? 'Procesando cambios...' : 'Guardar cambios'}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

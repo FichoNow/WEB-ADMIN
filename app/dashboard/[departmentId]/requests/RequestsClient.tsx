@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Users } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Users, Calendar, Clock, MessageSquare, CheckCircle2, XCircle, AlertCircle, ChevronRight, Filter } from "lucide-react";
 import type {
   AdminRequestListItem,
   AdminRequestStatus,
@@ -11,6 +12,7 @@ import type { GroupResponse } from "@/app/types/admin/api/group-response";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PageHeader from "@/components/PageHeader";
 import ReviewForm from "./ReviewForm";
 
@@ -22,11 +24,11 @@ const typeLabels: Record<string, string> = {
   DAY_OFF: "Día libre",
 };
 
-const statusLabels: Record<string, string> = {
-  PENDING: "Pendiente",
-  APPROVED: "Aprobada",
-  REJECTED: "Rechazada",
-  CANCELLED: "Cancelada",
+const statusConfig: Record<string, { label: string, icon: any, color: string, bg: string }> = {
+  PENDING: { label: "Pendiente", icon: AlertCircle, color: "text-amber-500", bg: "bg-amber-500/10" },
+  APPROVED: { label: "Aprobada", icon: CheckCircle2, color: "text-success", bg: "bg-success/10" },
+  REJECTED: { label: "Rechazada", icon: XCircle, color: "text-error", bg: "bg-error/10" },
+  CANCELLED: { label: "Cancelada", icon: Clock, color: "text-text-hint", bg: "bg-surface-variant" },
 };
 
 type RequestFilter = "ALL" | AdminRequestStatus;
@@ -36,36 +38,28 @@ const filters: Array<{ value: RequestFilter; label: string }> = [
   { value: "PENDING", label: "Pendientes" },
   { value: "APPROVED", label: "Aprobadas" },
   { value: "REJECTED", label: "Rechazadas" },
-  { value: "CANCELLED", label: "Canceladas" },
 ];
 
 const GROUP_ALL  = "__all__";
 const GROUP_NONE = "__none__";
 
 function StatusBadge({ status }: { status: AdminRequestStatus }) {
-  if (status === "APPROVED")
-    return <Badge className="text-[10px]">Aprobada</Badge>;
-  if (status === "REJECTED")
-    return (
-      <Badge variant="destructive" className="text-[10px]">
-        Rechazada
-      </Badge>
-    );
-  if (status === "CANCELLED")
-    return (
-      <Badge variant="secondary" className="text-[10px]">
-        Cancelada
-      </Badge>
-    );
+  const config = statusConfig[status] || statusConfig.PENDING;
+  const Icon = config.icon;
+
   return (
-    <Badge variant="secondary" className="text-[10px]">
-      Pendiente
+    <Badge 
+      variant="outline" 
+      className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md gap-1.5 border-none ${config.bg} ${config.color}`}
+    >
+      <Icon className="w-3 h-3" />
+      {config.label}
     </Badge>
   );
 }
 
 function formatRange(request: AdminRequestListItem) {
-  const fmt = (d: string) => new Date(d).toLocaleDateString("es-ES");
+  const fmt = (d: string) => new Date(d).toLocaleDateString("es-ES", { day: '2-digit', month: 'short' });
   const start = fmt(request.start_date);
   const end = fmt(request.end_date);
   return request.start_date === request.end_date ? start : `${start} - ${end}`;
@@ -107,120 +101,160 @@ export default function RequestsClient({ requests, employees, groups, department
     });
   }, [requests, statusFilter, groupFilter, groupByUserId]);
 
-  const counts: Record<RequestFilter, number> = {
+  const counts = useMemo(() => ({
     ALL: requests.length,
     PENDING: requests.filter((r) => r.status === "PENDING").length,
     APPROVED: requests.filter((r) => r.status === "APPROVED").length,
     REJECTED: requests.filter((r) => r.status === "REJECTED").length,
     CANCELLED: requests.filter((r) => r.status === "CANCELLED").length,
-  };
+  }), [requests]);
 
   return (
-    <>
+    <div className="flex flex-col gap-8">
       <PageHeader
         title="Solicitudes"
-        description="Revisa y gestiona las peticiones de vacaciones, permisos y bajas del departamento."
+        description="Gestiona las peticiones de vacaciones y permisos. Las solicitudes pendientes requieren tu atención."
       />
 
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex flex-wrap gap-2">
-          {filters.map((f) => (
-            <Button
-              key={f.value}
-              variant={statusFilter === f.value ? "default" : "ghost"}
-              onClick={() => setStatusFilter(f.value)}
-              className="rounded-xl"
-            >
-              {f.label}
-              <span className="ml-2 text-xs opacity-70">{counts[f.value]}</span>
-            </Button>
-          ))}
-        </div>
-
-        <Select value={groupFilter} onValueChange={(v) => setGroupFilter(v ?? GROUP_ALL)}>
-          <SelectTrigger className="w-52 bg-surface">
-            <Users className="w-4 h-4 mr-1 text-primary" />
-            <SelectValue>
-              {groupFilter === GROUP_ALL
-                ? 'Todos los grupos'
-                : groupFilter === GROUP_NONE
-                  ? 'Sin grupo'
-                  : (groups.find((g) => String(g.id) === groupFilter)?.name ?? 'Grupo')}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={GROUP_ALL}>Todos los grupos</SelectItem>
-            <SelectItem value={GROUP_NONE}>Sin grupo</SelectItem>
-            {groups.map((g) => (
-              <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
+      {/* Tabs and Filters */}
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as RequestFilter)} className="w-fit">
+          <TabsList className="bg-surface border border-divider/50 p-1 h-11 rounded-xl">
+            {filters.map((f) => (
+              <TabsTrigger 
+                key={f.value} 
+                value={f.value}
+                className="rounded-lg px-5 text-xs font-bold data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all"
+              >
+                {f.label}
+                {counts[f.value] > 0 && (
+                  <span className={`ml-2 px-1.5 py-0.5 rounded-md text-[10px] ${statusFilter === f.value ? 'bg-primary/20' : 'bg-surface-variant'}`}>
+                    {counts[f.value]}
+                  </span>
+                )}
+              </TabsTrigger>
             ))}
-          </SelectContent>
-        </Select>
+          </TabsList>
+        </Tabs>
+
+        <div className="flex items-center gap-2">
+          <Select value={groupFilter} onValueChange={(v) => setGroupFilter(v ?? GROUP_ALL)}>
+            <SelectTrigger className="w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium">
+              <Filter className="w-3.5 h-3.5 mr-2 text-primary" />
+              <SelectValue placeholder="Todos los grupos" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl border-divider">
+              <SelectItem value={GROUP_ALL} className="text-xs">Todos los grupos</SelectItem>
+              <SelectItem value={GROUP_NONE} className="text-xs">Sin grupo</SelectItem>
+              {groups.map((g) => (
+                <SelectItem key={g.id} value={String(g.id)} className="text-xs">{g.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-sm text-text-hint py-8 text-center">
-          {requests.length === 0
-            ? "No hay solicitudes en este departamento todavía."
-            : "No hay solicitudes con estos filtros."}
-        </p>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex flex-col items-center justify-center py-24 px-4 bg-surface/30 border border-dashed border-divider rounded-[2.5rem]"
+        >
+          <div className="w-16 h-16 rounded-2xl bg-surface border border-divider flex items-center justify-center text-text-hint mb-4">
+            <Calendar className="w-6 h-6 opacity-20" />
+          </div>
+          <p className="text-sm text-text-hint font-medium">
+            No hay solicitudes que coincidan con los filtros actuales.
+          </p>
+        </motion.div>
       ) : (
-        <div className="flex flex-col gap-2">
-          {filtered.map((request) => (
-            <div
-              key={request.id}
-              className="flex items-center justify-between px-5 py-4 rounded-2xl bg-surface border border-divider hover:border-primary/30 transition-colors"
-            >
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium text-text-primary">
-                    {request.employee_name}
-                  </p>
-                  <StatusBadge status={request.status} />
-                </div>
-                <p className="text-xs text-text-hint">
-                  {request.employee_email}
-                </p>
-                <p className="text-sm text-text-secondary">
-                  {typeLabels[request.type] ?? request.type} ·{" "}
-                  {formatRange(request)}
-                  {request.start_time &&
-                    request.end_time &&
-                    ` · ${request.start_time} - ${request.end_time}`}
-                </p>
-                {request.comment && (
-                  <p className="text-xs text-text-secondary">
-                    Comentario: {request.comment}
-                  </p>
-                )}
-                {request.review_comment && (
-                  <p className="text-xs text-text-hint">
-                    Revisión: {request.review_comment}
-                  </p>
-                )}
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <AnimatePresence mode="popLayout">
+            {filtered.map((request) => (
+              <motion.div
+                key={request.id}
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className={`group relative flex items-center justify-between px-6 py-5 rounded-[2rem] bg-surface border transition-all duration-300 ${
+                  request.status === 'PENDING' 
+                    ? 'border-amber-500/30 shadow-[0_8px_30px_rgb(245,158,11,0.05)] hover:bg-amber-500/[0.02]' 
+                    : 'border-divider/50 hover:border-primary/20 hover:bg-surface-variant/30'
+                }`}
+              >
+                <div className="flex items-center gap-6">
+                  {/* Date Badge */}
+                  <div className="flex flex-col items-center justify-center w-16 h-16 rounded-2xl bg-surface-variant/50 border border-divider/50 shrink-0">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-text-hint">
+                      {new Date(request.start_date).toLocaleDateString("es-ES", { month: 'short' })}
+                    </span>
+                    <span className="text-xl font-bold text-text-primary leading-none">
+                      {new Date(request.start_date).getDate()}
+                    </span>
+                  </div>
 
-              {request.status === "PENDING" ? (
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setReview({ request, mode: "reject" })}
-                  >
-                    Rechazar
-                  </Button>
-                  <Button
-                    onClick={() => setReview({ request, mode: "approve" })}
-                  >
-                    Aprobar
-                  </Button>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <h4 className="text-base font-bold text-text-primary group-hover:text-primary transition-colors leading-none">
+                        {request.employee_name}
+                      </h4>
+                      <StatusBadge status={request.status} />
+                      <Badge variant="outline" className="text-[10px] font-bold border-divider/50 text-text-secondary">
+                        {typeLabels[request.type] ?? request.type}
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center gap-4 text-xs text-text-secondary font-medium">
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="w-3.5 h-3.5 text-text-hint" />
+                        {formatRange(request)}
+                      </div>
+                      {request.start_time && (
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5 text-text-hint" />
+                          {request.start_time} - {request.end_time}
+                        </div>
+                      )}
+                    </div>
+
+                    {request.comment && (
+                      <div className="flex items-start gap-1.5 mt-1 bg-surface-variant/30 p-2 rounded-lg border border-divider/20 max-w-md">
+                        <MessageSquare className="w-3 h-3 text-text-hint mt-0.5 shrink-0" />
+                        <p className="text-[11px] text-text-secondary italic">
+                          "{request.comment}"
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <p className="text-xs text-text-hint">
-                  {statusLabels[request.status] ?? request.status}
-                </p>
-              )}
-            </div>
-          ))}
+
+                <div className="flex items-center gap-3">
+                  {request.status === "PENDING" ? (
+                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        variant="ghost"
+                        onClick={() => setReview({ request, mode: "reject" })}
+                        className="rounded-xl h-10 px-4 text-xs font-bold bg-error/10 text-error hover:bg-error hover:text-white transition-colors"
+                      >
+                        Rechazar
+                      </Button>
+                      <Button
+                        onClick={() => setReview({ request, mode: "approve" })}
+                        className="rounded-xl h-10 px-5 text-xs font-bold"
+                      >
+                        Aprobar
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1.5 text-text-hint opacity-50 font-bold text-[10px] uppercase tracking-widest px-3">
+                      Completada
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       )}
 
@@ -233,6 +267,7 @@ export default function RequestsClient({ requests, employees, groups, department
           onClose={() => setReview(null)}
         />
       )}
-    </>
-  )
+    </div>
+  );
 }
+

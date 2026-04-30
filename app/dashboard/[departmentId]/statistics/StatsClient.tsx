@@ -7,12 +7,28 @@ import { Calendar, FileDown, TrendingUp, Zap, Sparkles, LayoutDashboard, UserCir
 import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import PageHeader from '@/components/PageHeader'
 import type {
   UserStatsResponse, ProjectsOverviewResponse,
+  OverviewResponse, RankingResponse, ProjectsPeriodResponse, ActiveNowResponse,
+  HourlyResponse, AbsencesResponse, TopDaysResponse, BreaksResponse,
+  OvertimeYearlyResponse, GroupsResponse
 } from '@/app/types/admin/api/stats-response'
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
-import type { DepartmentStatsBundle } from './page'
+export interface DepartmentStatsBundle {
+  overview:        OverviewResponse
+  ranking:         RankingResponse
+  projectHours:    ProjectsPeriodResponse
+  activeNow:       ActiveNowResponse
+  hourly:          HourlyResponse
+  absences:        AbsencesResponse
+  topDays:         TopDaysResponse
+  breaks:          BreaksResponse
+  overtimeYearly:  OvertimeYearlyResponse
+  groups:          GroupsResponse
+}
 import { MONTH_LABELS, minutesToHours, buildChartData, calcTrend } from './stats-utils'
 import { exportStatsCsv, exportProjectsCsv } from './export-utils'
 import { generateInsights } from './insights-utils'
@@ -29,7 +45,7 @@ interface Props {
   departmentId: number
 }
 
-function MetricCard({ title, value, description, icon, trend, borderColor = 'border-l-primary' }: {
+function MetricCard({ title, value, description, icon, trend, borderColor = 'border-l-primary', highlight = false, delay = 0 }: {
   title: string
   value: string
   description: string
@@ -40,26 +56,38 @@ function MetricCard({ title, value, description, icon, trend, borderColor = 'bor
   delay?: number
 }) {
   return (
-    <Card className={`bg-surface border border-divider rounded-2xl ring-0 border-l-4 ${borderColor} h-full`}>
-      <CardContent className="p-4 flex flex-col justify-between gap-2 h-full">
-        <div className="flex items-center gap-2 text-xs text-text-hint">
-          {icon}
-          <span>{title}</span>
-        </div>
-        <div className="text-2xl font-light text-text-primary tabular-nums leading-none">{value}</div>
-        <div className="flex items-center gap-2">
-          {trend !== undefined && trend !== 0 && (
-            <div className={`flex items-center gap-0.5 text-xs ${trend > 0 ? 'text-success' : 'text-error'}`}>
-              {trend > 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-              {Math.abs(trend)}%
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: delay * 0.1 }}
+      className="h-full"
+    >
+      <Card className="bg-surface/50 backdrop-blur-sm border border-divider/50 rounded-[2rem] ring-0 h-full hover:shadow-lg hover:bg-surface transition-all duration-300 group relative overflow-hidden">
+        <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${borderColor.replace('border-l-', 'bg-')} shadow-[0_0_10px_rgba(0,0,0,0.1)]`} />
+        <CardContent className="p-6 pl-8 flex flex-col justify-between gap-4 h-full">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-text-hint opacity-70 group-hover:opacity-100 transition-opacity">
+              {icon}
+              <span>{title}</span>
             </div>
-          )}
-          <p className="text-xs text-text-hint">{description}</p>
-        </div>
-      </CardContent>
-    </Card>
+            {trend !== undefined && trend !== 0 && (
+              <div className={`flex items-center gap-0.5 px-2 py-1 rounded-full text-[10px] font-bold ${trend > 0 ? 'bg-success/10 text-success' : 'bg-error/10 text-error'}`}>
+                {trend > 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                {Math.abs(trend)}%
+              </div>
+            )}
+          </div>
+          
+          <div className="flex flex-col gap-1">
+            <div className="text-3xl font-light text-text-primary tabular-nums tracking-tight">{value}</div>
+            <p className="text-xs text-text-hint font-medium opacity-80">{description}</p>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   )
 }
+
 
 export default function StatsClient({ bundle, userStats, employees, projectsOverview, currentUserId, departmentId }: Props) {
   const router       = useRouter()
@@ -67,11 +95,16 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
   const searchParams = useSearchParams()
   const [tab, setTab] = useState<'general' | 'individual' | 'proyectos'>(currentUserId ? 'individual' : 'general')
 
+  if (!bundle?.overview) {
+    return <div className="flex items-center justify-center h-64 text-text-hint">No hay datos disponibles para este período.</div>
+  }
+
   const overview = bundle.overview
   const currentMonth = Number(searchParams.get('month')) || (new Date().getMonth() + 1)
   const currentYear  = Number(searchParams.get('year'))  || new Date().getFullYear()
   const isWeekly     = overview.period_label === 'Esta Semana'
   const currentGroupId = searchParams.get('groupId') ? Number(searchParams.get('groupId')) : undefined
+  const isProjectsTab = tab === 'proyectos'
   const isIndividualTab = tab === 'individual'
   const selectedUser = employees.find((e) => e.id === currentUserId)
   const [insightsOpen, setInsightsOpen] = useState(false)
@@ -134,10 +167,8 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
     exportStatsCsv(bundle.ranking, json.data, overview.period_label)
   }
 
-  const isProjectsTab = tab === 'proyectos'
-
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
 
       <PageHeader
         title={isProjectsTab ? 'Estadísticas de proyectos' : 'Estadísticas'}
@@ -156,37 +187,35 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
 
       {/* Tabs + filtros */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-1 p-1 bg-surface border border-divider rounded-xl w-fit">
-          {(
-            [
-              { key: 'general',    label: 'Vista general', Icon: LayoutDashboard },
-              { key: 'individual', label: 'Individual',    Icon: UserCircle2 },
-              { key: 'proyectos',  label: 'Proyectos',     Icon: Folder },
-            ] as const
-          ).map(({ key, label, Icon }) => (
-            <button
-              key={key}
-              onClick={() => {
-                setTab(key)
-                if (key !== 'individual') updateQuery({ userId: null })
-              }}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm transition-colors ${
-                tab === key
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-text-hint hover:text-text-secondary hover:bg-surface-variant/30'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              <span>{label}</span>
-            </button>
-          ))}
-        </div>
+        <Tabs value={tab} onValueChange={(v) => {
+          setTab(v as any)
+          if (v !== 'individual') updateQuery({ userId: null })
+        }} className="w-fit">
+          <TabsList className="bg-surface border border-divider/50 p-1 h-11 rounded-xl">
+            {(
+              [
+                { key: 'general',    label: 'Vista general', Icon: LayoutDashboard },
+                { key: 'individual', label: 'Individual',    Icon: UserCircle2 },
+                { key: 'proyectos',  label: 'Proyectos',     Icon: Folder },
+              ] as const
+            ).map(({ key, label, Icon }) => (
+              <TabsTrigger
+                key={key}
+                value={key}
+                className="rounded-lg px-5 text-xs font-bold transition-all data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+              >
+                <Icon className="w-4 h-4 mr-2" />
+                <span>{label}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
 
         {!isProjectsTab && (
           <div className="flex items-center gap-2 flex-wrap">
             <Select value={isWeekly ? 'current' : String(currentMonth)} onValueChange={(v) => handleMonthChange(v ?? 'current')}>
-              <SelectTrigger className="w-44 bg-surface">
-                <Calendar className="w-4 h-4 mr-1 text-primary" />
+              <SelectTrigger className="w-44 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium">
+                <Calendar className="w-4 h-4 mr-2 text-primary" />
                 <SelectValue>{isWeekly ? 'Esta semana' : MONTH_LABELS[currentMonth - 1]}</SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -197,8 +226,8 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
               </SelectContent>
             </Select>
             <Select value={currentGroupId ? String(currentGroupId) : 'all'} onValueChange={(v) => handleGroupChange(v ?? 'all')}>
-              <SelectTrigger className="w-52 bg-surface">
-                <Users className="w-4 h-4 mr-1 text-primary" />
+              <SelectTrigger className="w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium">
+                <Users className="w-4 h-4 mr-2 text-primary" />
                 <SelectValue placeholder="Todos los grupos">
                   {currentGroupId
                     ? bundle.groups.groups.find((g) => g.id === currentGroupId)?.name ?? 'Todos los grupos'
@@ -214,8 +243,8 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
             </Select>
             {isIndividualTab && (
               <Select value={currentUserId ? String(currentUserId) : 'all'} onValueChange={(v) => handleUserChange(v ?? 'all')}>
-                <SelectTrigger className="w-48 bg-surface">
-                  <UserCircle2 className="w-4 h-4 mr-1 text-primary" />
+                <SelectTrigger className="w-48 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium">
+                  <UserCircle2 className="w-4 h-4 mr-2 text-primary" />
                   <SelectValue placeholder="Selecciona empleado">
                     {selectedUser?.name ?? 'Selecciona empleado'}
                   </SelectValue>
@@ -263,36 +292,64 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
             />
           </div>
 
-          {/* IA Insights — collapsible */}
-          <Card className="bg-surface border border-divider rounded-2xl ring-0 border-l-4 border-l-primary">
+          <Card className="bg-surface/40 backdrop-blur-md border border-divider/50 rounded-[2.5rem] ring-0 overflow-hidden group hover:bg-surface/60 transition-all duration-300 relative">
+            <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-primary shadow-[0_0_10px_rgba(0,0,0,0.1)]" />
             <button
               type="button"
               onClick={() => setInsightsOpen((o) => !o)}
-              className="w-full flex items-center justify-between gap-2 p-5 text-left hover:bg-surface-variant/20 transition-colors rounded-2xl"
+              className="w-full flex items-center justify-between gap-4 p-6 text-left transition-colors"
               aria-expanded={insightsOpen}
             >
-              <div className="flex items-center gap-2 text-sm text-primary">
-                <Sparkles className="w-4 h-4" />
-                <span className="font-medium">Insights del período</span>
-                <span className="text-xs text-text-hint font-normal">· {insights.length} análisis</span>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-text-primary">Análisis Inteligente</span>
+                    <Badge variant="outline" className="text-[10px] bg-primary/5 text-primary border-primary/20">AI Beta</Badge>
+                  </div>
+                  <span className="text-[11px] text-text-hint font-medium uppercase tracking-wider mt-0.5">
+                    {insights.length} hallazgos clave en el período
+                  </span>
+                </div>
               </div>
-              <ChevronDown
-                className={`w-4 h-4 text-text-hint transition-transform ${insightsOpen ? 'rotate-180' : ''}`}
-              />
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-surface border border-divider/50 transition-all ${insightsOpen ? 'rotate-180 bg-primary/10 text-primary border-primary/20' : 'text-text-hint'}`}>
+                <ChevronDown className="w-4 h-4" />
+              </div>
             </button>
-            {insightsOpen && (
-              <div className="px-5 pb-5 -mt-1">
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
-                  {insights.map((insight, i) => (
-                    <li key={i} className="flex items-start gap-2 text-xs text-text-secondary leading-relaxed">
-                      <div className="w-1 h-1 rounded-full bg-primary shrink-0 mt-1.5" />
-                      <span>{insight}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <AnimatePresence>
+              {insightsOpen && (
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-8 pb-8 pt-2">
+                    <div className="h-px bg-divider/30 mb-6" />
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+                      {insights.map((insight, i) => (
+                        <motion.li 
+                          key={i}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.05 }}
+                          className="flex items-start gap-3 group/item"
+                        >
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0 group-hover/item:scale-150 transition-transform" />
+                          <span className="text-xs text-text-secondary leading-relaxed font-medium">
+                            {insight}
+                          </span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Card>
+
         </>
       )}
 

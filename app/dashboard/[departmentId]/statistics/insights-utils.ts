@@ -19,8 +19,13 @@ export function generateInsights(input: InsightsInput): string[] {
   const { overview, ranking, breaks, overtimeYearly, projectHours, activeNow } = input
   const out: string[] = []
 
-  const overLimit = overtimeYearly.entries.filter((o) => o.overtime_minutes >= LEGAL_OVERTIME_LIMIT_MINUTES)
-  const nearLimit = overtimeYearly.entries.filter((o) => o.pct_of_limit >= 75 && o.pct_of_limit < 100)
+  if (!overview || !ranking || !breaks || !overtimeYearly || !projectHours || !activeNow) {
+    return []
+  }
+
+  const entries = overtimeYearly.entries || []
+  const overLimit = entries.filter((o) => o.overtime_minutes >= LEGAL_OVERTIME_LIMIT_MINUTES)
+  const nearLimit = entries.filter((o) => o.pct_of_limit >= 75 && o.pct_of_limit < 100)
   if (overLimit.length > 0) {
     out.push(`⚠ ${overLimit.length} empleado${overLimit.length > 1 ? 's' : ''} ha${overLimit.length > 1 ? 'n' : ''} superado el límite legal de 80h extras/año (RD 8/2019).`)
   } else if (nearLimit.length > 0) {

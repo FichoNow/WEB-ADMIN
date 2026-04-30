@@ -11,6 +11,8 @@ import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
+import { Lock, Mail, LogIn } from 'lucide-react'
+
 interface Props {
   onClose: () => void
 }
@@ -39,55 +41,70 @@ export default function LoginForm({ onClose }: Props) {
 
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-medium tracking-tight">
-            Iniciar sesión
-          </DialogTitle>
-          <DialogDescription className="text-text-secondary text-sm">
-            Accede a tu panel de administración.
-          </DialogDescription>
+      <DialogContent className="sm:max-w-[440px] bg-surface border-divider rounded-[2.5rem] p-0 overflow-hidden flex flex-col">
+        <DialogHeader className="px-10 pt-8 pb-6 border-b border-divider/50">
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col">
+              <DialogTitle className="text-2xl font-bold tracking-tight text-text-primary">
+                ¡Bienvenido!
+              </DialogTitle>
+              <DialogDescription className="text-sm text-text-secondary">
+                Inicia sesión para gestionar tu empresa.
+              </DialogDescription>
+            </div>
+          </div>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4 mt-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="px-10 pt-6 pb-8 flex flex-col gap-8">
             {globalError && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" className="rounded-xl">
                 <AlertDescription>{globalError}</AlertDescription>
               </Alert>
             )}
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="tucorreo@ejemplo.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex flex-col gap-5">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2"><Mail className="w-4 h-4 opacity-50" /> Email corporativo</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="tucorreo@empresa.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contraseña</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2"><Lock className="w-4 h-4 opacity-50" /> Contraseña</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="••••••••" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-            <Button type="submit" disabled={isPending} className="mt-2 w-full">
-              {isPending ? 'Iniciando sesión...' : 'Iniciar sesión'}
-            </Button>
+            <div className="pt-2 flex flex-col gap-4">
+              <Button 
+                type="submit" 
+                disabled={isPending} 
+                className="w-full h-12 text-base font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {isPending ? 'Validando credenciales...' : 'Entrar en el panel'}
+              </Button>
+              <Button type="button" variant="ghost" onClick={onClose} className="text-xs text-text-hint hover:text-text-primary">
+                ¿Has olvidado tu contraseña?
+              </Button>
+            </div>
           </form>
         </Form>
       </DialogContent>

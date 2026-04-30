@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { motion } from 'framer-motion'
+import { buttonVariants } from '@/components/ui/button'
 
 const SECTIONS = [
   {
@@ -67,35 +69,14 @@ interface Props {
   isSuperAdmin: boolean
 }
 
-import { buttonVariants } from '@/components/ui/button'
-
 export default function Sidebar({ departmentId, departmentName, companyName, isSuperAdmin }: Props) {
   const pathname = usePathname()
   const base = `/dashboard/${departmentId}`
 
   return (
     <aside className="w-64 shrink-0 border-r border-divider bg-surface flex flex-col h-[calc(100vh-4rem)] sticky top-16 z-40 overflow-y-auto">
-      {/* Department header */}
-      <div className="px-5 py-6 border-b border-divider flex flex-col gap-4">
-        <div>
-          <p className="text-[10px] font-medium tracking-widest text-text-hint uppercase mb-1">Empresa</p>
-          <p className="text-sm font-semibold text-text-primary truncate">{companyName}</p>
-        </div>
-        <div>
-          <p className="text-[10px] font-medium tracking-widest text-text-hint uppercase mb-1">Departamento</p>
-          <p className="text-sm font-semibold text-text-secondary truncate">{departmentName}</p>
-        </div>
-        
-        <Link
-          href="/dashboard"
-          className="text-xs font-medium text-primary hover:text-primary-dark transition-colors"
-        >
-          Cambiar departamento
-        </Link>
-      </div>
-
       {/* Nav items */}
-      <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
+      <nav className="flex-1 px-3 py-6 flex flex-col gap-1">
         {SECTIONS.map(({ key, label, icon }) => {
           const href = key ? `${base}/${key}` : base
           const isActive = key
@@ -107,22 +88,47 @@ export default function Sidebar({ departmentId, departmentName, companyName, isS
               key={key}
               href={href}
               className={buttonVariants({
-                variant: isActive ? 'secondary' : 'ghost',
-                className: `relative justify-start gap-3 w-full rounded-xl transition-all duration-200 ${isActive ? 'bg-primary/15 text-primary hover:bg-primary/25' : 'text-text-secondary hover:bg-surface-variant hover:text-text-primary'}`
+                variant: 'ghost',
+                className: `group relative justify-start gap-3 w-full rounded-xl transition-all duration-300 ${
+                  isActive 
+                    ? 'text-primary font-semibold' 
+                    : 'text-text-secondary hover:bg-surface-variant hover:text-text-primary'
+                }`
               })}
             >
               {isActive && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+                <motion.div
+                  layoutId="sidebar-active"
+                  className="absolute inset-0 bg-primary/10 rounded-xl"
+                  initial={false}
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
               )}
-              {icon}
-              {label}
+              {isActive && (
+                <motion.div
+                  layoutId="sidebar-active-line"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full"
+                  initial={false}
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
+              <span className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-primary' : 'group-hover:text-primary'}`}>
+                {icon}
+              </span>
+              <span className="relative z-10">{label}</span>
             </Link>
           )
         })}
 
+      </nav>
+
+      <div className="h-px bg-divider/50 mx-5" />
+
+      {/* Department footer */}
+      <div className="px-5 py-6 flex flex-col gap-5 mt-auto">
         {isSuperAdmin && (
-          <>
-            <div className="h-px bg-divider/50 my-2 mx-1" />
+          <div className="flex flex-col gap-1 -mt-2">
+            <p className="px-1 pb-2 text-[10px] font-bold tracking-widest text-text-hint uppercase opacity-50">Configuración</p>
             {(() => {
               const href = `${base}/settings`
               const isActive = pathname.startsWith(href)
@@ -130,24 +136,65 @@ export default function Sidebar({ departmentId, departmentName, companyName, isS
                 <Link
                   href={href}
                   className={buttonVariants({
-                    variant: isActive ? 'secondary' : 'ghost',
-                    className: `relative justify-start gap-3 w-full rounded-xl transition-all duration-200 ${isActive ? 'bg-primary/15 text-primary hover:bg-primary/25' : 'text-text-secondary hover:bg-surface-variant hover:text-text-primary'}`
+                    variant: 'ghost',
+                    className: `group relative justify-start gap-3 w-full rounded-xl transition-all duration-300 px-3 ${
+                      isActive 
+                        ? 'text-primary font-semibold' 
+                        : 'text-text-secondary hover:bg-surface-variant hover:text-text-primary'
+                    }`
                   })}
                 >
                   {isActive && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+                    <motion.div
+                      layoutId="sidebar-active"
+                      className="absolute inset-0 bg-primary/10 rounded-xl"
+                      initial={false}
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
                   )}
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  Ajustes
+                  {isActive && (
+                    <motion.div
+                      layoutId="sidebar-active-line"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full"
+                      initial={false}
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                  <span className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-primary' : 'group-hover:text-primary'}`}>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </span>
+                  <span className="relative z-10">Ajustes</span>
                 </Link>
               )
             })()}
-          </>
+          </div>
         )}
-      </nav>
+
+        <div className="p-4 rounded-2xl bg-surface-variant/40 border border-divider/50 space-y-3">
+          <div>
+            <p className="text-[10px] font-bold tracking-[0.15em] text-text-hint uppercase mb-1 opacity-60">Empresa</p>
+            <p className="text-sm font-bold text-text-primary truncate">{companyName}</p>
+          </div>
+          <div className="h-px bg-divider/30" />
+          <div>
+            <p className="text-[10px] font-bold tracking-[0.15em] text-text-hint uppercase mb-1 opacity-60">Departamento</p>
+            <p className="text-sm font-semibold text-text-secondary truncate">{departmentName}</p>
+          </div>
+        </div>
+        
+        <Link
+          href="/dashboard"
+          className="text-xs font-semibold text-primary hover:text-primary-dark transition-colors px-1 flex items-center gap-1.5"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+          </svg>
+          Cambiar departamento
+        </Link>
+      </div>
     </aside>
   )
 }

@@ -1,82 +1,119 @@
+'use client'
+
 import Link from 'next/link'
-import PageHeader from '@/components/PageHeader'
+import { motion } from 'framer-motion'
+import { Sparkles, Users, Folder, Calendar, Clock, BarChart3, ChevronRight } from 'lucide-react'
 
 const MODULES = [
   {
     key: 'employees',
     title: 'Empleados',
     description: 'Gestiona la plantilla, altas y bajas del equipo.',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-      </svg>
-    ),
+    icon: <Users className="w-5 h-5" />,
+    color: 'from-blue-500/20 to-indigo-500/20',
+    iconColor: 'text-blue-500',
   },
   {
     key: 'projects',
     title: 'Proyectos',
     description: 'Administra proyectos y la imputación de horas.',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-      </svg>
-    ),
+    icon: <Folder className="w-5 h-5" />,
+    color: 'from-emerald-500/20 to-teal-500/20',
+    iconColor: 'text-emerald-500',
   },
   {
     key: 'requests',
     title: 'Solicitudes',
     description: 'Aprueba vacaciones y ausencias del personal.',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-    ),
+    icon: <Calendar className="w-5 h-5" />,
+    color: 'from-amber-500/20 to-orange-500/20',
+    iconColor: 'text-amber-500',
   },
   {
     key: 'horarios',
     title: 'Horarios',
     description: 'Configura horarios y turnos de trabajo.',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z M4.22 4.22l15.56 15.56" />
-      </svg>
-    ),
+    icon: <Clock className="w-5 h-5" />,
+    color: 'from-purple-500/20 to-pink-500/20',
+    iconColor: 'text-purple-500',
   },
   {
     key: 'statistics',
     title: 'Estadísticas',
     description: 'Analiza datos y métricas de rendimiento del equipo.',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-      </svg>
-    ),
+    icon: <BarChart3 className="w-5 h-5" />,
+    color: 'from-rose-500/20 to-red-500/20',
+    iconColor: 'text-rose-500',
   },
 ]
 
-export default async function DepartmentPage({ params }: { params: Promise<{ departmentId: string }> }) {
-  const departmentId = (await params).departmentId;
+import { use } from 'react'
+
+export default function DepartmentPage({ params }: { params: Promise<{ departmentId: string }> }) {
+  const { departmentId } = use(params);
 
   return (
-    <div className="px-10 py-12 flex flex-col gap-6">
-      <PageHeader
-        title="Vista general"
-        description="Selecciona un módulo para gestionar tu departamento."
-      />
+    <div className="px-10 py-12 flex flex-col gap-12 max-w-7xl mx-auto w-full">
+      {/* Header Section */}
+      <header className="relative flex flex-col gap-2">
+        <motion.h1 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-4xl font-light tracking-tight text-text-primary"
+        >
+          ¡Bienvenido de nuevo!
+        </motion.h1>
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-text-secondary max-w-lg font-medium"
+        >
+          Selecciona un módulo para gestionar tu departamento y mantente al día con el rendimiento de tu equipo.
+        </motion.p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {MODULES.map((mod) => (
-          <Link key={mod.key} href={`/dashboard/${departmentId}/${mod.key}`}>
-            <div className="group relative flex flex-col p-6 rounded-2xl bg-surface border border-divider border-l-4 border-l-transparent hover:border-l-primary hover:border-primary/30 hover:bg-surface-variant transition-all duration-300 cursor-pointer h-full hover:-translate-y-1 overflow-hidden">
-              <div className="relative z-10 text-text-secondary group-hover:text-primary transition-colors duration-300 mb-5">
-                {mod.icon}
+        {/* Decorative background element */}
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 blur-[120px] rounded-full -z-10" />
+      </header>
+
+      {/* Modules Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {MODULES.map((mod, i) => (
+          <motion.div
+            key={mod.key}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 * (i + 1) }}
+          >
+            <Link href={`/dashboard/${departmentId}/${mod.key}`} className="block h-full">
+              <div className="relative flex flex-col p-8 rounded-[2rem] bg-surface border border-divider/50 hover:border-primary/20 hover:bg-surface-variant/40 transition-all duration-300 cursor-pointer h-full hover:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.1)] overflow-hidden group">
+                
+                {/* Left side highlight border */}
+                <div className={`absolute left-0 top-0 bottom-0 w-0 group-hover:w-1.5 transition-all duration-300 ${mod.iconColor.replace('text-', 'bg-')} shadow-[0_0_20px_rgba(0,0,0,0.1)]`} />
+
+                <div className="flex items-center gap-4 mb-4">
+                  <div className={`transition-all duration-300 group-hover:scale-125 ${mod.iconColor}`}>
+                    {mod.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-text-primary group-hover:text-primary transition-colors">
+                    {mod.title}
+                  </h3>
+                </div>
+
+                <p className="text-sm text-text-secondary leading-relaxed opacity-80 font-medium">
+                  {mod.description}
+                </p>
+
+                <div className="mt-auto pt-8 flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
+                  Acceder
+                  <ChevronRight className="w-3 h-3" />
+                </div>
               </div>
-              <h3 className="relative z-10 text-base font-semibold text-text-primary mb-1 group-hover:text-primary transition-colors">{mod.title}</h3>
-              <p className="relative z-10 text-sm text-text-secondary">{mod.description}</p>
-            </div>
-          </Link>
+            </Link>
+          </motion.div>
         ))}
       </div>
     </div>
   )
 }
+

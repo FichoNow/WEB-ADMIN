@@ -26,10 +26,10 @@ interface Props {
 }
 
 const accentBorder: Record<string, string> = {
-  primary: 'border-l-primary',
-  success: 'border-l-success',
-  warning: 'border-l-warning',
-  error:   'border-l-error',
+  primary: 'bg-primary',
+  success: 'bg-success',
+  warning: 'bg-warning',
+  error:   'bg-error',
 }
 
 export default function UserStatsView({ userStats, employees, currentUserId, chartData, departmentId, month, year }: Props) {
@@ -103,8 +103,9 @@ export default function UserStatsView({ userStats, employees, currentUserId, cha
               { label: 'Horas extra',   icon: <Award className="w-4 h-4 text-warning" />,  value: minutesToHours(userStats.overtime_minutes), trend: calcTrend(userStats.overtime_minutes, prevOT),    color: 'warning' },
               { label: 'Ausencias',     icon: <Calendar className="w-4 h-4 text-error" />, value: String(userStats.active_absences),          trend: undefined,                                         color: 'error' },
             ].map((kpi, i) => (
-              <Card key={i} className={`bg-surface border border-divider rounded-2xl ring-0 border-l-4 ${accentBorder[kpi.color]}`}>
-                <CardContent className="p-4 flex flex-col gap-1">
+              <Card key={i} className="bg-surface border border-divider rounded-2xl ring-0 overflow-hidden relative group hover:bg-surface-variant/40 transition-all duration-300">
+                <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${accentBorder[kpi.color]} shadow-[0_0_10px_rgba(0,0,0,0.1)]`} />
+                <CardContent className="p-4 pl-6 flex flex-col gap-1">
                   <div className="flex items-center gap-2">
                     {kpi.icon}
                     <span className="text-xs text-text-hint">{kpi.label}</span>

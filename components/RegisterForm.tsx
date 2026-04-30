@@ -119,9 +119,7 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                 {/* Sección empresa */}
                 <div className="flex flex-col gap-5">
                   <div className="flex items-center gap-2 border-b pb-2">
-                    <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
-                      <Building2 className="w-4 h-4 text-primary" />
-                    </div>
+                    <Building2 className="w-5 h-5 text-primary shrink-0" />
                     <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                       Datos de la empresa
                     </h3>
@@ -219,9 +217,7 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                 {/* Sección administrador */}
                 <div className="flex flex-col gap-5">
                   <div className="flex items-center gap-2 border-b pb-2">
-                    <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
-                      <User className="w-4 h-4 text-primary" />
-                    </div>
+                    <User className="w-5 h-5 text-primary shrink-0" />
                     <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                       Datos del administrador
                     </h3>

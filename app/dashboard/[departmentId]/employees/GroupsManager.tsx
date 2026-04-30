@@ -19,6 +19,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
+import { Trash2, Edit3, Plus, X, Check, Users } from 'lucide-react'
+
 interface Props {
   departmentId: number
   groups: GroupResponse[]
@@ -37,7 +39,7 @@ export default function GroupsManager({ departmentId, groups }: Props) {
   const handleCreate = () => {
     setError(null)
     if (!newName.trim()) {
-      setError('Nombre obligatorio')
+      setError('El nombre del grupo es obligatorio')
       return
     }
     startTransition(async () => {
@@ -54,7 +56,7 @@ export default function GroupsManager({ departmentId, groups }: Props) {
   const handleSaveEdit = (id: number) => {
     setError(null)
     if (!editingName.trim()) {
-      setError('Nombre obligatorio')
+      setError('El nombre no puede estar vacío')
       return
     }
     startTransition(async () => {
@@ -84,123 +86,131 @@ export default function GroupsManager({ departmentId, groups }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       {error && (
-        <Alert variant="destructive">
+        <Alert variant="destructive" className="rounded-xl">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
-      <div className="flex gap-2">
-        <Input
-          placeholder="Nombre del nuevo grupo"
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-          disabled={isPending}
-        />
-        <Button onClick={handleCreate} disabled={isPending} className="shrink-0">
-          {isPending ? 'Creando...' : 'Crear'}
-        </Button>
+      <div className="flex flex-col gap-3">
+        <label className="text-[10px] font-bold uppercase tracking-widest text-text-hint ml-1">Nuevo grupo</label>
+        <div className="flex gap-2">
+          <Input
+            placeholder="Ej. Marketing, IT, Ventas..."
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            disabled={isPending}
+          />
+          <Button onClick={handleCreate} disabled={isPending} className="shrink-0 h-11 px-6 rounded-xl">
+            {isPending ? '...' : <Plus className="w-4 h-4" />}
+          </Button>
+        </div>
       </div>
 
-      <div className="h-px bg-divider" />
+      <div className="h-px bg-divider/50" />
 
-      {groups.length === 0 ? (
-        <p className="text-sm text-text-hint text-center py-6">No hay grupos creados.</p>
-      ) : (
-        <div className="flex flex-col gap-2 max-h-72 overflow-y-auto">
-          {groups.map((g) => (
-            <div
-              key={g.id}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface border border-divider"
-            >
-              {editingId === g.id ? (
-                <>
-                  <Input
-                    value={editingName}
-                    onChange={(e) => setEditingName(e.target.value)}
-                    disabled={isPending}
-                    autoFocus
-                  />
-                  <Button size="sm" onClick={() => handleSaveEdit(g.id)} disabled={isPending}>
-                    Guardar
-                  </Button>
-                  <Button size="sm" variant="ghost" onClick={() => setEditingId(null)} disabled={isPending}>
-                    Cancelar
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <span className="flex-1 text-sm text-text-primary">{g.name}</span>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => {
-                      setEditingId(g.id)
-                      setEditingName(g.name)
-                      setError(null)
-                    }}
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                    </svg>
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => {
-                      setConfirmDelete(g)
-                      setDeleteError(null)
-                    }}
-                    disabled={isPending}
-                  >
-                    <svg className="w-4 h-4 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3" />
-                    </svg>
-                  </Button>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="flex flex-col gap-3">
+        <label className="text-[10px] font-bold uppercase tracking-widest text-text-hint ml-1">Grupos actuales ({groups.length})</label>
+        {groups.length === 0 ? (
+          <div className="py-12 flex flex-col items-center justify-center bg-surface-variant/20 rounded-[2rem] border border-dashed border-divider/50">
+            <p className="text-sm text-text-hint">No hay grupos creados aún.</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2 max-h-[350px] overflow-y-auto pr-1">
+            {groups.map((g) => (
+              <div
+                key={g.id}
+                className="group flex items-center gap-3 px-6 py-5 rounded-2xl bg-surface border border-divider hover:border-primary/40 hover:bg-surface-variant transition-all duration-200"
+              >
+                {editingId === g.id ? (
+                  <div className="flex-1 flex gap-2">
+                    <Input
+                      value={editingName}
+                      onChange={(e) => setEditingName(e.target.value)}
+                      disabled={isPending}
+                      autoFocus
+                    />
+                    <Button size="icon" onClick={() => handleSaveEdit(g.id)} disabled={isPending} className="h-9 w-9 bg-success hover:bg-success/90">
+                      <Check className="w-4 h-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" onClick={() => setEditingId(null)} disabled={isPending} className="h-9 w-9">
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <Users className="w-5 h-5 text-text-hint group-hover:text-primary transition-colors duration-200 shrink-0" />
+                    <span className="flex-1 text-base font-medium text-text-primary">{g.name}</span>
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8 rounded-lg"
+                        onClick={() => {
+                          setEditingId(g.id)
+                          setEditingName(g.name)
+                          setError(null)
+                        }}
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8 rounded-lg text-error hover:bg-error/10"
+                        onClick={() => {
+                          setConfirmDelete(g)
+                          setDeleteError(null)
+                        }}
+                        disabled={isPending}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       <Dialog open={!!confirmDelete} onOpenChange={(open) => !open && setConfirmDelete(null)}>
-        <DialogContent className="sm:max-w-[420px] bg-surface border-divider">
+        <DialogContent className="sm:max-w-[400px] bg-surface border-divider rounded-[2rem]">
           <DialogHeader>
-            <DialogTitle className="text-lg font-semibold text-text-primary">
+            <DialogTitle className="text-xl font-bold text-text-primary">
               Eliminar grupo
             </DialogTitle>
-            <DialogDescription className="text-sm text-text-secondary">
+            <DialogDescription className="text-sm text-text-secondary mt-2">
               {confirmDelete && (
                 <>
-                  ¿Seguro que quieres eliminar el grupo{' '}
-                  <span className="font-medium text-text-primary">"{confirmDelete.name}"</span>?
-                  <br />
-                  Esta acción no se puede deshacer.
+                  ¿Seguro que quieres eliminar el grupo <span className="font-bold text-text-primary">"{confirmDelete.name}"</span>? Esta acción no se puede deshacer.
                 </>
               )}
             </DialogDescription>
           </DialogHeader>
           {deleteError && (
-            <Alert variant="destructive">
+            <Alert variant="destructive" className="rounded-xl">
               <AlertDescription>{deleteError}</AlertDescription>
             </Alert>
           )}
-          <div className="flex justify-end gap-2 pt-2">
-            <Button
-              variant="ghost"
-              onClick={() => setConfirmDelete(null)}
-              disabled={isPending}
-            >
-              Cancelar
-            </Button>
+          <div className="flex flex-col gap-3 pt-4">
             <Button
               variant="destructive"
               onClick={handleConfirmDelete}
               disabled={isPending}
+              className="w-full h-11 rounded-xl"
             >
-              {isPending ? 'Eliminando...' : 'Eliminar'}
+              {isPending ? 'Eliminando...' : 'Eliminar grupo'}
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => setConfirmDelete(null)}
+              disabled={isPending}
+              className="w-full h-11 rounded-xl"
+            >
+              Cancelar
             </Button>
           </div>
         </DialogContent>

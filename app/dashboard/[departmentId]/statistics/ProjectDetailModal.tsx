@@ -52,22 +52,24 @@ export default function ProjectDetailModal({ projectName, departmentId, month, y
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose() }}>
-      <DialogContent showCloseButton={false} className="bg-surface border-divider/50 rounded-3xl shadow-2xl max-w-lg w-full p-0 overflow-hidden">
+      <DialogContent showCloseButton={false} className="bg-surface border-divider/50 rounded-[2.5rem] shadow-2xl max-w-lg w-full p-0 overflow-hidden flex flex-col">
         {/* Header */}
-        <DialogHeader className="p-8 pb-6 border-b-4 border-b-primary border-divider/20">
-          <div className="flex items-start justify-between gap-4">
+        <DialogHeader className="px-8 py-6 border-b border-divider/50">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Folder className="w-6 h-6 text-primary shrink-0" />
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-text-hint mb-1">Proyecto</p>
-                <DialogTitle className="text-xl font-bold text-text-primary leading-tight">
+              <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                <Folder className="w-5 h-5" />
+              </div>
+              <div className="flex flex-col">
+                <DialogTitle className="text-xl font-bold text-text-primary">
                   {projectName}
                 </DialogTitle>
+                <p className="text-[10px] font-black uppercase tracking-widest text-text-hint">Detalles del Proyecto</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-xl hover:bg-white/10 text-text-hint hover:text-text-primary transition-colors shrink-0 mt-1"
+              className="p-2 rounded-xl hover:bg-surface-variant/50 text-text-hint hover:text-text-primary transition-colors shrink-0"
             >
               <X className="w-4 h-4" />
             </button>

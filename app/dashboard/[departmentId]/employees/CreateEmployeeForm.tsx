@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { UserPlus, Users, Trash2, PlusCircle } from 'lucide-react'
 
 interface Props {
   departmentId: number
@@ -51,7 +52,7 @@ export default function CreateEmployeeForm({ departmentId, groups, onClose }: Pr
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-8">
         {globalError && (
           <Alert variant="destructive">
             <AlertDescription>{globalError}</AlertDescription>
@@ -59,97 +60,105 @@ export default function CreateEmployeeForm({ departmentId, groups, onClose }: Pr
         )}
 
         {fields.length > 1 && groups.length > 0 && (
-          <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-bg border border-divider">
-            <span className="text-xs text-text-hint shrink-0">Aplicar grupo a todos:</span>
-            <div className="flex-1">
-              <Select onValueChange={(v: string | null) => applyGroupToAll(v === NO_GROUP ? '' : (v ?? ''))}>
-                <SelectTrigger className="w-full bg-surface" size="sm">
-                  <SelectValue placeholder="Elegir grupo..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={NO_GROUP}>Sin grupo</SelectItem>
-                  {groups.map((g) => (
-                    <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          <div className="flex flex-col gap-4 p-4 rounded-2xl bg-surface-variant/30 border border-divider/50">
+            <div className="flex items-center gap-2">
+              <PlusCircle className="w-4 h-4 text-primary" />
+              <span className="text-xs font-bold text-text-secondary uppercase tracking-wider">Acción masiva</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-text-hint">Asignar grupo a todos:</span>
+              <div className="flex-1">
+                <Select onValueChange={(v: string | null) => applyGroupToAll(v === NO_GROUP ? '' : (v ?? ''))}>
+                  <SelectTrigger className="w-full bg-surface h-10 border-divider/50 rounded-xl">
+                    <SelectValue placeholder="Elegir grupo..." />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-divider">
+                    <SelectItem value={NO_GROUP}>Sin grupo</SelectItem>
+                    {groups.map((g) => (
+                      <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         )}
 
-        <div className="flex flex-col gap-3 max-h-[55vh] overflow-y-auto pr-1">
+        <div className="flex flex-col gap-10">
           {fields.map((field, i) => (
-            <div key={field.id} className="flex flex-col gap-2 p-3 bg-bg rounded-xl border border-divider">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-text-hint">Empleado #{i + 1}</span>
+            <div key={field.id} className="flex flex-col gap-6">
+              <div className="flex items-center justify-between border-b border-divider/50 pb-2">
+                <div className="flex items-center gap-2">
+                  <UserPlus className="w-5 h-5 text-primary shrink-0" />
+                  <h3 className="text-xs font-bold text-text-secondary uppercase tracking-widest">
+                    Empleado #{i + 1}
+                  </h3>
+                </div>
                 {fields.length > 1 && (
                   <Button
                     type="button"
                     variant="ghost"
-                    size="icon-sm"
+                    size="icon"
                     onClick={() => remove(i)}
-                    className="text-error"
+                    className="h-8 w-8 text-error hover:bg-error/10 rounded-lg"
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <Trash2 className="w-4 h-4" />
                   </Button>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-2">
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
                 <FormField control={form.control} name={`rows.${i}.name`} render={({ field }) => (
-                  <FormItem>
-                    <FormControl><Input placeholder="Nombre" {...field} /></FormControl>
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>Nombre completo</FormLabel>
+                    <FormControl><Input placeholder="Ej. Juan Pérez" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name={`rows.${i}.email`} render={({ field }) => (
                   <FormItem>
-                    <FormControl><Input type="email" placeholder="Email" {...field} /></FormControl>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl><Input type="email" placeholder="email@ejemplo.com" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name={`rows.${i}.password`} render={({ field }) => (
                   <FormItem>
-                    <FormControl><Input type="password" placeholder="Contraseña" {...field} /></FormControl>
+                    <FormLabel>Contraseña</FormLabel>
+                    <FormControl><Input type="password" placeholder="Mín. 8 caracteres" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name={`rows.${i}.role`} render={({ field }) => (
                   <FormItem>
+                    <FormLabel>Rol de acceso</FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
-                        <SelectTrigger className="w-full bg-surface">
-                          <SelectValue placeholder="Rol">
-                            {field.value === 'ADMINISTRATOR' ? 'Admin' : field.value === 'USER' ? 'Usuario' : field.value}
-                          </SelectValue>
+                        <SelectTrigger className="w-full bg-surface/50 h-11 border-divider/50 rounded-xl">
+                          <SelectValue placeholder="Rol" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="USER">Usuario</SelectItem>
-                        <SelectItem value="ADMINISTRATOR">Admin</SelectItem>
+                      <SelectContent className="rounded-xl border-divider">
+                        <SelectItem value="USER">Usuario (Fichaje)</SelectItem>
+                        <SelectItem value="ADMINISTRATOR">Administrador (Gestión)</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
                   </FormItem>
                 )} />
                 <FormField control={form.control} name={`rows.${i}.group_id`} render={({ field }) => (
-                  <FormItem className="col-span-2">
-                    <FormLabel className="text-xs text-text-hint">Grupo</FormLabel>
+                  <FormItem>
+                    <FormLabel>Grupo asignado</FormLabel>
                     <Select
                       value={field.value === '' || field.value === undefined ? NO_GROUP : field.value}
                       onValueChange={(v) => field.onChange(v === NO_GROUP ? '' : v)}
                     >
                       <FormControl>
-                        <SelectTrigger className="w-full bg-surface">
-                          <SelectValue placeholder="Sin grupo">
-                            {!field.value || field.value === ''
-                              ? 'Sin grupo'
-                              : (groups.find((g) => String(g.id) === field.value)?.name ?? 'Sin grupo')}
-                          </SelectValue>
+                        <SelectTrigger className="w-full bg-surface/50 h-11 border-divider/50 rounded-xl">
+                          <SelectValue placeholder="Sin grupo" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="rounded-xl border-divider">
                         <SelectItem value={NO_GROUP}>Sin grupo</SelectItem>
                         {groups.map((g) => (
                           <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
@@ -166,22 +175,24 @@ export default function CreateEmployeeForm({ departmentId, groups, onClose }: Pr
 
         <Button
           type="button"
-          variant="ghost"
+          variant="outline"
           onClick={() => append({ name: '', email: '', password: '', role: 'USER', group_id: '' })}
-          className="self-start gap-2"
+          className="self-center gap-2 rounded-xl h-10 border-divider/50 hover:bg-surface-variant"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Añadir otro
+          <PlusCircle className="w-4 h-4 text-primary" />
+          Añadir otro empleado
         </Button>
 
-        <div className="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="ghost" onClick={onClose} disabled={isPending}>
-            Cancelar
+        <div className="pt-6 border-t border-divider/50 flex flex-col gap-3">
+          <Button 
+            type="submit" 
+            disabled={isPending}
+            className="w-full h-12 text-base font-bold rounded-xl"
+          >
+            {isPending ? 'Procesando...' : fields.length === 1 ? 'Crear empleado' : `Crear ${fields.length} empleados`}
           </Button>
-          <Button type="submit" disabled={isPending}>
-            {isPending ? 'Creando...' : fields.length === 1 ? 'Crear empleado' : `Crear ${fields.length} empleados`}
+          <Button type="button" variant="outline" onClick={onClose} disabled={isPending} className="border-divider/50 hover:bg-surface-variant text-text-hint hover:text-text-primary rounded-xl h-12">
+            Cancelar
           </Button>
         </div>
       </form>

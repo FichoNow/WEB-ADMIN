@@ -1,13 +1,15 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Users, Search, Plus, Filter, MoreVertical, Mail, Hash } from 'lucide-react'
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
 import type { GroupResponse } from '@/app/types/admin/api/group-response'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Users } from 'lucide-react'
+import { Input } from '@/components/ui/input'
 import PageHeader from '@/components/PageHeader'
 import CreateEmployeeForm from './CreateEmployeeForm'
 import EditEmployeeForm from './EditEmployeeForm'
@@ -15,7 +17,12 @@ import GroupsManager from './GroupsManager'
 
 function RoleBadge({ role }: { role: string }) {
   return (
-    <Badge variant={role === 'ADMINISTRATOR' ? 'default' : 'secondary'} className="text-[10px]">
+    <Badge 
+      variant={role === 'ADMINISTRATOR' ? 'default' : 'secondary'} 
+      className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-md ${
+        role === 'ADMINISTRATOR' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-surface-variant text-text-secondary border-divider'
+      }`}
+    >
       {role === 'ADMINISTRATOR' ? 'Admin' : 'Usuario'}
     </Badge>
   )
@@ -35,6 +42,7 @@ export default function EmployeesClient({ employees, groups, departmentId }: Pro
   const [showGroups, setShowGroups] = useState(false)
   const [editEmployee, setEditEmployee] = useState<EmployeeListItem | null>(null)
   const [groupFilter, setGroupFilter] = useState<string>(FILTER_ALL)
+  const [search, setSearch] = useState('')
 
   const groupNameById = useMemo(() => {
     const m = new Map<number, string>()
@@ -43,141 +51,213 @@ export default function EmployeesClient({ employees, groups, departmentId }: Pro
   }, [groups])
 
   const filtered = useMemo(() => {
-    if (groupFilter === FILTER_ALL) return employees
-    if (groupFilter === FILTER_NONE) return employees.filter((e) => e.group_id == null)
-    const id = Number(groupFilter)
-    return employees.filter((e) => e.group_id === id)
-  }, [employees, groupFilter])
+    let result = employees
+    
+    // Group filter
+    if (groupFilter !== FILTER_ALL) {
+      if (groupFilter === FILTER_NONE) {
+        result = result.filter((e) => e.group_id == null)
+      } else {
+        const id = Number(groupFilter)
+        result = result.filter((e) => e.group_id === id)
+      }
+    }
+
+    // Search filter
+    if (search.trim()) {
+      const s = search.toLowerCase()
+      result = result.filter((e) => 
+        e.name.toLowerCase().includes(s) || 
+        e.email.toLowerCase().includes(s)
+      )
+    }
+
+    return result
+  }, [employees, groupFilter, search])
 
   return (
-    <>
+    <div className="flex flex-col gap-8">
       <PageHeader
-        title="Empleados"
-        description="Gestiona los empleados del departamento, sus grupos y estado."
+        title="Plantilla"
+        description="Gestiona los empleados del departamento, sus grupos y roles de acceso."
         actions={
-          <>
-            <Button variant="outline" onClick={() => setShowGroups(true)} className="gap-2 rounded-xl">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Grupos
+          <div className="flex items-center gap-3">
+            <Button variant="outline" onClick={() => setShowGroups(true)} className="gap-2 rounded-2xl h-11 border-divider/50 hover:bg-surface-variant">
+              <Users className="w-4 h-4" />
+              Gestionar Grupos
             </Button>
-            <Button onClick={() => setShowCreate(true)} className="gap-2 rounded-xl">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
+            <Button onClick={() => setShowCreate(true)} className="gap-2 rounded-2xl h-11">
+              <Plus className="w-4 h-4" />
               Nuevo empleado
             </Button>
-          </>
+          </div>
         }
       />
 
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <span className="text-xs text-text-hint">{filtered.length} de {employees.length}</span>
-        <Select value={groupFilter} onValueChange={(v) => setGroupFilter(v ?? FILTER_ALL)}>
-          <SelectTrigger className="w-52 bg-surface">
-            <Users className="w-4 h-4 mr-1 text-primary" />
-            <SelectValue>
-              {groupFilter === FILTER_ALL
-                ? 'Todos los grupos'
-                : groupFilter === FILTER_NONE
-                  ? 'Sin grupo'
-                  : (groups.find((g) => String(g.id) === groupFilter)?.name ?? 'Grupo')}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={FILTER_ALL}>Todos los grupos</SelectItem>
-            <SelectItem value={FILTER_NONE}>Sin grupo</SelectItem>
-            {groups.map((g) => (
-              <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      {/* Filters Bar */}
+      <div className="flex items-center justify-between gap-4 flex-wrap bg-surface/50 p-2 rounded-[2rem] border border-divider/50 backdrop-blur-sm">
+        <div className="relative flex-1 min-w-[280px]">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-hint" />
+          <Input 
+            placeholder="Buscar por nombre o email..." 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-11 h-12 bg-transparent border-none ring-0 focus-visible:ring-0 text-sm placeholder:text-text-hint"
+          />
+        </div>
+        
+        <div className="flex items-center gap-2 pr-2">
+          <div className="h-8 w-px bg-divider mx-2" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-text-hint px-2">Filtrar por</span>
+          <Select value={groupFilter} onValueChange={(v) => setGroupFilter(v ?? FILTER_ALL)}>
+            <SelectTrigger className="w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium pr-4">
+              <Filter className="w-3.5 h-3.5 mr-2 text-primary" />
+              <SelectValue placeholder="Todos los grupos" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl border-divider">
+              <SelectItem value={FILTER_ALL} className="text-xs">Todos los grupos</SelectItem>
+              <SelectItem value={FILTER_NONE} className="text-xs">Sin grupo</SelectItem>
+              {groups.map((g) => (
+                <SelectItem key={g.id} value={String(g.id)} className="text-xs">{g.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Results Header */}
+      <div className="flex items-center justify-between px-2">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-text-primary">{filtered.length}</span>
+          <span className="text-xs text-text-hint">empleados encontrados</span>
+        </div>
       </div>
 
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 px-4 bg-surface/30 border border-dashed border-divider rounded-2xl">
-          <div className="w-12 h-12 rounded-full bg-surface border border-divider flex items-center justify-center text-text-hint mb-4">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col items-center justify-center py-24 px-4 bg-surface/30 border border-dashed border-divider rounded-[2.5rem]"
+        >
+          <div className="w-20 h-20 rounded-3xl bg-surface border border-divider flex items-center justify-center text-text-hint mb-6 shadow-sm">
+            <Users className="w-8 h-8 opacity-20" />
           </div>
-          <h3 className="text-base font-semibold text-text-primary mb-1">
-            {employees.length === 0 ? 'Sin empleados' : 'Ningún empleado coincide'}
+          <h3 className="text-lg font-bold text-text-primary mb-2">
+            {employees.length === 0 ? 'No hay empleados aún' : 'Sin resultados'}
           </h3>
-          <p className="text-sm text-text-hint text-center max-w-sm mb-6">
+          <p className="text-sm text-text-hint text-center max-w-xs mb-8 leading-relaxed">
             {employees.length === 0
-              ? 'Aún no hay ningún empleado registrado en este departamento. Añade el primero para empezar a gestionar los fichajes.'
-              : 'Prueba a cambiar el filtro de grupo.'}
+              ? 'Añade a tu primer colaborador para empezar a gestionar el departamento.'
+              : 'No hemos encontrado a nadie que coincida con tu búsqueda actual.'}
           </p>
           {employees.length === 0 && (
-            <Button onClick={() => setShowCreate(true)} className="gap-2">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
+            <Button onClick={() => setShowCreate(true)} className="gap-2 rounded-2xl h-11">
+              <Plus className="w-4 h-4" />
               Añadir primer empleado
             </Button>
           )}
-        </div>
+        </motion.div>
       ) : (
-        <div className="flex flex-col gap-2">
-          {filtered.map((emp) => {
-            const groupName = emp.group_id != null ? groupNameById.get(emp.group_id) : null
-            return (
-              <div
-                key={emp.id}
-                className="flex items-center justify-between px-5 py-4 rounded-2xl bg-surface border border-divider hover:border-primary/30 transition-colors"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-9 h-9 rounded-full bg-surface-variant flex items-center justify-center text-sm font-medium text-text-secondary shrink-0">
-                    {emp.name.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-text-primary flex items-center gap-2 flex-wrap">
-                      {emp.name}
-                      <RoleBadge role={emp.role} />
-                      {groupName && (
-                        <Badge variant="outline" className="text-[10px]">{groupName}</Badge>
-                      )}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <AnimatePresence mode="popLayout">
+            {filtered.map((emp) => {
+              const groupName = emp.group_id != null ? groupNameById.get(emp.group_id) : null
+              return (
+                <motion.div
+                  key={emp.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                  className="group relative flex items-center justify-between px-6 py-5 rounded-[2rem] bg-surface border border-divider/50 hover:border-primary/30 hover:bg-surface-variant/30 transition-all duration-300"
+                >
+                  <div className="flex items-center gap-5">
+                    {/* Avatar with gradient */}
+                    <div className="relative">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary font-bold text-lg border border-primary/10 shadow-inner group-hover:scale-105 transition-transform">
+                        {emp.name.charAt(0).toUpperCase()}
+                      </div>
                       {!emp.is_active && (
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-error/20 text-error">Inactivo</span>
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-error border-4 border-surface" />
                       )}
-                    </p>
-                    <p className="text-xs text-text-hint">{emp.email}</p>
+                      {emp.is_active && (
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-success border-4 border-surface shadow-sm" />
+                      )}
+                    </div>
+
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <h4 className="text-base font-bold text-text-primary group-hover:text-primary transition-colors leading-none">
+                          {emp.name}
+                        </h4>
+                        <RoleBadge role={emp.role} />
+                        {groupName && (
+                          <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider bg-surface/50 border-divider/50 text-text-secondary">
+                            <Hash className="w-2.5 h-2.5 mr-1 opacity-50" />
+                            {groupName}
+                          </Badge>
+                        )}
+                        {!emp.is_active && (
+                          <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-error/10 text-error border border-error/20">Inactivo</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1.5 text-xs text-text-hint">
+                          <Mail className="w-3 h-3" />
+                          {emp.email}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <Button variant="ghost" size="icon" onClick={() => setEditEmployee(emp)}>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
-                </Button>
-              </div>
-            )
-          })}
+
+                  <div className="flex items-center gap-2">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={() => setEditEmployee(emp)}
+                      className="rounded-xl hover:bg-primary/10 hover:text-primary transition-colors"
+                    >
+                      <MoreVertical className="w-5 h-5" />
+                    </Button>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
         </div>
       )}
 
+      {/* Dialogs remain similar but with consistent styling */}
       <Dialog open={showCreate} onOpenChange={(open) => !open && setShowCreate(false)}>
-        <DialogContent className="sm:max-w-[600px] bg-surface border-divider">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-semibold text-text-primary">Nuevo empleado</DialogTitle>
-            <DialogDescription className="hidden">Crear empleados</DialogDescription>
+        <DialogContent className="sm:max-w-[700px] bg-surface border-divider rounded-[2.5rem] p-0 overflow-hidden flex flex-col">
+          <DialogHeader className="px-8 py-6 border-b border-divider/50">
+            <div className="flex items-center gap-3">
+              <Users className="w-6 h-6 text-primary shrink-0" />
+              <div className="flex flex-col">
+                <DialogTitle className="text-xl font-bold text-text-primary">Gestión de Plantilla</DialogTitle>
+                <DialogDescription className="text-xs text-text-secondary">Añade uno o varios colaboradores al departamento.</DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
-          <div className="max-h-[70vh] overflow-y-auto px-1 py-2">
+          <div className="max-h-[75vh] overflow-y-auto px-10 py-8">
             <CreateEmployeeForm departmentId={departmentId} groups={groups} onClose={() => setShowCreate(false)} />
           </div>
         </DialogContent>
       </Dialog>
 
       <Dialog open={!!editEmployee} onOpenChange={(open) => !open && setEditEmployee(null)}>
-        <DialogContent className="sm:max-w-[600px] bg-surface border-divider">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-semibold text-text-primary">
-              Editar · {editEmployee?.name}
-            </DialogTitle>
-            <DialogDescription className="hidden">Editar empleado</DialogDescription>
+        <DialogContent className="sm:max-w-[600px] bg-surface border-divider rounded-[2.5rem] p-0 overflow-hidden flex flex-col">
+          <DialogHeader className="px-8 py-6 border-b border-divider/50">
+            <div className="flex items-center gap-3">
+              <Plus className="w-6 h-6 text-primary shrink-0" />
+              <div className="flex flex-col">
+                <DialogTitle className="text-xl font-bold text-text-primary">Editar Perfil</DialogTitle>
+                <DialogDescription className="text-xs text-text-secondary">Modifica los datos de acceso y perfil del empleado.</DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
-          <div className="max-h-[70vh] overflow-y-auto px-1 py-2">
+          <div className="max-h-[75vh] overflow-y-auto px-10 py-8">
             {editEmployee && (
               <EditEmployeeForm
                 employee={editEmployee}
@@ -191,16 +271,22 @@ export default function EmployeesClient({ employees, groups, departmentId }: Pro
       </Dialog>
 
       <Dialog open={showGroups} onOpenChange={(open) => !open && setShowGroups(false)}>
-        <DialogContent className="sm:max-w-[500px] bg-surface border-divider">
-          <DialogHeader>
-            <DialogTitle className="text-lg font-semibold text-text-primary">Gestión de grupos</DialogTitle>
-            <DialogDescription className="hidden">Crear, editar y eliminar grupos del departamento</DialogDescription>
+        <DialogContent className="sm:max-w-[500px] bg-surface border-divider rounded-[2.5rem] p-0 overflow-hidden flex flex-col">
+          <DialogHeader className="px-8 py-6 border-b border-divider/50">
+            <div className="flex items-center gap-3">
+              <Users className="w-6 h-6 text-primary shrink-0" />
+              <div className="flex flex-col">
+                <DialogTitle className="text-xl font-bold text-text-primary">Grupos de Trabajo</DialogTitle>
+                <DialogDescription className="text-xs text-text-secondary">Organiza y segmenta tu plantilla por equipos.</DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
-          <div className="max-h-[70vh] overflow-y-auto px-1 py-2">
+          <div className="max-h-[75vh] overflow-y-auto px-10 py-8">
             <GroupsManager departmentId={departmentId} groups={groups} />
           </div>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   )
 }
+

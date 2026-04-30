@@ -9,6 +9,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
+import { CheckCircle2, XCircle, MessageSquare } from 'lucide-react'
+
 interface Props {
   mode: 'approve' | 'reject'
   request: AdminRequestListItem
@@ -43,38 +45,60 @@ export default function ReviewForm({ mode, request, typeName, departmentId, onCl
 
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md bg-surface border-divider">
-        <DialogHeader>
-          <DialogTitle className="text-lg font-semibold text-text-primary">
-            {isApprove ? 'Aprobar solicitud' : 'Rechazar solicitud'}
-          </DialogTitle>
-          <DialogDescription className="text-sm text-text-secondary">
-            {request.employee_name} · {typeName}
-          </DialogDescription>
+      <DialogContent className="sm:max-w-lg bg-surface border-divider rounded-[2rem] p-0 overflow-hidden flex flex-col">
+        <DialogHeader className="px-8 py-6 border-b border-divider/50">
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${isApprove ? 'bg-success/10 text-success' : 'bg-error/10 text-error'}`}>
+              {isApprove ? <CheckCircle2 className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
+            </div>
+            <div className="flex flex-col">
+              <DialogTitle className="text-xl font-bold text-text-primary">
+                {isApprove ? 'Aprobar solicitud' : 'Rechazar solicitud'}
+              </DialogTitle>
+              <DialogDescription className="text-xs text-text-secondary">
+                {request.employee_name} · {typeName}
+              </DialogDescription>
+            </div>
+          </div>
         </DialogHeader>
 
-        <div className="flex flex-col gap-4">
+        <div className="px-8 py-8 flex flex-col gap-6">
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-text-secondary">Comentario de revisión</label>
-            <Input
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder={isApprove ? 'Ej: Aprobado' : 'Ej: No hay cobertura ese día'}
-            />
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2 border-b border-divider/50 pb-2">
+              <MessageSquare className="w-4 h-4 text-primary" />
+              <h3 className="text-xs font-bold text-text-secondary uppercase tracking-wider">
+                Motivo / Comentario
+              </h3>
+            </div>
+            
+            <div className="flex flex-col gap-2">
+              <Input
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder={isApprove ? 'Ej: Aprobado para el período solicitado' : 'Ej: Falta cobertura en el departamento'}
+                className="h-12 rounded-xl bg-surface/50 border-divider/50"
+              />
+              <p className="text-[10px] text-text-hint font-medium">Este comentario será visible para el empleado.</p>
+            </div>
           </div>
 
-          <div className="flex gap-2 justify-end">
-            <Button variant="ghost" onClick={onClose} disabled={isPending}>
-              Cancelar
+          <div className="flex flex-col gap-3 pt-4">
+            <Button 
+              variant={isApprove ? 'default' : 'destructive'} 
+              onClick={handleSubmit} 
+              disabled={isPending}
+              className={`w-full h-12 text-base font-bold rounded-xl`}
+            >
+              {isPending ? 'Procesando...' : isApprove ? 'Confirmar Aprobación' : 'Confirmar Rechazo'}
             </Button>
-            <Button variant={isApprove ? 'default' : 'destructive'} onClick={handleSubmit} disabled={isPending}>
-              {isPending ? 'Guardando...' : isApprove ? 'Aprobar' : 'Rechazar'}
+            <Button variant="ghost" onClick={onClose} disabled={isPending} className="w-full h-11 rounded-xl text-text-hint hover:text-text-primary">
+              Cerrar sin cambios
             </Button>
           </div>
         </div>

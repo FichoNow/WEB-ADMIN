@@ -141,7 +141,7 @@ export default function LandingPage() {
                     <div className="px-3 py-1.5 rounded-lg border border-divider bg-surface text-text-primary font-medium flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-success shadow-[0_0_8px_rgba(129,199,132,0.6)]"></span> 142 Online
                     </div>
-                    <div className="px-4 py-1.5 rounded-lg bg-primary text-on-primary font-medium flex items-center gap-2 shadow-lg shadow-primary/20">
+                    <div className="px-4 py-1.5 rounded-lg bg-primary text-on-primary font-medium flex items-center gap-2">
                       Descargar CSV
                     </div>
                   </div>
@@ -687,48 +687,57 @@ export default function LandingPage() {
 
                 {/* Fake Content Area */}
                 <div className="flex-1 p-6 bg-bg flex flex-col gap-6 overflow-hidden">
-                  <div className="flex flex-col gap-1">
-                    <p className="text-[10px] font-medium tracking-widest text-primary uppercase">Inicio</p>
-                    <h1 className="text-2xl font-light tracking-tight text-text-primary">Vista general</h1>
-                    <p className="text-xs text-text-secondary">Selecciona un módulo para gestionar tu departamento.</p>
-                  </div>
+                  <header className="relative flex flex-col gap-1">
+                    <h1 className="text-2xl font-light tracking-tight text-text-primary">¡Bienvenido de nuevo!</h1>
+                    <p className="text-[10px] text-text-secondary max-w-sm">Selecciona un módulo para gestionar tu departamento y mantente al día con el rendimiento de tu equipo.</p>
+                    <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-[50px] rounded-full -z-10" />
+                  </header>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto pb-4 pr-1">
                     {/* Empleados */}
-                    <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
-                      <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                      <h3 className="text-xs font-semibold text-text-primary mb-1">Empleados</h3>
-                      <p className="text-[10px] text-text-secondary">Gestiona la plantilla, altas y bajas del equipo.</p>
+                    <div className="relative flex flex-col p-4 rounded-2xl bg-surface border border-divider/50 hover:border-primary/20 hover:bg-surface-variant/40 transition-all duration-300 overflow-hidden group">
+                      <div className="absolute left-0 top-0 bottom-0 w-0 group-hover:w-1 transition-all duration-300 bg-blue-500 shadow-[0_0_10px_rgba(0,0,0,0.1)]" />
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-4 h-4 text-blue-500 transition-all duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        <h3 className="text-xs font-bold text-text-primary group-hover:text-primary transition-colors">Empleados</h3>
+                      </div>
+                      <p className="text-[10px] text-text-secondary leading-normal">Gestiona la plantilla, altas y bajas del equipo.</p>
                     </div>
                     {/* Proyectos */}
-                    <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
-                      <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-                      <h3 className="text-xs font-semibold text-text-primary mb-1">Proyectos</h3>
-                      <p className="text-[10px] text-text-secondary">Administra proyectos y la imputación de horas.</p>
-                    </div>
-                    {/* Fichajes */}
-                    <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
-                      <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                      <h3 className="text-xs font-semibold text-text-primary mb-1">Fichajes</h3>
-                      <p className="text-[10px] text-text-secondary">Revisa y ajusta los registros de jornada.</p>
+                    <div className="relative flex flex-col p-4 rounded-2xl bg-surface border border-divider/50 hover:border-primary/20 hover:bg-surface-variant/40 transition-all duration-300 overflow-hidden group">
+                      <div className="absolute left-0 top-0 bottom-0 w-0 group-hover:w-1 transition-all duration-300 bg-emerald-500 shadow-[0_0_10px_rgba(0,0,0,0.1)]" />
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-4 h-4 text-emerald-500 transition-all duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                        <h3 className="text-xs font-bold text-text-primary group-hover:text-primary transition-colors">Proyectos</h3>
+                      </div>
+                      <p className="text-[10px] text-text-secondary leading-normal">Administra proyectos y la imputación de horas.</p>
                     </div>
                     {/* Solicitudes */}
-                    <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
-                      <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                      <h3 className="text-xs font-semibold text-text-primary mb-1">Solicitudes</h3>
-                      <p className="text-[10px] text-text-secondary">Aprueba vacaciones y ausencias del personal.</p>
+                    <div className="relative flex flex-col p-4 rounded-2xl bg-surface border border-divider/50 hover:border-primary/20 hover:bg-surface-variant/40 transition-all duration-300 overflow-hidden group">
+                      <div className="absolute left-0 top-0 bottom-0 w-0 group-hover:w-1 transition-all duration-300 bg-amber-500 shadow-[0_0_10px_rgba(0,0,0,0.1)]" />
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-4 h-4 text-amber-500 transition-all duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        <h3 className="text-xs font-bold text-text-primary group-hover:text-primary transition-colors">Solicitudes</h3>
+                      </div>
+                      <p className="text-[10px] text-text-secondary leading-normal">Aprueba vacaciones y ausencias del personal.</p>
                     </div>
                     {/* Horarios */}
-                    <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
-                      <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z M4.22 4.22l15.56 15.56" /></svg>
-                      <h3 className="text-xs font-semibold text-text-primary mb-1">Horarios</h3>
-                      <p className="text-[10px] text-text-secondary">Configura horarios y turnos de trabajo.</p>
+                    <div className="relative flex flex-col p-4 rounded-2xl bg-surface border border-divider/50 hover:border-primary/20 hover:bg-surface-variant/40 transition-all duration-300 overflow-hidden group">
+                      <div className="absolute left-0 top-0 bottom-0 w-0 group-hover:w-1 transition-all duration-300 bg-purple-500 shadow-[0_0_10px_rgba(0,0,0,0.1)]" />
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-4 h-4 text-purple-500 transition-all duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z M4.22 4.22l15.56 15.56" /></svg>
+                        <h3 className="text-xs font-bold text-text-primary group-hover:text-primary transition-colors">Horarios</h3>
+                      </div>
+                      <p className="text-[10px] text-text-secondary leading-normal">Configura horarios y turnos de trabajo.</p>
                     </div>
                     {/* Estadísticas */}
-                    <div className="flex flex-col p-4 rounded-xl bg-surface border border-divider">
-                      <svg className="w-4 h-4 text-text-secondary mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-                      <h3 className="text-xs font-semibold text-text-primary mb-1">Estadísticas</h3>
-                      <p className="text-[10px] text-text-secondary">Analiza datos y rendimiento del equipo.</p>
+                    <div className="relative flex flex-col p-4 rounded-2xl bg-surface border border-divider/50 hover:border-primary/20 hover:bg-surface-variant/40 transition-all duration-300 overflow-hidden group">
+                      <div className="absolute left-0 top-0 bottom-0 w-0 group-hover:w-1 transition-all duration-300 bg-rose-500 shadow-[0_0_10px_rgba(0,0,0,0.1)]" />
+                      <div className="flex items-center gap-2 mb-2">
+                        <svg className="w-4 h-4 text-rose-500 transition-all duration-300 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                        <h3 className="text-xs font-bold text-text-primary group-hover:text-primary transition-colors">Estadísticas</h3>
+                      </div>
+                      <p className="text-[10px] text-text-secondary leading-normal">Analiza datos y rendimiento del equipo.</p>
                     </div>
                   </div>
                 </div>

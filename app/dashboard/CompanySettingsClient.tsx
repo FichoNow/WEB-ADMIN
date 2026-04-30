@@ -51,7 +51,7 @@ function EditCompanyModal({ company, open, onClose }: { company: CompanyDetails;
     const formData = new FormData()
     Object.entries(values).forEach(([k, v]) => { if (v) formData.set(k, v) })
     startTransition(async () => {
-      const result = await updateCompanyAction(undefined, formData)
+      const result = await updateCompanyAction({}, formData)
       if (result?.error) { form.setError('root', { message: result.error }); return }
       setSuccess(true)
       router.refresh()
@@ -83,42 +83,42 @@ function EditCompanyModal({ company, open, onClose }: { company: CompanyDetails;
               <FormField control={form.control} name="name" render={({ field }) => (
                 <FormItem className="col-span-2">
                   <FormLabel>Nombre de la empresa</FormLabel>
-                  <FormControl><Input className="bg-surface/60 border-divider/50" {...field} /></FormControl>
+                  <FormControl><Input {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="cif_nif" render={({ field }) => (
                 <FormItem>
                   <FormLabel>CIF / NIF</FormLabel>
-                  <FormControl><Input className="bg-surface/60 border-divider/50" placeholder="B12345678" {...field} /></FormControl>
+                  <FormControl><Input placeholder="B12345678" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="email" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
-                  <FormControl><Input className="bg-surface/60 border-divider/50" placeholder="empresa@mail.com" {...field} /></FormControl>
+                  <FormControl><Input placeholder="empresa@mail.com" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="address_line" render={({ field }) => (
                 <FormItem className="col-span-2">
                   <FormLabel>Dirección</FormLabel>
-                  <FormControl><Input className="bg-surface/60 border-divider/50" placeholder="Calle Ejemplo 1" {...field} /></FormControl>
+                  <FormControl><Input placeholder="Calle Ejemplo 1" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="city" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Ciudad</FormLabel>
-                  <FormControl><Input className="bg-surface/60 border-divider/50" {...field} /></FormControl>
+                  <FormControl><Input {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="postal_code" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Código postal</FormLabel>
-                  <FormControl><Input className="bg-surface/60 border-divider/50" placeholder="08001" {...field} /></FormControl>
+                  <FormControl><Input placeholder="08001" {...field} /></FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
@@ -156,7 +156,7 @@ function AddSuperadminModal({ open, onClose }: { open: boolean; onClose: () => v
     const formData = new FormData()
     Object.entries(values).forEach(([k, v]) => formData.set(k, v))
     startTransition(async () => {
-      const result = await addSuperadminAction(undefined, formData)
+      const result = await addSuperadminAction({}, formData)
       if (result?.error) { form.setError('root', { message: result.error }); return }
       setSuccess(true)
       router.refresh()
@@ -187,19 +187,19 @@ function AddSuperadminModal({ open, onClose }: { open: boolean; onClose: () => v
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3">
             <FormField control={form.control} name="name" render={({ field }) => (
               <FormItem><FormLabel>Nombre</FormLabel>
-                <FormControl><Input className="bg-surface/60 border-divider/50" placeholder="Nombre completo" {...field} /></FormControl>
+                <FormControl><Input placeholder="Nombre completo" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
             <FormField control={form.control} name="email" render={({ field }) => (
               <FormItem><FormLabel>Email</FormLabel>
-                <FormControl><Input className="bg-surface/60 border-divider/50" placeholder="admin@empresa.com" {...field} /></FormControl>
+                <FormControl><Input placeholder="admin@empresa.com" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
             <FormField control={form.control} name="password" render={({ field }) => (
               <FormItem><FormLabel>Contraseña temporal</FormLabel>
-                <FormControl><Input type="password" className="bg-surface/60 border-divider/50" {...field} /></FormControl>
+                <FormControl><Input type="password" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
