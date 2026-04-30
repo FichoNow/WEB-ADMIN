@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation"
-import { getRequests } from "@/app/repositories/admin-repository"
+import { getRequests, getEmployees, listGroups } from "@/app/repositories/admin-repository"
 import type { AdminRequestListItem } from "@/app/types/admin/api/admin-request-response"
+import type { EmployeeListItem } from "@/app/types/admin/api/employee-response"
+import type { GroupResponse } from "@/app/types/admin/api/group-response"
 import RequestsClient from "./RequestsClient"
 
 interface Props {
@@ -12,16 +14,27 @@ export default async function RequestsPage({ params }: Props) {
   const deptId = Number(departmentId)
 
   let requests: AdminRequestListItem[]
+  let employees: EmployeeListItem[]
+  let groups: GroupResponse[]
 
   try {
-    requests = await getRequests(deptId)
+    [requests, employees, groups] = await Promise.all([
+      getRequests(deptId),
+      getEmployees(deptId),
+      listGroups(deptId),
+    ])
   } catch {
     redirect("/dashboard")
   }
 
   return (
     <div className="px-10 py-12 flex flex-col gap-6">
-      <RequestsClient requests={requests} departmentId={deptId} />
+      <RequestsClient
+        requests={requests}
+        employees={employees}
+        groups={groups}
+        departmentId={deptId}
+      />
     </div>
   )
 }

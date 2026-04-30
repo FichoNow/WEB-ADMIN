@@ -147,88 +147,89 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
             : `Análisis de rendimiento del equipo · ${overview.period_label}`
         }
         actions={
-          <>
-            {!isProjectsTab && (
-              <>
-                <Select value={isWeekly ? 'current' : String(currentMonth)} onValueChange={(v) => handleMonthChange(v ?? 'current')}>
-                  <SelectTrigger className="w-40 bg-surface">
-                    <Calendar className="w-4 h-4 mr-1 text-primary" />
-                    <SelectValue>{isWeekly ? 'Esta semana' : MONTH_LABELS[currentMonth - 1]}</SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="current">Esta semana</SelectItem>
-                    {MONTH_LABELS.slice(0, new Date().getMonth() + 1).map((m, i) => (
-                      <SelectItem key={i} value={String(i + 1)}>{m}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select value={currentGroupId ? String(currentGroupId) : 'all'} onValueChange={(v) => handleGroupChange(v ?? 'all')}>
-                  <SelectTrigger className="w-40 bg-surface">
-                    <Users className="w-4 h-4 mr-1 text-primary" />
-                    <SelectValue placeholder="Todos los grupos">
-                      {currentGroupId
-                        ? bundle.groups.groups.find((g) => g.id === currentGroupId)?.name ?? 'Todos los grupos'
-                        : 'Todos los grupos'}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos los grupos</SelectItem>
-                    {bundle.groups.groups.map((g) => (
-                      <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {isIndividualTab && (
-                  <Select value={currentUserId ? String(currentUserId) : 'all'} onValueChange={(v) => handleUserChange(v ?? 'all')}>
-                    <SelectTrigger className="w-48 bg-surface">
-                      <UserCircle2 className="w-4 h-4 mr-1 text-primary" />
-                      <SelectValue placeholder="Selecciona empleado">
-                        {selectedUser?.name ?? 'Selecciona empleado'}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos los empleados</SelectItem>
-                      {employees.map((emp) => (
-                        <SelectItem key={emp.id} value={String(emp.id)}>{emp.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              </>
-            )}
-            <Button variant="outline" onClick={handleExport} className="gap-2 rounded-xl">
-              <FileDown className="w-4 h-4" />
-              Exportar
-            </Button>
-          </>
+          <Button variant="outline" onClick={handleExport} className="gap-2 rounded-xl">
+            <FileDown className="w-4 h-4" />
+            Exportar
+          </Button>
         }
       />
 
-      {/* Tabs */}
-      <div className="flex items-center gap-1 p-1 bg-surface border border-divider rounded-xl w-fit">
-        {(
-          [
-            { key: 'general',    label: 'Vista general', Icon: LayoutDashboard },
-            { key: 'individual', label: 'Individual',    Icon: UserCircle2 },
-            { key: 'proyectos',  label: 'Proyectos',     Icon: Folder },
-          ] as const
-        ).map(({ key, label, Icon }) => (
-          <button
-            key={key}
-            onClick={() => {
-              setTab(key)
-              if (key !== 'individual') updateQuery({ userId: null })
-            }}
-            className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm transition-colors ${
-              tab === key
-                ? 'bg-primary/10 text-primary'
-                : 'text-text-hint hover:text-text-secondary hover:bg-surface-variant/30'
-            }`}
-          >
-            <Icon className="w-4 h-4" />
-            <span>{label}</span>
-          </button>
-        ))}
+      {/* Tabs + filtros */}
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-1 p-1 bg-surface border border-divider rounded-xl w-fit">
+          {(
+            [
+              { key: 'general',    label: 'Vista general', Icon: LayoutDashboard },
+              { key: 'individual', label: 'Individual',    Icon: UserCircle2 },
+              { key: 'proyectos',  label: 'Proyectos',     Icon: Folder },
+            ] as const
+          ).map(({ key, label, Icon }) => (
+            <button
+              key={key}
+              onClick={() => {
+                setTab(key)
+                if (key !== 'individual') updateQuery({ userId: null })
+              }}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm transition-colors ${
+                tab === key
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-text-hint hover:text-text-secondary hover:bg-surface-variant/30'
+              }`}
+            >
+              <Icon className="w-4 h-4" />
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+
+        {!isProjectsTab && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <Select value={isWeekly ? 'current' : String(currentMonth)} onValueChange={(v) => handleMonthChange(v ?? 'current')}>
+              <SelectTrigger className="w-44 bg-surface">
+                <Calendar className="w-4 h-4 mr-1 text-primary" />
+                <SelectValue>{isWeekly ? 'Esta semana' : MONTH_LABELS[currentMonth - 1]}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="current">Esta semana</SelectItem>
+                {MONTH_LABELS.slice(0, new Date().getMonth() + 1).map((m, i) => (
+                  <SelectItem key={i} value={String(i + 1)}>{m}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={currentGroupId ? String(currentGroupId) : 'all'} onValueChange={(v) => handleGroupChange(v ?? 'all')}>
+              <SelectTrigger className="w-52 bg-surface">
+                <Users className="w-4 h-4 mr-1 text-primary" />
+                <SelectValue placeholder="Todos los grupos">
+                  {currentGroupId
+                    ? bundle.groups.groups.find((g) => g.id === currentGroupId)?.name ?? 'Todos los grupos'
+                    : 'Todos los grupos'}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos los grupos</SelectItem>
+                {bundle.groups.groups.map((g) => (
+                  <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {isIndividualTab && (
+              <Select value={currentUserId ? String(currentUserId) : 'all'} onValueChange={(v) => handleUserChange(v ?? 'all')}>
+                <SelectTrigger className="w-48 bg-surface">
+                  <UserCircle2 className="w-4 h-4 mr-1 text-primary" />
+                  <SelectValue placeholder="Selecciona empleado">
+                    {selectedUser?.name ?? 'Selecciona empleado'}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos los empleados</SelectItem>
+                  {employees.map((emp) => (
+                    <SelectItem key={emp.id} value={String(emp.id)}>{emp.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+        )}
       </div>
 
       {/* KPIs */}

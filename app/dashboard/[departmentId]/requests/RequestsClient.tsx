@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { Users } from "lucide-react";
 import type {
   AdminRequestListItem,
   AdminRequestStatus,
 } from "@/app/types/admin/api/admin-request-response";
+import type { EmployeeListItem } from "@/app/types/admin/api/employee-response";
+import type { GroupResponse } from "@/app/types/admin/api/group-response";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PageHeader from "@/components/PageHeader";
 import ReviewForm from "./ReviewForm";
 
@@ -34,6 +38,9 @@ const filters: Array<{ value: RequestFilter; label: string }> = [
   { value: "REJECTED", label: "Rechazadas" },
   { value: "CANCELLED", label: "Canceladas" },
 ];
+
+const GROUP_ALL  = "__all__";
+const GROUP_NONE = "__none__";
 
 function StatusBadge({ status }: { status: AdminRequestStatus }) {
   if (status === "APPROVED")
@@ -66,20 +73,39 @@ function formatRange(request: AdminRequestListItem) {
 
 interface Props {
   requests: AdminRequestListItem[];
+  employees: EmployeeListItem[];
+  groups: GroupResponse[];
   departmentId: number;
 }
 
-export default function RequestsClient({ requests, departmentId }: Props) {
+export default function RequestsClient({ requests, employees, groups, departmentId }: Props) {
   const [review, setReview] = useState<{
     request: AdminRequestListItem;
     mode: "approve" | "reject";
   } | null>(null);
   const [statusFilter, setStatusFilter] = useState<RequestFilter>("ALL");
+  const [groupFilter, setGroupFilter] = useState<string>(GROUP_ALL);
 
-  const filtered =
-    statusFilter === "ALL"
-      ? requests
-      : requests.filter((r) => r.status === statusFilter);
+  const groupByUserId = useMemo(() => {
+    const m = new Map<number, number | null>();
+    employees.forEach((e) => m.set(e.id, e.group_id ?? null));
+    return m;
+  }, [employees]);
+
+  const filtered = useMemo(() => {
+    return requests.filter((r) => {
+      if (statusFilter !== "ALL" && r.status !== statusFilter) return false;
+      if (groupFilter !== GROUP_ALL) {
+        const gid = groupByUserId.get(r.user_id) ?? null;
+        if (groupFilter === GROUP_NONE) {
+          if (gid != null) return false;
+        } else {
+          if (gid !== Number(groupFilter)) return false;
+        }
+      }
+      return true;
+    });
+  }, [requests, statusFilter, groupFilter, groupByUserId]);
 
   const counts: Record<RequestFilter, number> = {
     ALL: requests.length,
@@ -96,25 +122,47 @@ export default function RequestsClient({ requests, departmentId }: Props) {
         description="Revisa y gestiona las peticiones de vacaciones, permisos y bajas del departamento."
       />
 
-      <div className="flex flex-wrap gap-2">
-        {filters.map((f) => (
-          <Button
-            key={f.value}
-            variant={statusFilter === f.value ? "default" : "ghost"}
-            onClick={() => setStatusFilter(f.value)}
-            className="rounded-xl"
-          >
-            {f.label}
-            <span className="ml-2 text-xs opacity-70">{counts[f.value]}</span>
-          </Button>
-        ))}
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex flex-wrap gap-2">
+          {filters.map((f) => (
+            <Button
+              key={f.value}
+              variant={statusFilter === f.value ? "default" : "ghost"}
+              onClick={() => setStatusFilter(f.value)}
+              className="rounded-xl"
+            >
+              {f.label}
+              <span className="ml-2 text-xs opacity-70">{counts[f.value]}</span>
+            </Button>
+          ))}
+        </div>
+
+        <Select value={groupFilter} onValueChange={(v) => setGroupFilter(v ?? GROUP_ALL)}>
+          <SelectTrigger className="w-52 bg-surface">
+            <Users className="w-4 h-4 mr-1 text-primary" />
+            <SelectValue>
+              {groupFilter === GROUP_ALL
+                ? 'Todos los grupos'
+                : groupFilter === GROUP_NONE
+                  ? 'Sin grupo'
+                  : (groups.find((g) => String(g.id) === groupFilter)?.name ?? 'Grupo')}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={GROUP_ALL}>Todos los grupos</SelectItem>
+            <SelectItem value={GROUP_NONE}>Sin grupo</SelectItem>
+            {groups.map((g) => (
+              <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {filtered.length === 0 ? (
         <p className="text-sm text-text-hint py-8 text-center">
           {requests.length === 0
             ? "No hay solicitudes en este departamento todavía."
-            : "No hay solicitudes con este filtro."}
+            : "No hay solicitudes con estos filtros."}
         </p>
       ) : (
         <div className="flex flex-col gap-2">

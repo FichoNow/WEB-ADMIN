@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Users } from 'lucide-react'
 import PageHeader from '@/components/PageHeader'
 import CreateEmployeeForm from './CreateEmployeeForm'
 import EditEmployeeForm from './EditEmployeeForm'
@@ -71,29 +72,27 @@ export default function EmployeesClient({ employees, groups, departmentId }: Pro
         }
       />
 
-      <div className="flex items-center gap-3 flex-wrap">
-        <span className="text-sm text-text-hint">Filtrar por grupo:</span>
-        <div className="w-56">
-          <Select value={groupFilter} onValueChange={(v) => setGroupFilter(v ?? FILTER_ALL)}>
-            <SelectTrigger className="w-full bg-surface">
-              <SelectValue>
-                {groupFilter === FILTER_ALL
-                  ? 'Todos'
-                  : groupFilter === FILTER_NONE
-                    ? 'Sin grupo'
-                    : (groups.find((g) => String(g.id) === groupFilter)?.name ?? 'Grupo')}
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={FILTER_ALL}>Todos</SelectItem>
-              <SelectItem value={FILTER_NONE}>Sin grupo</SelectItem>
-              {groups.map((g) => (
-                <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <span className="text-xs text-text-hint">{filtered.length} de {employees.length}</span>
+        <Select value={groupFilter} onValueChange={(v) => setGroupFilter(v ?? FILTER_ALL)}>
+          <SelectTrigger className="w-52 bg-surface">
+            <Users className="w-4 h-4 mr-1 text-primary" />
+            <SelectValue>
+              {groupFilter === FILTER_ALL
+                ? 'Todos los grupos'
+                : groupFilter === FILTER_NONE
+                  ? 'Sin grupo'
+                  : (groups.find((g) => String(g.id) === groupFilter)?.name ?? 'Grupo')}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={FILTER_ALL}>Todos los grupos</SelectItem>
+            <SelectItem value={FILTER_NONE}>Sin grupo</SelectItem>
+            {groups.map((g) => (
+              <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {filtered.length === 0 ? (
