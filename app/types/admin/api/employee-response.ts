@@ -7,6 +7,7 @@ export interface EmployeeListItem {
   role: EmployeeRole
   is_active: boolean
   must_change_password: boolean
+  group_id: number | null
 }
 
 export interface EmployeeResponse {

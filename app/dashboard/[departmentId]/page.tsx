@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import PageHeader from '@/components/PageHeader'
 
 const MODULES = [
   {
@@ -18,16 +19,6 @@ const MODULES = [
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-      </svg>
-    ),
-  },
-  {
-    key: 'fichajes',
-    title: 'Fichajes',
-    description: 'Revisa y ajusta los registros de jornada.',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
   },
@@ -67,19 +58,17 @@ export default async function DepartmentPage({ params }: { params: Promise<{ dep
   const departmentId = (await params).departmentId;
 
   return (
-    <div className="px-10 py-12 flex flex-col gap-10">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-medium tracking-widest text-primary uppercase">Inicio</p>
-        <h1 className="text-3xl font-light tracking-tight text-text-primary">Vista general</h1>
-        <p className="text-sm text-text-secondary">Selecciona un módulo para gestionar tu departamento.</p>
-      </div>
+    <div className="px-10 py-12 flex flex-col gap-6">
+      <PageHeader
+        title="Vista general"
+        description="Selecciona un módulo para gestionar tu departamento."
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {MODULES.map((mod) => (
           <Link key={mod.key} href={`/dashboard/${departmentId}/${mod.key}`}>
-            <div className="group relative flex flex-col p-6 rounded-2xl bg-surface border border-divider hover:border-primary/50 hover:bg-surface-variant transition-all duration-300 cursor-pointer h-full hover:-translate-y-1 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative z-10 w-10 h-10 rounded-xl bg-bg border border-divider flex items-center justify-center text-text-secondary group-hover:scale-110 group-hover:text-primary group-hover:bg-primary/10 transition-all duration-300 mb-4">
+            <div className="group relative flex flex-col p-6 rounded-2xl bg-surface border border-divider border-l-4 border-l-transparent hover:border-l-primary hover:border-primary/30 hover:bg-surface-variant transition-all duration-300 cursor-pointer h-full hover:-translate-y-1 overflow-hidden">
+              <div className="relative z-10 text-text-secondary group-hover:text-primary transition-colors duration-300 mb-5">
                 {mod.icon}
               </div>
               <h3 className="relative z-10 text-base font-semibold text-text-primary mb-1 group-hover:text-primary transition-colors">{mod.title}</h3>

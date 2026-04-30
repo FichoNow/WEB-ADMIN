@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getCompanyInfo } from '@/app/repositories/admin-repository'
+import { getCompanyInfo, getCompanyDetails, getSuperadmins } from '@/app/repositories/admin-repository'
 import type { CompanyInfoDepartment } from '@/app/types/admin/api/company-info-response'
 import CreateDepartmentButton from './CreateDepartmentButton'
+import CompanySettingsClient from './CompanySettingsClient'
 
 function DepartmentCard({ department }: { department: CompanyInfoDepartment }) {
   return (
@@ -30,11 +31,21 @@ export default async function DashboardPage() {
   const isSuperAdmin = role === 'SUPERADMIN'
 
   let overview
+  let companyDetails
+  let superadmins: { id: number; name: string; email: string; is_active: boolean }[] = []
 
   try {
     overview = await getCompanyInfo()
   } catch {
     redirect('/')
+  }
+
+  if (isSuperAdmin) {
+    try {
+      [companyDetails, superadmins] = await Promise.all([getCompanyDetails(), getSuperadmins()])
+    } catch {
+      // non-critical, render without company details
+    }
   }
 
   return (
@@ -70,6 +81,14 @@ export default async function DashboardPage() {
             ))}
           </div>
         </div>
+
+        {/* Company settings — superadmin only */}
+        {isSuperAdmin && companyDetails && (
+          <>
+            <div className="h-px bg-divider" />
+            <CompanySettingsClient company={companyDetails} superadmins={superadmins} />
+          </>
+        )}
 
       </div>
     </div>

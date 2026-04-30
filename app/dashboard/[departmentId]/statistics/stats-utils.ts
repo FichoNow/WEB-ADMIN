@@ -2,11 +2,16 @@ import type { DayStats } from '@/app/types/admin/api/stats-response'
 
 export const DAY_LABELS    = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 export const MONTH_LABELS  = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
-export const COLORS        = ['#4F81E8','#FFB74D','#81C784','#E57373','#BA68C8','#4DB6AC']
+export const COLORS        = ['#6366F1', '#F59E0B', '#10B981', '#EF4444', '#8B5CF6', '#06B6D4']
 
 export const barChartConfig = {
-  regular_hours:  { label: 'Horas Regulares', color: '#4F81E8' },
-  overtime_hours: { label: 'Horas Extras',    color: '#FFB74D' },
+  regular_hours:  { label: 'Horas Regulares', color: '#6366F1' },
+  overtime_hours: { label: 'Horas Extras',    color: '#F59E0B' },
+}
+
+export function calcTrend(current: number, prev: number): number {
+  if (!prev) return 0
+  return Math.round(((current - prev) / prev) * 100)
 }
 
 export function minutesToHours(minutes: number): string {
@@ -44,8 +49,8 @@ export function buildChartData(
   const monthStr    = String(currentMonth).padStart(2, '0')
 
   return Array.from({ length: daysInMonth }, (_, i) => {
-    const dayNum    = i + 1
-    const dayStr    = String(dayNum).padStart(2, '0')
+    const dayNum     = i + 1
+    const dayStr     = String(dayNum).padStart(2, '0')
     const targetDate = `${yearStr}-${monthStr}-${dayStr}`
     const d = daily.find((x) => x.date && x.date.startsWith(targetDate))
     return {
@@ -55,3 +60,4 @@ export function buildChartData(
     }
   })
 }
+

@@ -269,11 +269,6 @@ export default function LandingPage() {
         >
           {/* Text Content */}
           <div className="flex-1 text-center lg:text-left">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-surface border border-divider mb-6">
-              <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">
               Fichaje profesional y avanzado
             </h2>
@@ -399,11 +394,6 @@ export default function LandingPage() {
         >
           {/* Text Content */}
           <div className="flex-1 text-center lg:text-left">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-surface border border-divider mb-6">
-              <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">
               Gestión de ausencias simplificada
             </h2>
@@ -585,12 +575,6 @@ export default function LandingPage() {
         >
           {/* Text Content */}
           <div className="flex-1 text-center lg:text-left">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-surface border border-divider mb-6">
-              <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">
               Panel de administración completo
             </h2>
@@ -631,7 +615,7 @@ export default function LandingPage() {
             className="flex-1 w-full flex justify-center lg:justify-end cursor-default"
             style={{ perspective: 1200 }}
           >
-            <div className="w-full max-w-2xl bg-bg rounded-2xl border border-divider shadow-2xl overflow-hidden shrink-0 flex flex-col text-[10px]">
+            <div className="w-full max-w-xl bg-bg rounded-2xl border border-divider shadow-2xl overflow-hidden shrink-0 flex flex-col text-[10px]">
               {/* Fake Topbar */}
               <div className="h-12 border-b border-divider flex items-center px-4 md:px-6 justify-between bg-surface shrink-0 z-10">
                 <div className="flex items-center gap-6">
@@ -656,7 +640,7 @@ export default function LandingPage() {
               </div>
 
               {/* Main App Area */}
-              <div className="flex h-[380px] sm:h-[480px]">
+              <div className="flex h-[340px] sm:h-[420px]">
                 {/* Fake Sidebar */}
                 <div className="w-48 border-r border-divider bg-surface flex-col shrink-0 hidden sm:flex">
                   <div className="px-4 py-4 border-b border-divider flex flex-col gap-3">
@@ -773,12 +757,12 @@ export default function LandingPage() {
             {/* Feature: Organización */}
             <div className="group card-border rounded-3xl p-8 flex flex-col hover:border-primary/40 transition-all duration-500 hover:-translate-y-1 relative overflow-hidden bg-surface/50 hover:bg-surface">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10 w-12 h-12 rounded-xl bg-bg border border-divider flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-300">
-                <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <h3 className="relative z-10 flex items-center gap-3 text-xl font-bold text-text-primary mb-3">
+                <svg className="w-6 h-6 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-              </div>
-              <h3 className="relative z-10 text-xl font-bold text-text-primary mb-3">Organización de plantilla</h3>
+                Organización de plantilla
+              </h3>
               <p className="relative z-10 text-text-secondary leading-relaxed">
                 Cree departamentos, grupos de trabajo y asigne roles específicos para cada mánager de su organización.
               </p>
@@ -787,12 +771,12 @@ export default function LandingPage() {
             {/* Feature: Cumplimiento */}
             <div className="group card-border rounded-3xl p-8 flex flex-col hover:border-primary/40 transition-all duration-500 hover:-translate-y-1 relative overflow-hidden bg-surface/50 hover:bg-surface">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10 w-12 h-12 rounded-xl bg-bg border border-divider flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary/10 transition-all duration-300">
-                <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <h3 className="relative z-10 flex items-center gap-3 text-xl font-bold text-text-primary mb-3">
+                <svg className="w-6 h-6 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
-              </div>
-              <h3 className="relative z-10 text-xl font-bold text-text-primary mb-3">Cumplimiento normativo</h3>
+                Cumplimiento normativo
+              </h3>
               <p className="relative z-10 text-text-secondary leading-relaxed">
                 Registros inmutables y generación automática de reportes legales listos para cualquier inspección de trabajo.
               </p>

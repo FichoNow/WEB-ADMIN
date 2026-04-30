@@ -1,10 +1,16 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { updateEmployee } from "@/app/repositories/admin-repository"
+import { deleteEmployee, updateEmployee } from "@/app/repositories/admin-repository"
 import { fetchWithAuth } from "@/app/lib/api"
 import { createEmployeesSchema, editEmployeeSchema } from "@/app/types/admin/schemas/employee-schema"
 import type { EmployeeActionState } from "@/app/types/admin/states/employee-state"
+
+function parseGroupId(raw: string | undefined): number | null {
+  if (!raw) return null
+  const n = Number(raw)
+  return Number.isFinite(n) && n > 0 ? n : null
+}
 
 export async function createBulkEmployeesAction(
   departmentId: number,
@@ -18,7 +24,7 @@ export async function createBulkEmployeesAction(
 
   const body = result.data.rows.map((row) => ({
     department_id: departmentId,
-    group_id: null,
+    group_id: parseGroupId(row.group_id),
     name:     row.name.trim(),
     email:    row.email.trim().toLowerCase(),
     password: row.password,
@@ -57,13 +63,14 @@ export async function updateEmployeeAction(
     return { error: result.error.issues[0].message }
   }
 
-  const { name, email, password, role, is_active } = result.data
+  const { name, email, password, role, is_active, group_id } = result.data
 
   const changes: Record<string, unknown> = {
     name,
     email:     email.trim().toLowerCase(),
     role,
     is_active: is_active === "true",
+    group_id:  parseGroupId(group_id),
   }
 
   if (password) changes.password = password
@@ -74,5 +81,18 @@ export async function updateEmployeeAction(
     return { success: `"${employee.name}" actualizado correctamente` }
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Error al actualizar el empleado" }
+  }
+}
+
+export async function deleteEmployeeAction(
+  departmentId: number,
+  employeeId: number,
+): Promise<EmployeeActionState> {
+  try {
+    await deleteEmployee(employeeId)
+    revalidatePath(`/dashboard/${departmentId}/employees`)
+    return { success: "Empleado eliminado correctamente" }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error al eliminar el empleado" }
   }
 }

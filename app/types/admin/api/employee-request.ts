@@ -7,6 +7,10 @@ export interface BulkEmployeeRow {
   role: EmployeeRole
 }
 
+export interface BulkCreateOptions {
+  group_id: number | null
+}
+
 export interface CreateEmployeeBody {
   department_id: number
   group_id: number | null
@@ -23,4 +27,5 @@ export interface UpdateEmployeeBody {
   role?: EmployeeRole
   is_active?: boolean
   password?: string
+  group_id?: number | null
 }

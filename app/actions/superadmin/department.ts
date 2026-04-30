@@ -34,3 +34,29 @@ export async function createDepartmentAction(
   revalidatePath('/dashboard')
   return { success: true }
 }
+
+export async function updateDepartmentAction(
+  departmentId: number,
+  _prev: DepartmentState,
+  formData: FormData,
+): Promise<DepartmentState> {
+  const result = departmentSchema.safeParse(Object.fromEntries(formData))
+  if (!result.success) return { error: result.error.issues[0].message }
+
+  try {
+    const res = await fetchWithAuth(`/superadmin/department/${departmentId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ name: result.data.name.trim() }),
+    })
+    if (!res.ok) {
+      const json = await res.json().catch(() => null)
+      throw new Error(json?.error?.message ?? 'Error al actualizar el departamento')
+    }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Error de conexión' }
+  }
+
+  revalidatePath('/dashboard')
+  revalidatePath(`/dashboard/[departmentId]`, 'layout')
+  return { success: true }
+}

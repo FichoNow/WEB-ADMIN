@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getEmployees } from "@/app/repositories/admin-repository";
+import { getEmployees, listGroups } from "@/app/repositories/admin-repository";
 import EmployeesClient from "./EmployeesClient";
 
 interface Props {
@@ -11,16 +11,20 @@ export default async function EmployeesPage({ params }: Props) {
   const deptId = Number(departmentId);
 
   let employees;
+  let groups;
 
   try {
-    employees = await getEmployees(deptId);
+    [employees, groups] = await Promise.all([
+      getEmployees(deptId),
+      listGroups(deptId),
+    ]);
   } catch {
     redirect("/dashboard");
   }
 
   return (
     <div className="px-10 py-12 flex flex-col gap-6">
-      <EmployeesClient employees={employees} departmentId={deptId} />
+      <EmployeesClient employees={employees} groups={groups} departmentId={deptId} />
     </div>
   );
 }
