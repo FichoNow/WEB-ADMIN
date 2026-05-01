@@ -8,7 +8,7 @@ import type { GroupResponse } from '@/app/types/admin/api/group-response'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
 import PageHeader from '@/components/PageHeader'
 import CreateEmployeeForm from './CreateEmployeeForm'
@@ -36,6 +36,11 @@ interface Props {
 
 const FILTER_ALL = '__all__'
 const FILTER_NONE = '__none__'
+
+const GROUP_LABELS: Record<string, string> = {
+  [FILTER_ALL]: 'Todos los grupos',
+  [FILTER_NONE]: 'Sin grupo',
+}
 
 export default function EmployeesClient({ employees, groups, departmentId }: Props) {
   const [showCreate, setShowCreate] = useState(false)
@@ -112,7 +117,9 @@ export default function EmployeesClient({ employees, groups, departmentId }: Pro
           <Select value={groupFilter} onValueChange={(v) => setGroupFilter(v ?? FILTER_ALL)}>
             <SelectTrigger className="w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium pr-4">
               <Filter className="w-3.5 h-3.5 mr-2 text-primary" />
-              <SelectValue placeholder="Todos los grupos" />
+              <span className="truncate">
+                {GROUP_LABELS[groupFilter] ?? groupNameById.get(Number(groupFilter)) ?? groupFilter}
+              </span>
             </SelectTrigger>
             <SelectContent className="rounded-xl border-divider">
               <SelectItem value={FILTER_ALL} className="text-xs">Todos los grupos</SelectItem>

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Calendar, Clock, MessageSquare, CheckCircle2, XCircle, AlertCircle, ChevronRight, Filter } from "lucide-react";
+import { Calendar, Clock, MessageSquare, CheckCircle2, XCircle, AlertCircle, Filter } from "lucide-react";
 import type {
   AdminRequestListItem,
   AdminRequestStatus,
@@ -11,7 +11,7 @@ import type { EmployeeListItem } from "@/app/types/admin/api/employee-response";
 import type { GroupResponse } from "@/app/types/admin/api/group-response";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PageHeader from "@/components/PageHeader";
 import ReviewForm from "./ReviewForm";
@@ -42,6 +42,11 @@ const filters: Array<{ value: RequestFilter; label: string }> = [
 
 const GROUP_ALL  = "__all__";
 const GROUP_NONE = "__none__";
+
+const GROUP_LABELS: Record<string, string> = {
+  [GROUP_ALL]: "Todos los grupos",
+  [GROUP_NONE]: "Sin grupo",
+};
 
 function StatusBadge({ status }: { status: AdminRequestStatus }) {
   const config = statusConfig[status] || statusConfig.PENDING;
@@ -85,6 +90,12 @@ export default function RequestsClient({ requests, employees, groups, department
     employees.forEach((e) => m.set(e.id, e.group_id ?? null));
     return m;
   }, [employees]);
+
+  const groupNameById = useMemo(() => {
+    const m = new Map<number, string>();
+    groups.forEach((g) => m.set(g.id, g.name));
+    return m;
+  }, [groups]);
 
   const filtered = useMemo(() => {
     return requests.filter((r) => {
@@ -141,7 +152,9 @@ export default function RequestsClient({ requests, employees, groups, department
           <Select value={groupFilter} onValueChange={(v) => setGroupFilter(v ?? GROUP_ALL)}>
             <SelectTrigger className="w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium">
               <Filter className="w-3.5 h-3.5 mr-2 text-primary" />
-              <SelectValue placeholder="Todos los grupos" />
+              <span className="truncate">
+                {GROUP_LABELS[groupFilter] ?? groupNameById.get(Number(groupFilter)) ?? groupFilter}
+              </span>
             </SelectTrigger>
             <SelectContent className="rounded-xl border-divider">
               <SelectItem value={GROUP_ALL} className="text-xs">Todos los grupos</SelectItem>

@@ -49,13 +49,13 @@ export default function DepartmentSettingsPage({ params }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="px-10 py-12 flex flex-col gap-10">
       <PageHeader
         title="Configuración"
         description="Administra los parámetros generales y la identidad de este departamento."
       />
 
-      <div className="max-w-3xl">
+      <div className="max-w-3xl mx-auto w-full">
         <Card className="bg-surface border border-divider/50 rounded-[2.5rem] overflow-hidden shadow-sm">
           <CardHeader className="px-8 sm:px-10 py-8 border-b border-divider/50 bg-surface-variant/30">
             <div className="flex items-center gap-4">
