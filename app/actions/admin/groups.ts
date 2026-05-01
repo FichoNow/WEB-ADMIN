@@ -1,7 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { createGroup, deleteGroup, updateGroup } from "@/app/repositories/admin-repository"
+import { createGroup, deleteGroup, updateGroup } from "@/app/repositories/groups-repository"
 import { createGroupSchema, editGroupSchema } from "@/app/types/admin/schemas/group-schema"
 import type { GroupActionState } from "@/app/types/admin/states/group-state"
 

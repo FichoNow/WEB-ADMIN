@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getCompanyInfo } from '@/app/repositories/admin-repository'
+import { getCompanyInfo } from '@/app/repositories/company-repository'
 import PageHeader from '@/components/PageHeader'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Settings2 } from 'lucide-react'

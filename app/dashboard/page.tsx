@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getCompanyInfo, getCompanyDetails, getSuperadmins } from '@/app/repositories/admin-repository'
+import { getCompanyInfo, getCompanyDetails, getSuperadmins } from '@/app/repositories/company-repository'
 import type { CompanyInfoDepartment } from '@/app/types/admin/api/company-info-response'
 import CreateDepartmentButton from './CreateDepartmentButton'
 import CompanySettingsClient from './CompanySettingsClient'

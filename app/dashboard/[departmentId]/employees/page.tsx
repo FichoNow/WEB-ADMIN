@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
-import { getEmployees, listGroups } from "@/app/repositories/admin-repository";
+import { getEmployees } from "@/app/repositories/employees-repository";
+import { listGroups } from "@/app/repositories/groups-repository";
 import EmployeesClient from "./EmployeesClient";
 
 interface Props {

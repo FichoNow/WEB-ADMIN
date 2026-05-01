@@ -1,7 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { deleteEmployee, updateEmployee } from "@/app/repositories/admin-repository"
+import { deleteEmployee, updateEmployee } from "@/app/repositories/employees-repository"
 import { fetchWithAuth } from "@/app/lib/api"
 import { createEmployeesSchema, editEmployeeSchema } from "@/app/types/admin/schemas/employee-schema"
 import type { EmployeeActionState } from "@/app/types/admin/states/employee-state"

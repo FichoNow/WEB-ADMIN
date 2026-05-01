@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 import {
   approveRequest,
   rejectRequest,
-} from "@/app/repositories/admin-repository"
+} from "@/app/repositories/requests-repository"
 import type { RequestActionState } from "@/app/types/admin/states/request-state"
 
 export async function approveRequestAction(

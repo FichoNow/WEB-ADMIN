@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
-import { getCompanyInfo } from '@/app/repositories/admin-repository'
+import { getCompanyInfo } from '@/app/repositories/company-repository'
 import Sidebar from './Sidebar'
 import DashboardShell from './DashboardShell'
 

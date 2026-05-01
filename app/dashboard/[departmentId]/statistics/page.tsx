@@ -1,12 +1,13 @@
 import React, { Suspense } from 'react'
 import { redirect } from 'next/navigation'
+import { getEmployees } from '@/app/repositories/employees-repository'
 import {
-  getEmployees, getProjectsOverview,
+  getProjectsOverview,
   getOverview, getRanking, getProjectsPeriod, getActiveNow,
   getHourly, getAbsencesBreakdown, getTopDays, getBreaks,
   getOvertimeYearly, getGroups,
   getUserStats,
-} from '@/app/repositories/admin-repository'
+} from '@/app/repositories/stats-repository'
 import type {
   OverviewResponse, RankingResponse, ProjectsPeriodResponse,
   ActiveNowResponse, HourlyResponse, AbsencesResponse, TopDaysResponse,

@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button'
 import type { UserStatsResponse } from '@/app/types/admin/api/stats-response'
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
+import { getUserStatsAction } from '@/app/actions/admin/stats'
 import { minutesToHours } from './stats-utils'
 
 interface Props {
@@ -17,18 +18,6 @@ interface Props {
   month?: number
   year?: number
   onClose: () => void
-}
-
-async function fetchUserStats(
-  departmentId: number, userId: number, month?: number, year?: number,
-): Promise<UserStatsResponse> {
-  const params = new URLSearchParams({ departmentId: String(departmentId) })
-  if (month) params.set('month', String(month))
-  if (year)  params.set('year',  String(year))
-  const res = await fetch(`/api/stats/user/${userId}?${params}`)
-  if (!res.ok) throw new Error('No se pudo cargar')
-  const json = await res.json()
-  return json.data as UserStatsResponse
 }
 
 interface Row {
@@ -115,8 +104,8 @@ export default function EmployeeCompareModal({ open, employees, departmentId, mo
     if (!userA || !userB) { setStatsA(null); setStatsB(null); return }
     setLoading(true); setError(null)
     Promise.all([
-      fetchUserStats(departmentId, userA, month, year),
-      fetchUserStats(departmentId, userB, month, year),
+      getUserStatsAction(departmentId, userA, month, year),
+      getUserStatsAction(departmentId, userB, month, year),
     ])
       .then(([a, b]) => { setStatsA(a); setStatsB(b) })
       .catch(() => setError('No se pudieron cargar los datos.'))

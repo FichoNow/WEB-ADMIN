@@ -17,6 +17,7 @@ import type {
   OvertimeYearlyResponse, GroupsResponse
 } from '@/app/types/admin/api/stats-response'
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
+import { getUserProjectHoursAction } from '@/app/actions/admin/stats'
 export interface DepartmentStatsBundle {
   overview:        OverviewResponse
   ranking:         RankingResponse
@@ -156,16 +157,17 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
       exportProjectsCsv(projectsOverview)
       return
     }
-    const params = new URLSearchParams({ departmentId: String(departmentId) })
-    if (!isWeekly) {
-      params.set('month', String(currentMonth))
-      params.set('year',  String(currentYear))
+    try {
+      const data = await getUserProjectHoursAction(
+        departmentId,
+        isWeekly ? undefined : currentMonth,
+        isWeekly ? undefined : currentYear,
+        currentGroupId ?? undefined,
+      )
+      exportStatsCsv(bundle.ranking, data, overview.period_label)
+    } catch {
+      return
     }
-    if (currentGroupId) params.set('groupId', String(currentGroupId))
-    const res = await fetch(`/api/stats/user-project-hours?${params}`)
-    if (!res.ok) return
-    const json = await res.json()
-    exportStatsCsv(bundle.ranking, json.data, overview.period_label)
   }
 
   return (

@@ -5,24 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Folder, Clock, Users, Loader2 } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import type { ProjectStatsResponse } from '@/app/types/admin/api/stats-response'
+import { getProjectStatsAction } from '@/app/actions/admin/stats'
 import { minutesToHours, COLORS } from './stats-utils'
-
-async function fetchProjectStats(
-  departmentId: number,
-  projectName: string,
-  month?: number,
-  year?: number,
-  allTime?: boolean,
-): Promise<ProjectStatsResponse> {
-  const params = new URLSearchParams({ departmentId: String(departmentId), projectName })
-  if (allTime)      params.set('all_time', 'true')
-  else if (month)   params.set('month', String(month))
-  if (year && !allTime) params.set('year', String(year))
-  const res = await fetch(`/api/stats/project?${params}`)
-  if (!res.ok) throw new Error('Error al cargar los detalles del proyecto')
-  const json = await res.json()
-  return json.data as ProjectStatsResponse
-}
 
 interface Props {
   projectName: string | null
@@ -44,7 +28,7 @@ export default function ProjectDetailModal({ projectName, departmentId, month, y
     setData(null)
     setError(null)
     setLoading(true)
-    fetchProjectStats(departmentId, projectName, month, year, allTime)
+    getProjectStatsAction(departmentId, projectName, month, year, allTime)
       .then(setData)
       .catch(() => setError('No se pudieron cargar los detalles del proyecto.'))
       .finally(() => setLoading(false))

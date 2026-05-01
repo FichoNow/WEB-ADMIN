@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation"
-import { getRequests, getEmployees, listGroups } from "@/app/repositories/admin-repository"
+import { getRequests } from "@/app/repositories/requests-repository"
+import { getEmployees } from "@/app/repositories/employees-repository"
+import { listGroups } from "@/app/repositories/groups-repository"
 import type { AdminRequestListItem } from "@/app/types/admin/api/admin-request-response"
 import type { EmployeeListItem } from "@/app/types/admin/api/employee-response"
 import type { GroupResponse } from "@/app/types/admin/api/group-response"
