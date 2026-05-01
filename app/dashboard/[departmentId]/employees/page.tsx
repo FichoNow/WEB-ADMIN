@@ -23,7 +23,7 @@ export default async function EmployeesPage({ params }: Props) {
   }
 
   return (
-    <div className="px-10 py-12 flex flex-col gap-6">
+    <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-10 lg:py-12 flex flex-col gap-6">
       <EmployeesClient employees={employees} groups={groups} departmentId={deptId} />
     </div>
   );

@@ -1,9 +1,11 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { buttonVariants } from '@/components/ui/button'
+import { X } from 'lucide-react'
 
 const SECTIONS = [
   {
@@ -47,7 +49,7 @@ const SECTIONS = [
     label: 'Horarios',
     icon: (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z M4.22 4.22l15.56 15.56" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
   },
@@ -67,22 +69,29 @@ interface Props {
   departmentName: string
   companyName: string
   isSuperAdmin: boolean
+  open: boolean
+  onClose: () => void
 }
 
-export default function Sidebar({ departmentId, departmentName, companyName, isSuperAdmin }: Props) {
+export default function Sidebar({ departmentId, departmentName, companyName, isSuperAdmin, open, onClose }: Props) {
   const pathname = usePathname()
   const base = `/dashboard/${departmentId}`
+  const prevPath = useRef(pathname)
 
-  return (
-    <aside className="w-64 shrink-0 border-r border-divider bg-surface flex flex-col h-[calc(100vh-4rem)] sticky top-16 z-40 overflow-y-auto">
-      {/* Nav items */}
+  // Close drawer on route change (skip first render)
+  useEffect(() => {
+    if (prevPath.current !== pathname) {
+      onClose()
+      prevPath.current = pathname
+    }
+  }, [pathname])
+
+  const navContent = (
+    <>
       <nav className="flex-1 px-3 py-6 flex flex-col gap-1">
         {SECTIONS.map(({ key, label, icon }) => {
           const href = key ? `${base}/${key}` : base
-          const isActive = key
-            ? pathname.startsWith(`${base}/${key}`)
-            : pathname === base
-
+          const isActive = key ? pathname.startsWith(`${base}/${key}`) : pathname === base
           return (
             <Link
               key={key}
@@ -90,8 +99,8 @@ export default function Sidebar({ departmentId, departmentName, companyName, isS
               className={buttonVariants({
                 variant: 'ghost',
                 className: `group relative justify-start gap-3 w-full rounded-xl transition-all duration-300 ${
-                  isActive 
-                    ? 'text-primary font-semibold' 
+                  isActive
+                    ? 'text-primary font-semibold'
                     : 'text-text-secondary hover:bg-surface-variant hover:text-text-primary'
                 }`
               })}
@@ -119,12 +128,10 @@ export default function Sidebar({ departmentId, departmentName, companyName, isS
             </Link>
           )
         })}
-
       </nav>
 
       <div className="h-px bg-divider/50 mx-5" />
 
-      {/* Department footer */}
       <div className="px-5 py-6 flex flex-col gap-5 mt-auto">
         {isSuperAdmin && (
           <div className="flex flex-col gap-1 -mt-2">
@@ -138,27 +145,17 @@ export default function Sidebar({ departmentId, departmentName, companyName, isS
                   className={buttonVariants({
                     variant: 'ghost',
                     className: `group relative justify-start gap-3 w-full rounded-xl transition-all duration-300 px-3 ${
-                      isActive 
-                        ? 'text-primary font-semibold' 
+                      isActive
+                        ? 'text-primary font-semibold'
                         : 'text-text-secondary hover:bg-surface-variant hover:text-text-primary'
                     }`
                   })}
                 >
                   {isActive && (
-                    <motion.div
-                      layoutId="sidebar-active"
-                      className="absolute inset-0 bg-primary/10 rounded-xl"
-                      initial={false}
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
+                    <motion.div layoutId="sidebar-active" className="absolute inset-0 bg-primary/10 rounded-xl" initial={false} transition={{ type: 'spring', stiffness: 380, damping: 30 }} />
                   )}
                   {isActive && (
-                    <motion.div
-                      layoutId="sidebar-active-line"
-                      className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full"
-                      initial={false}
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
+                    <motion.div layoutId="sidebar-active-line" className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" initial={false} transition={{ type: 'spring', stiffness: 380, damping: 30 }} />
                   )}
                   <span className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-primary' : 'group-hover:text-primary'}`}>
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -184,7 +181,7 @@ export default function Sidebar({ departmentId, departmentName, companyName, isS
             <p className="text-sm font-semibold text-text-secondary truncate">{departmentName}</p>
           </div>
         </div>
-        
+
         <Link
           href="/dashboard"
           className="text-xs font-semibold text-primary hover:text-primary-dark transition-colors px-1 flex items-center gap-1.5"
@@ -195,6 +192,51 @@ export default function Sidebar({ departmentId, departmentName, companyName, isS
           Cambiar departamento
         </Link>
       </div>
-    </aside>
+    </>
+  )
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex w-64 shrink-0 border-r border-divider bg-surface flex-col h-[calc(100vh-4rem)] sticky top-16 z-40 overflow-y-auto">
+        {navContent}
+      </aside>
+
+      {/* Mobile drawer */}
+      <AnimatePresence>
+        {open && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+              onClick={onClose}
+            />
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-surface border-r border-divider flex flex-col"
+            >
+              <div className="flex items-center justify-between px-5 py-4 border-b border-divider/50">
+                <span className="text-sm font-bold text-text-primary">Menú</span>
+                <button
+                  onClick={onClose}
+                  className="w-8 h-8 rounded-xl flex items-center justify-center text-text-hint hover:bg-surface-variant transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto flex flex-col">
+                {navContent}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   )
 }

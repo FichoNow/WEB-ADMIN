@@ -74,7 +74,7 @@ export default async function StatisticsPage({ params, searchParams }: Props) {
   }
 
   return (
-    <div className="px-10 py-12 flex flex-col gap-6">
+    <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-10 lg:py-12 flex flex-col gap-6">
       <React.Suspense fallback={<div className="h-96 w-full animate-pulse bg-surface/50 rounded-[2rem]" />}>
         <StatsClient
           bundle={bundle!}

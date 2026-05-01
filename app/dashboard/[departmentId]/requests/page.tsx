@@ -28,7 +28,7 @@ export default async function RequestsPage({ params }: Props) {
   }
 
   return (
-    <div className="px-10 py-12 flex flex-col gap-6">
+    <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-10 lg:py-12 flex flex-col gap-6">
       <RequestsClient
         requests={requests}
         employees={employees}

@@ -128,18 +128,18 @@ export default function RequestsClient({ requests, employees, groups, department
       />
 
       {/* Tabs and Filters */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as RequestFilter)} className="w-fit">
-          <TabsList className="bg-surface border border-divider/50 p-1 h-11 rounded-xl">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <Tabs value={statusFilter} onValueChange={(v) => setStatusFilter(v as RequestFilter)} className="w-full sm:w-fit min-w-0">
+          <TabsList className="bg-surface border border-divider/50 p-1 rounded-xl w-full sm:w-auto grid grid-cols-2 sm:flex sm:h-11 h-auto gap-1 sm:gap-0">
             {filters.map((f) => (
-              <TabsTrigger 
-                key={f.value} 
+              <TabsTrigger
+                key={f.value}
                 value={f.value}
-                className="rounded-lg px-5 text-xs font-bold data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all"
+                className="rounded-lg px-3 sm:px-5 py-2 sm:py-1.5 text-xs font-bold data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all min-w-0"
               >
-                {f.label}
+                <span className="truncate">{f.label}</span>
                 {counts[f.value] > 0 && (
-                  <span className={`ml-2 px-1.5 py-0.5 rounded-md text-[10px] ${statusFilter === f.value ? 'bg-primary/20' : 'bg-surface-variant'}`}>
+                  <span className={`ml-2 px-1.5 py-0.5 rounded-md text-[10px] shrink-0 ${statusFilter === f.value ? 'bg-primary/20' : 'bg-surface-variant'}`}>
                     {counts[f.value]}
                   </span>
                 )}
@@ -150,7 +150,7 @@ export default function RequestsClient({ requests, employees, groups, department
 
         <div className="flex items-center gap-2">
           <Select value={groupFilter} onValueChange={(v) => setGroupFilter(v ?? GROUP_ALL)}>
-            <SelectTrigger className="w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium">
+            <SelectTrigger className="w-full sm:w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium">
               <Filter className="w-3.5 h-3.5 mr-2 text-primary" />
               <span className="truncate">
                 {GROUP_LABELS[groupFilter] ?? groupNameById.get(Number(groupFilter)) ?? groupFilter}
@@ -190,35 +190,34 @@ export default function RequestsClient({ requests, employees, groups, department
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className={`group relative flex items-center justify-between px-6 py-5 rounded-[2rem] bg-surface border transition-all duration-300 ${
-                  request.status === 'PENDING' 
-                    ? 'border-amber-500/30 shadow-[0_8px_30px_rgb(245,158,11,0.05)] hover:bg-amber-500/[0.02]' 
+                className={`group relative flex flex-col gap-3 px-4 sm:px-6 py-4 sm:py-5 rounded-[2rem] bg-surface border transition-all duration-300 ${
+                  request.status === 'PENDING'
+                    ? 'border-amber-500/30 shadow-[0_8px_30px_rgb(245,158,11,0.05)]'
                     : 'border-divider/50 hover:border-primary/20 hover:bg-surface-variant/30'
                 }`}
               >
-                <div className="flex items-center gap-6">
-                  {/* Date Badge */}
-                  <div className="flex flex-col items-center justify-center w-16 h-16 rounded-2xl bg-surface-variant/50 border border-divider/50 shrink-0">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-text-hint">
+                {/* Top row: date + info */}
+                <div className="flex items-start gap-4">
+                  <div className="flex flex-col items-center justify-center w-14 h-14 rounded-2xl bg-surface-variant/50 border border-divider/50 shrink-0">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-text-hint">
                       {new Date(request.start_date).toLocaleDateString("es-ES", { month: 'short' })}
                     </span>
-                    <span className="text-xl font-bold text-text-primary leading-none">
+                    <span className="text-lg font-bold text-text-primary leading-none">
                       {new Date(request.start_date).getDate()}
                     </span>
                   </div>
 
-                  <div className="flex flex-col gap-1.5">
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <h4 className="text-base font-bold text-text-primary group-hover:text-primary transition-colors leading-none">
-                        {request.employee_name}
-                      </h4>
+                  <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                    <h4 className="text-base font-bold text-text-primary leading-none truncate">
+                      {request.employee_name}
+                    </h4>
+                    <div className="flex items-center gap-2 flex-wrap">
                       <StatusBadge status={request.status} />
                       <Badge variant="outline" className="text-[10px] font-bold border-divider/50 text-text-secondary">
                         {typeLabels[request.type] ?? request.type}
                       </Badge>
                     </div>
-                    
-                    <div className="flex items-center gap-4 text-xs text-text-secondary font-medium">
+                    <div className="flex items-center gap-3 text-xs text-text-secondary font-medium flex-wrap">
                       <div className="flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5 text-text-hint" />
                         {formatRange(request)}
@@ -230,41 +229,38 @@ export default function RequestsClient({ requests, employees, groups, department
                         </div>
                       )}
                     </div>
-
-                    {request.comment && (
-                      <div className="flex items-start gap-1.5 mt-1 bg-surface-variant/30 p-2 rounded-lg border border-divider/20 max-w-md">
-                        <MessageSquare className="w-3 h-3 text-text-hint mt-0.5 shrink-0" />
-                        <p className="text-[11px] text-text-secondary italic">
-                          "{request.comment}"
-                        </p>
-                      </div>
-                    )}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  {request.status === "PENDING" ? (
-                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button
-                        variant="ghost"
-                        onClick={() => setReview({ request, mode: "reject" })}
-                        className="rounded-xl h-10 px-4 text-xs font-bold bg-error/10 text-error hover:bg-error hover:text-white transition-colors"
-                      >
-                        Rechazar
-                      </Button>
-                      <Button
-                        onClick={() => setReview({ request, mode: "approve" })}
-                        className="rounded-xl h-10 px-5 text-xs font-bold"
-                      >
-                        Aprobar
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1.5 text-text-hint opacity-50 font-bold text-[10px] uppercase tracking-widest px-3">
-                      Completada
-                    </div>
-                  )}
-                </div>
+                {request.comment && (
+                  <div className="flex items-start gap-1.5 bg-surface-variant/30 p-2 rounded-lg border border-divider/20">
+                    <MessageSquare className="w-3 h-3 text-text-hint mt-0.5 shrink-0" />
+                    <p className="text-[11px] text-text-secondary italic">"{request.comment}"</p>
+                  </div>
+                )}
+
+                {/* Actions row */}
+                {request.status === "PENDING" ? (
+                  <div className="flex items-center gap-2 pt-1 border-t border-divider/30">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setReview({ request, mode: "reject" })}
+                      className="flex-1 rounded-xl h-9 text-xs font-bold bg-error/10 text-error hover:bg-error hover:text-white transition-colors"
+                    >
+                      Rechazar
+                    </Button>
+                    <Button
+                      onClick={() => setReview({ request, mode: "approve" })}
+                      className="flex-1 rounded-xl h-9 text-xs font-bold"
+                    >
+                      Aprobar
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="text-text-hint opacity-50 font-bold text-[10px] uppercase tracking-widest pt-1 border-t border-divider/30">
+                    Completada
+                  </div>
+                )}
               </motion.div>
             ))}
           </AnimatePresence>

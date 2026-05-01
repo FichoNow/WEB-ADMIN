@@ -1,4 +1,8 @@
+'use client'
+
 import type { ReactNode } from 'react'
+import { Menu } from 'lucide-react'
+import { useSidebar } from '@/app/dashboard/[departmentId]/SidebarContext'
 
 interface Props {
   title: string
@@ -7,21 +11,35 @@ interface Props {
 }
 
 export default function PageHeader({ title, description, actions }: Props) {
+  const { toggle } = useSidebar()
+
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex items-start justify-between gap-6 min-h-[72px]">
-        <div className="flex flex-col gap-1.5 flex-1">
-          <h1 className="text-3xl font-light tracking-tight text-text-primary leading-none">{title}</h1>
+    <div className="flex flex-col gap-4 sm:gap-6">
+      {/* Title row */}
+      <div className="flex items-start gap-3">
+        <button
+          onClick={toggle}
+          className="lg:hidden shrink-0 mt-0.5 w-9 h-9 rounded-xl flex items-center justify-center text-text-secondary hover:bg-surface-variant hover:text-text-primary transition-colors border border-divider/50"
+          aria-label="Abrir menú"
+        >
+          <Menu className="w-4 h-4" />
+        </button>
+
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-light tracking-tight text-text-primary leading-tight">{title}</h1>
           {description && (
-            <p className="text-sm text-text-hint max-w-2xl font-medium leading-relaxed">{description}</p>
+            <p className="text-xs sm:text-sm text-text-hint font-medium leading-relaxed mt-1">{description}</p>
           )}
         </div>
-        {actions && (
-          <div className="flex items-center gap-3 shrink-0 pt-1">
-            {actions}
-          </div>
-        )}
       </div>
+
+      {/* Actions — full width row on mobile, inline on desktop */}
+      {actions && (
+        <div className="flex items-center gap-2 flex-wrap">
+          {actions}
+        </div>
+      )}
+
       <div className="h-px bg-divider/60" />
     </div>
   )

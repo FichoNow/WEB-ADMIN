@@ -53,7 +53,7 @@ export default function DepartmentPage({ params }: { params: Promise<{ departmen
   const { departmentId } = use(params);
 
   return (
-    <div className="px-10 py-12 flex flex-col gap-12 max-w-7xl mx-auto w-full">
+    <div className="px-4 sm:px-6 lg:px-10 py-6 sm:py-10 lg:py-12 flex flex-col gap-8 sm:gap-12 max-w-7xl mx-auto w-full">
       {/* Header Section */}
       <header className="relative flex flex-col gap-2">
         <motion.h1 

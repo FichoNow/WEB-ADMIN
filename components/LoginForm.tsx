@@ -41,8 +41,8 @@ export default function LoginForm({ onClose }: Props) {
 
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[440px] bg-surface border-divider rounded-[2.5rem] p-0 overflow-hidden flex flex-col">
-        <DialogHeader className="px-10 pt-8 pb-6 border-b border-divider/50">
+      <DialogContent className="max-w-[calc(100vw-2rem)] sm:max-w-[440px] bg-surface border-divider rounded-[2.5rem] p-0 overflow-hidden flex flex-col">
+        <DialogHeader className="px-6 sm:px-10 pt-8 pb-6 border-b border-divider/50">
           <div className="flex items-center gap-4">
             <div className="flex flex-col">
               <DialogTitle className="text-2xl font-bold tracking-tight text-text-primary">
@@ -56,7 +56,7 @@ export default function LoginForm({ onClose }: Props) {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="px-10 pt-6 pb-8 flex flex-col gap-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="px-6 sm:px-10 pt-6 pb-8 flex flex-col gap-8">
             {globalError && (
               <Alert variant="destructive" className="rounded-xl">
                 <AlertDescription>{globalError}</AlertDescription>

@@ -86,50 +86,46 @@ export default function EmployeesClient({ employees, groups, departmentId }: Pro
         title="Plantilla"
         description="Gestiona los empleados del departamento, sus grupos y roles de acceso."
         actions={
-          <div className="flex items-center gap-3">
-            <Button variant="outline" onClick={() => setShowGroups(true)} className="gap-2 rounded-2xl h-11 border-divider/50 hover:bg-surface-variant">
+          <>
+            <Button variant="outline" onClick={() => setShowGroups(true)} className="gap-2 rounded-2xl h-10 border-divider/50 hover:bg-surface-variant text-xs sm:text-sm">
               <Users className="w-4 h-4" />
-              Gestionar Grupos
+              <span className="hidden sm:inline">Gestionar </span>Grupos
             </Button>
-            <Button onClick={() => setShowCreate(true)} className="gap-2 rounded-2xl h-11">
+            <Button onClick={() => setShowCreate(true)} className="gap-2 rounded-2xl h-10 text-xs sm:text-sm">
               <Plus className="w-4 h-4" />
-              Nuevo empleado
+              <span className="hidden sm:inline">Nuevo </span>Empleado
             </Button>
-          </div>
+          </>
         }
       />
 
       {/* Filters Bar */}
-      <div className="flex items-center justify-between gap-4 flex-wrap bg-surface/50 p-2 rounded-[2rem] border border-divider/50 backdrop-blur-sm">
-        <div className="relative flex-1 min-w-[280px]">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="relative flex-1 min-w-0">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-hint" />
-          <Input 
-            placeholder="Buscar por nombre o email..." 
+          <Input
+            placeholder="Buscar por nombre o email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-11 h-12 bg-transparent border-none ring-0 focus-visible:ring-0 text-sm placeholder:text-text-hint"
+            className="pl-11 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium placeholder:text-text-hint"
           />
         </div>
-        
-        <div className="flex items-center gap-2 pr-2">
-          <div className="h-8 w-px bg-divider mx-2" />
-          <span className="text-[10px] font-bold uppercase tracking-widest text-text-hint px-2">Filtrar por</span>
-          <Select value={groupFilter} onValueChange={(v) => setGroupFilter(v ?? FILTER_ALL)}>
-            <SelectTrigger className="w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium pr-4">
-              <Filter className="w-3.5 h-3.5 mr-2 text-primary" />
-              <span className="truncate">
-                {GROUP_LABELS[groupFilter] ?? groupNameById.get(Number(groupFilter)) ?? groupFilter}
-              </span>
-            </SelectTrigger>
-            <SelectContent className="rounded-xl border-divider">
-              <SelectItem value={FILTER_ALL} className="text-xs">Todos los grupos</SelectItem>
-              <SelectItem value={FILTER_NONE} className="text-xs">Sin grupo</SelectItem>
-              {groups.map((g) => (
-                <SelectItem key={g.id} value={String(g.id)} className="text-xs">{g.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+
+        <Select value={groupFilter} onValueChange={(v) => setGroupFilter(v ?? FILTER_ALL)}>
+          <SelectTrigger className="w-full sm:w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium">
+            <Filter className="w-3.5 h-3.5 mr-2 text-primary" />
+            <span className="truncate">
+              {GROUP_LABELS[groupFilter] ?? groupNameById.get(Number(groupFilter)) ?? groupFilter}
+            </span>
+          </SelectTrigger>
+          <SelectContent className="rounded-xl border-divider">
+            <SelectItem value={FILTER_ALL} className="text-xs">Todos los grupos</SelectItem>
+            <SelectItem value={FILTER_NONE} className="text-xs">Sin grupo</SelectItem>
+            {groups.map((g) => (
+              <SelectItem key={g.id} value={String(g.id)} className="text-xs">{g.name}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Results Header */}

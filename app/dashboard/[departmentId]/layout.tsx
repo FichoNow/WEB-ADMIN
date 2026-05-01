@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { getCompanyInfo } from '@/app/repositories/admin-repository'
 import Sidebar from './Sidebar'
+import DashboardShell from './DashboardShell'
 
 interface Props {
   children: React.ReactNode
@@ -27,11 +28,13 @@ export default async function DepartmentLayout({ children, params }: Props) {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)]">
-      <Sidebar departmentId={departmentId} departmentName={departmentName} companyName={companyName} isSuperAdmin={isSuperAdmin} />
-      <main className="flex-1 bg-bg pb-12">
-        {children}
-      </main>
-    </div>
+    <DashboardShell
+      departmentId={departmentId}
+      departmentName={departmentName}
+      companyName={companyName}
+      isSuperAdmin={isSuperAdmin}
+    >
+      {children}
+    </DashboardShell>
   )
 }

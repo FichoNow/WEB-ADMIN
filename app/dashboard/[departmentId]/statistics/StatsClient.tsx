@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Calendar, FileDown, TrendingUp, Zap, Sparkles, LayoutDashboard, UserCircle2, ArrowUpRight, ArrowDownRight, ChevronDown, Clock, Folder, Users } from 'lucide-react'
+import { Calendar, FileDown, TrendingUp, Zap, Sparkles, LayoutDashboard, UserCircle2, ArrowUpRight, ArrowDownRight, ChevronDown, Clock, Folder, Users, Search } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
@@ -108,6 +108,7 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
   const isIndividualTab = tab === 'individual'
   const selectedUser = employees.find((e) => e.id === currentUserId)
   const [insightsOpen, setInsightsOpen] = useState(false)
+  const [empSearch, setEmpSearch] = useState('')
 
   const chartData = useMemo(
     () => buildChartData(overview.daily, isWeekly, currentMonth, currentYear),
@@ -186,36 +187,37 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
       />
 
       {/* Tabs + filtros */}
-      <div className="flex items-center justify-between gap-3 flex-wrap">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <Tabs value={tab} onValueChange={(v) => {
           setTab(v as any)
           if (v !== 'individual') updateQuery({ userId: null })
-        }} className="w-fit">
-          <TabsList className="bg-surface border border-divider/50 p-1 h-11 rounded-xl">
+        }} className="w-full sm:w-fit min-w-0">
+          <TabsList className="bg-surface border border-divider/50 p-1 h-11 rounded-xl w-full sm:w-auto grid grid-cols-3 sm:flex">
             {(
               [
-                { key: 'general',    label: 'Vista general', Icon: LayoutDashboard },
-                { key: 'individual', label: 'Individual',    Icon: UserCircle2 },
-                { key: 'proyectos',  label: 'Proyectos',     Icon: Folder },
+                { key: 'general',    label: 'Vista general', shortLabel: 'General',    Icon: LayoutDashboard },
+                { key: 'individual', label: 'Individual',    shortLabel: 'Individual', Icon: UserCircle2 },
+                { key: 'proyectos',  label: 'Proyectos',     shortLabel: 'Proyectos',  Icon: Folder },
               ] as const
-            ).map(({ key, label, Icon }) => (
+            ).map(({ key, label, shortLabel, Icon }) => (
               <TabsTrigger
                 key={key}
                 value={key}
-                className="rounded-lg px-5 text-xs font-bold transition-all data-[state=active]:bg-primary/10 data-[state=active]:text-primary"
+                className="rounded-lg px-2 sm:px-5 text-[11px] sm:text-xs font-bold transition-all data-[state=active]:bg-primary/10 data-[state=active]:text-primary min-w-0"
               >
-                <Icon className="w-4 h-4 mr-2" />
-                <span>{label}</span>
+                <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-2 shrink-0" />
+                <span className="hidden sm:inline truncate">{label}</span>
+                <span className="sm:hidden ml-1 truncate">{shortLabel}</span>
               </TabsTrigger>
             ))}
           </TabsList>
         </Tabs>
 
         {!isProjectsTab && (
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
             <Select value={isWeekly ? 'current' : String(currentMonth)} onValueChange={(v) => handleMonthChange(v ?? 'current')}>
-              <SelectTrigger className="w-44 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium">
-                <Calendar className="w-4 h-4 mr-2 text-primary" />
+              <SelectTrigger className="w-full sm:w-44 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium min-w-0">
+                <Calendar className="w-4 h-4 mr-2 text-primary shrink-0" />
                 <SelectValue>{isWeekly ? 'Esta semana' : MONTH_LABELS[currentMonth - 1]}</SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -226,8 +228,8 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
               </SelectContent>
             </Select>
             <Select value={currentGroupId ? String(currentGroupId) : 'all'} onValueChange={(v) => handleGroupChange(v ?? 'all')}>
-              <SelectTrigger className="w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium">
-                <Users className="w-4 h-4 mr-2 text-primary" />
+              <SelectTrigger className="w-full sm:w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium min-w-0">
+                <Users className="w-4 h-4 mr-2 text-primary shrink-0" />
                 <SelectValue placeholder="Todos los grupos">
                   {currentGroupId
                     ? bundle.groups.groups.find((g) => g.id === currentGroupId)?.name ?? 'Todos los grupos'
@@ -242,18 +244,35 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
               </SelectContent>
             </Select>
             {isIndividualTab && (
-              <Select value={currentUserId ? String(currentUserId) : 'all'} onValueChange={(v) => handleUserChange(v ?? 'all')}>
-                <SelectTrigger className="w-48 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium">
-                  <UserCircle2 className="w-4 h-4 mr-2 text-primary" />
-                  <SelectValue placeholder="Selecciona empleado">
-                    {selectedUser?.name ?? 'Selecciona empleado'}
-                  </SelectValue>
+              <Select
+                value={currentUserId ? String(currentUserId) : 'all'}
+                onValueChange={(v) => { handleUserChange(v ?? 'all'); setEmpSearch('') }}
+              >
+                <SelectTrigger className="col-span-2 w-full sm:w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium min-w-0">
+                  <UserCircle2 className="w-4 h-4 mr-2 text-primary shrink-0" />
+                  <span className="truncate">{selectedUser?.name ?? 'Todos los empleados'}</span>
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos los empleados</SelectItem>
-                  {employees.map((emp) => (
-                    <SelectItem key={emp.id} value={String(emp.id)}>{emp.name}</SelectItem>
-                  ))}
+                <SelectContent className="rounded-xl border-divider p-0 overflow-hidden" style={{ width: 240 }}>
+                  <div className="flex items-center gap-2 px-3 py-2 border-b border-divider/50">
+                    <Search className="w-3.5 h-3.5 text-text-hint shrink-0" />
+                    <input
+                      className="flex-1 bg-transparent text-xs text-text-primary placeholder:text-text-hint outline-none"
+                      placeholder="Buscar empleado..."
+                      value={empSearch}
+                      onChange={(e) => setEmpSearch(e.target.value)}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                  <div className="overflow-y-auto max-h-56 py-1">
+                    {[{ id: 'all', name: 'Todos los empleados' }, ...employees]
+                      .filter((e) => e.name.toLowerCase().includes(empSearch.toLowerCase()))
+                      .map((e) => (
+                        <SelectItem key={e.id} value={String(e.id)} className="text-xs px-3 py-2">
+                          {e.name}
+                        </SelectItem>
+                      ))
+                    }
+                  </div>
                 </SelectContent>
               </Select>
             )}

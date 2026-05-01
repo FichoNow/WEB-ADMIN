@@ -1,19 +1,11 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { z } from 'zod'
 import { fetchWithAuth } from '@/app/lib/api'
+import { updateCompanySchema } from '@/app/types/superadmin/schemas/company-schema'
+import { addSuperadminSchema } from '@/app/types/superadmin/schemas/superadmin-schema'
 
 type ActionState = { error?: string; success?: true }
-
-const companySchema = z.object({
-  name:         z.string().min(1).max(150).optional(),
-  cif_nif:      z.string().min(1).max(20).optional(),
-  email:        z.string().email().optional(),
-  address_line: z.string().min(1).max(200).optional(),
-  city:         z.string().min(1).max(100).optional(),
-  postal_code:  z.string().min(1).max(10).optional(),
-})
 
 export async function updateCompanyAction(
   _prev: ActionState,
@@ -22,7 +14,7 @@ export async function updateCompanyAction(
   const raw = Object.fromEntries(
     [...formData.entries()].filter(([, v]) => String(v).trim() !== ''),
   )
-  const result = companySchema.safeParse(raw)
+  const result = updateCompanySchema.safeParse(raw)
   if (!result.success) return { error: result.error.issues[0].message }
   if (Object.keys(result.data).length === 0) return { error: 'No hay cambios que guardar' }
 
@@ -43,17 +35,11 @@ export async function updateCompanyAction(
   return { success: true }
 }
 
-const superadminSchema = z.object({
-  name:     z.string().min(1).max(150),
-  email:    z.string().email(),
-  password: z.string().min(6),
-})
-
 export async function addSuperadminAction(
   _prev: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const result = superadminSchema.safeParse(Object.fromEntries(formData))
+  const result = addSuperadminSchema.safeParse(Object.fromEntries(formData))
   if (!result.success) return { error: result.error.issues[0].message }
 
   try {

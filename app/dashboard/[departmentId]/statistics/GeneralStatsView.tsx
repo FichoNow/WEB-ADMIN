@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react'
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
   PieChart, Pie, Cell, Tooltip,
-  BarChart as ReBarChart, Bar as ReBar,
   ResponsiveContainer,
 } from 'recharts'
 import { Activity, ArrowRight, ArrowUpDown, Zap } from 'lucide-react'
@@ -39,6 +38,8 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
 
   const [activityFilter, setActivityFilter] = useState<ActivityFilter>('both')
   const [rankingSort, setRankingSort] = useState<RankingSort>('total')
+  const [rankingPage, setRankingPage] = useState(0)
+  const RANKING_PAGE_SIZE = 10
 
   const sortedRanking = useMemo(() => {
     const arr = [...ranking.employees]
@@ -119,37 +120,60 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {!isWeekly && month && year && (
-          <Card className="bg-surface border border-divider rounded-2xl ring-0">
-            <CardContent className="p-6 flex flex-col gap-4">
+      {!isWeekly && month && year && (
+        <Card className="bg-surface border border-divider rounded-2xl ring-0">
+          <CardContent className="p-6 flex flex-col lg:flex-row gap-8">
+            {/* Heatmap */}
+            <div className="flex flex-col gap-3 lg:w-96 shrink-0">
               <div>
                 <h3 className="text-sm font-medium text-text-primary">Mapa de actividad mensual</h3>
                 <p className="text-xs text-text-hint">Intensidad de jornada por día. Punto naranja = jornada {'>'}9h.</p>
               </div>
               <MonthHeatmap daily={overview.daily} month={month} year={year} />
-            </CardContent>
-          </Card>
-        )}
-
-        <Card className="bg-surface border border-divider rounded-2xl ring-0">
-          <CardContent className="p-6 flex flex-col gap-4">
-            <div>
-              <h3 className="text-sm font-medium text-text-primary">Distribución horaria de fichajes</h3>
-              <p className="text-xs text-text-hint">A qué horas del día se concentran las entradas.</p>
             </div>
-            <ChartContainer config={{ count: { label: 'Entradas', color: '#6366F1' } }} className="h-[200px] w-full">
-              <ReBarChart data={hourly.distribution}>
-                <CartesianGrid vertical={false} strokeDasharray="4 4" stroke="rgba(255,255,255,0.05)" />
-                <XAxis dataKey="hour" axisLine={false} tickLine={false} tick={{ fill: '#9ca3af', fontSize: 11 }} tickFormatter={(v) => `${v}h`} />
-                <YAxis hide />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <ReBar dataKey="count" fill="#6366F1" radius={[6, 6, 0, 0]} barSize={20} />
-              </ReBarChart>
-            </ChartContainer>
+
+            {/* Divisor vertical */}
+            <div className="hidden lg:block w-px bg-divider/50 self-stretch" />
+
+            {/* Distribución horaria */}
+            <div className="flex flex-col gap-3 flex-1">
+              <div>
+                <h3 className="text-sm font-medium text-text-primary">Distribución horaria de fichajes</h3>
+                <p className="text-xs text-text-hint">A qué horas del día se concentran las entradas.</p>
+              </div>
+              {hourly.distribution.length === 0 ? (
+                <p className="text-sm text-text-hint py-4">Sin datos.</p>
+              ) : (() => {
+                const total = hourly.distribution.reduce((s, b) => s + b.count, 0)
+                const maxCount = Math.max(...hourly.distribution.map(b => b.count))
+                return (
+                  <div className="flex flex-col gap-3">
+                    {hourly.distribution.map((b) => {
+                      const pct = Math.round((b.count / maxCount) * 100)
+                      const share = total > 0 ? Math.round((b.count / total) * 100) : 0
+                      return (
+                        <div key={b.hour} className="flex flex-col gap-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-medium text-text-secondary">{b.hour}:00 h</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-text-hint">{share}%</span>
+                              <span className="text-sm font-bold text-text-primary tabular-nums">{b.count} entradas</span>
+                            </div>
+                          </div>
+                          <div className="h-2 bg-surface-variant/50 rounded-full overflow-hidden">
+                            <div className="h-full bg-primary/70 rounded-full" style={{ width: `${pct}%` }} />
+                          </div>
+                        </div>
+                      )
+                    })}
+                    <p className="text-xs text-text-hint mt-1">Total: <span className="font-bold text-text-secondary">{total} fichajes</span> en el período.</p>
+                  </div>
+                )
+              })()}
+            </div>
           </CardContent>
         </Card>
-      </div>
+      )}
 
       {/* ── Sección 2: Estado actual ── */}
       <SectionHeader
@@ -269,10 +293,10 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
       <Card className="bg-surface border border-divider rounded-2xl ring-0">
         <CardContent className="p-4 flex flex-col gap-3">
           <div className="flex items-center justify-between gap-2 px-2">
-            <p className="text-xs text-text-hint">{ranking.employees.length} empleados</p>
+            <p className="text-xs text-text-hint">{ranking.employees.length} empleados · página {rankingPage + 1} de {Math.ceil(sortedRanking.length / RANKING_PAGE_SIZE)}</p>
             <div className="flex items-center gap-2">
               <ArrowUpDown className="w-3.5 h-3.5 text-text-hint" />
-              <Select value={rankingSort} onValueChange={(v) => setRankingSort((v ?? 'total') as RankingSort)}>
+              <Select value={rankingSort} onValueChange={(v) => { setRankingSort((v ?? 'total') as RankingSort); setRankingPage(0) }}>
                 <SelectTrigger className="w-44 bg-surface" size="sm">
                   <SelectValue>
                     {rankingSort === 'total' ? 'Total acumulado' :
@@ -305,9 +329,9 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortedRanking.map((emp, i) => (
+                {sortedRanking.slice(rankingPage * RANKING_PAGE_SIZE, (rankingPage + 1) * RANKING_PAGE_SIZE).map((emp, i) => (
                   <TableRow key={emp.id} className="group">
-                    <TableCell className="text-center text-xs text-text-hint tabular-nums">{i + 1}</TableCell>
+                    <TableCell className="text-center text-xs text-text-hint tabular-nums">{rankingPage * RANKING_PAGE_SIZE + i + 1}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-surface-variant/60 flex items-center justify-center text-xs text-text-secondary">
@@ -355,6 +379,32 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
               </TableBody>
             </Table>
           </div>
+
+          {sortedRanking.length > RANKING_PAGE_SIZE && (
+            <div className="flex items-center justify-between px-2 pt-2 border-t border-divider/50">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={rankingPage === 0}
+                onClick={() => setRankingPage(p => p - 1)}
+                className="text-xs border-divider/50 rounded-xl"
+              >
+                ← Anterior
+              </Button>
+              <span className="text-xs text-text-hint">
+                {rankingPage * RANKING_PAGE_SIZE + 1}–{Math.min((rankingPage + 1) * RANKING_PAGE_SIZE, sortedRanking.length)} de {sortedRanking.length}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={(rankingPage + 1) * RANKING_PAGE_SIZE >= sortedRanking.length}
+                onClick={() => setRankingPage(p => p + 1)}
+                className="text-xs border-divider/50 rounded-xl"
+              >
+                Siguiente →
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
