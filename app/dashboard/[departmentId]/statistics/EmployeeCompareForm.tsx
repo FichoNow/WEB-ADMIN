@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button'
 import type { UserStatsResponse } from '@/app/types/admin/api/stats-response'
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
-import { getUserStatsAction } from '@/app/actions/admin/stats'
+import { getUserStatsAction } from '@/app/actions/admin/stats/get-user-stats'
 import { minutesToHours } from './stats-utils'
 
 interface Props {
@@ -86,7 +86,7 @@ function rowsFromStats(a: UserStatsResponse, b: UserStatsResponse): Row[] {
   ]
 }
 
-export default function EmployeeCompareModal({ open, employees, departmentId, month, year, onClose }: Props) {
+export default function EmployeeCompareForm({ open, employees, departmentId, month, year, onClose }: Props) {
   const [userA, setUserA] = useState<number | null>(null)
   const [userB, setUserB] = useState<number | null>(null)
   const [statsA, setStatsA] = useState<UserStatsResponse | null>(null)

@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { getCompanyInfo } from '@/app/repositories/company-repository'
 import Sidebar from './Sidebar'
-import DashboardShell from './DashboardShell'
+import DashboardLayout from './DashboardLayout'
 
 interface Props {
   children: React.ReactNode
@@ -28,13 +28,13 @@ export default async function DepartmentLayout({ children, params }: Props) {
   }
 
   return (
-    <DashboardShell
+    <DashboardLayout
       departmentId={departmentId}
       departmentName={departmentName}
       companyName={companyName}
       isSuperAdmin={isSuperAdmin}
     >
       {children}
-    </DashboardShell>
+    </DashboardLayout>
   )
 }

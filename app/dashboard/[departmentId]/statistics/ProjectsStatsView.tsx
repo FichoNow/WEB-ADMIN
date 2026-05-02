@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import SectionHeader from '@/components/SectionHeader'
 import type { ProjectsOverviewResponse } from '@/app/types/admin/api/stats-response'
 import { minutesToHours, COLORS } from './stats-utils'
-import ProjectDetailModal from './ProjectDetailModal'
+import ProjectDetailDialog from './ProjectDetailDialog'
 
 interface Props {
   overview: ProjectsOverviewResponse
@@ -251,7 +251,7 @@ export default function ProjectsStatsView({ overview, departmentId }: Props) {
         </Card>
       </div>
 
-      <ProjectDetailModal
+      <ProjectDetailDialog
         projectName={selectedProject}
         departmentId={departmentId}
         allTime

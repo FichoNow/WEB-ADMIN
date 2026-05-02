@@ -17,7 +17,7 @@ import type {
   OvertimeYearlyResponse, GroupsResponse
 } from '@/app/types/admin/api/stats-response'
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
-import { getUserProjectHoursAction } from '@/app/actions/admin/stats'
+import { getUserProjectHoursAction } from '@/app/actions/admin/stats/get-user-project-hours'
 export interface DepartmentStatsBundle {
   overview:        OverviewResponse
   ranking:         RankingResponse

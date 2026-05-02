@@ -7,7 +7,7 @@ import {
   registerSchema,
   type RegisterFormValues,
 } from "@/app/types/auth/schemas/register-schema";
-import { register } from "@/app/actions/register";
+import { register } from "@/app/actions/auth/register";
 import {
   Dialog,
   DialogContent,

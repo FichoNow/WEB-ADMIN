@@ -36,7 +36,7 @@ export default function Footer() {
           <div className="col-span-1">
             <h4 className="text-sm font-bold text-text-primary mb-5">Compañía</h4>
             <ul className="flex flex-col gap-3.5 text-sm text-text-secondary">
-              <li><Link href="/sobre-nosotros" className="hover:text-primary transition-colors">Sobre nosotros</Link></li>
+              <li><Link href="/about" className="hover:text-primary transition-colors">Sobre nosotros</Link></li>
               <li><a href="#" className="hover:text-primary transition-colors">Contacto</a></li>
             </ul>
           </div>

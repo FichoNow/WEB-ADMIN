@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Building2, UserPlus, Pencil, Shield } from 'lucide-react'
-import EditCompanyModal from './EditCompanyModal'
-import AddSuperadminModal from './AddSuperadminModal'
+import EditCompanyForm from './EditCompanyForm'
+import AddSuperadminForm from './AddSuperadminForm'
 
 interface SuperadminUser { id: number; name: string; email: string; is_active: boolean }
 interface CompanyDetails {
@@ -96,8 +96,8 @@ export default function CompanySettingsClient({ company, superadmins }: Props) {
         </div>
       </div>
 
-      <EditCompanyModal company={company} open={editCompanyOpen} onClose={() => setEditCompanyOpen(false)} />
-      <AddSuperadminModal open={addSuperadminOpen} onClose={() => setAddSuperadminOpen(false)} />
+      <EditCompanyForm company={company} open={editCompanyOpen} onClose={() => setEditCompanyOpen(false)} />
+      <AddSuperadminForm open={addSuperadminOpen} onClose={() => setAddSuperadminOpen(false)} />
     </>
   )
 }

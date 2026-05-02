@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { addSuperadminAction } from '@/app/actions/superadmin/company'
+import { addSuperadminAction } from '@/app/actions/superadmin/superadmin/add-superadmin'
 import { addSuperadminSchema, type AddSuperadminFormValues } from '@/app/types/superadmin/schemas/superadmin-schema'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -18,7 +18,7 @@ interface Props {
   onClose: () => void
 }
 
-export default function AddSuperadminModal({ open, onClose }: Props) {
+export default function AddSuperadminForm({ open, onClose }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [success, setSuccess] = useState(false)

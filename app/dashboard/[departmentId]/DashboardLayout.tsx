@@ -30,7 +30,7 @@ function Inner({ children, departmentId, departmentName, companyName, isSuperAdm
   )
 }
 
-export default function DashboardShell(props: Props) {
+export default function DashboardLayout(props: Props) {
   return (
     <SidebarProvider>
       <Inner {...props} />

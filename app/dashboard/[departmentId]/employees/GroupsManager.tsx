@@ -4,11 +4,9 @@ import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import {
-  createGroupAction,
-  deleteGroupAction,
-  updateGroupAction,
-} from '@/app/actions/admin/groups'
+import { createGroupAction } from '@/app/actions/admin/groups/create-group'
+import { deleteGroupAction } from '@/app/actions/admin/groups/delete-group'
+import { updateGroupAction } from '@/app/actions/admin/groups/update-group'
 import {
   createGroupSchema,
   editGroupSchema,

@@ -12,7 +12,7 @@ import type { UserStatsResponse } from '@/app/types/admin/api/stats-response'
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
 import { barChartConfig, minutesToHours, calcTrend, COLORS, type ChartPoint } from './stats-utils'
 import LegalComplianceCard from './LegalComplianceCard'
-import EmployeeCompareModal from './EmployeeCompareModal'
+import EmployeeCompareForm from './EmployeeCompareForm'
 
 interface Props {
   userStats: UserStatsResponse | null
@@ -49,7 +49,7 @@ export default function UserStatsView({ userStats, employees, currentUserId, cha
             </Button>
           </CardContent>
         </Card>
-        <EmployeeCompareModal
+        <EmployeeCompareForm
           open={compareOpen}
           employees={employees}
           departmentId={departmentId}
@@ -212,7 +212,7 @@ export default function UserStatsView({ userStats, employees, currentUserId, cha
         </>
       )}
 
-      <EmployeeCompareModal
+      <EmployeeCompareForm
         open={compareOpen}
         employees={employees}
         departmentId={departmentId}

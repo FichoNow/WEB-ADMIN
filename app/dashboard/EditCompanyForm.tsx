@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { updateCompanyAction } from '@/app/actions/superadmin/company'
+import { updateCompanyAction } from '@/app/actions/superadmin/company/update-company'
 import { updateCompanySchema, type UpdateCompanyFormValues } from '@/app/types/superadmin/schemas/company-schema'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -29,7 +29,7 @@ interface Props {
   onClose: () => void
 }
 
-export default function EditCompanyModal({ company, open, onClose }: Props) {
+export default function EditCompanyForm({ company, open, onClose }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [success, setSuccess] = useState(false)

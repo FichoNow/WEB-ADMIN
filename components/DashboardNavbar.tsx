@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
-import { logout } from '@/app/actions/logout'
+import { logout } from '@/app/actions/auth/logout'
 import { Button, buttonVariants } from '@/components/ui/button'
 
 export default function DashboardNavbar() {

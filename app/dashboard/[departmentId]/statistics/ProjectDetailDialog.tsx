@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Folder, Clock, Users, Loader2 } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import type { ProjectStatsResponse } from '@/app/types/admin/api/stats-response'
-import { getProjectStatsAction } from '@/app/actions/admin/stats'
+import { getProjectStatsAction } from '@/app/actions/admin/stats/get-project-stats'
 import { minutesToHours, COLORS } from './stats-utils'
 
 interface Props {
@@ -18,7 +18,7 @@ interface Props {
   onClose: () => void
 }
 
-export default function ProjectDetailModal({ projectName, departmentId, month, year, allTime, open, onClose }: Props) {
+export default function ProjectDetailDialog({ projectName, departmentId, month, year, allTime, open, onClose }: Props) {
   const [data, setData]       = useState<ProjectStatsResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState<string | null>(null)
