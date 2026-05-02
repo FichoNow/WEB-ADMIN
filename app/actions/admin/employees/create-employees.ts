@@ -31,10 +31,14 @@ export async function createBulkEmployeesAction(
     is_active: true,
   }))
 
+  const isSingle = body.length === 1
+  const endpoint = isSingle ? "/admin/user" : "/admin/users"
+  const payload = isSingle ? body[0] : body
+
   try {
-    const res = await fetchWithAuth("/admin/users", {
+    const res = await fetchWithAuth(endpoint, {
       method: "POST",
-      body: JSON.stringify(body),
+      body: JSON.stringify(payload),
     })
     if (!res.ok) {
       const json = await res.json().catch(() => null)
@@ -42,9 +46,9 @@ export async function createBulkEmployeesAction(
     }
     revalidatePath(`/dashboard/${departmentId}/employees`)
     return {
-      success: rows.length === 1
+      success: isSingle
         ? "Empleado creado correctamente"
-        : `${rows.length} empleados creados correctamente`,
+        : `${body.length} empleados creados correctamente`,
     }
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Error al crear los empleados" }

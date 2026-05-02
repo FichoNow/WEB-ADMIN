@@ -55,3 +55,6 @@ logs
 # editor
 .vscode
 .idea
+# playwright
+tests/results
+tests/report
