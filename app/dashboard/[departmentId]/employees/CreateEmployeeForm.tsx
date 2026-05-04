@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -8,7 +8,7 @@ import { createBulkEmployeesAction } from '@/app/actions/admin/employees/create-
 import { createEmployeesSchema, type CreateEmployeesFormValues } from '@/app/types/admin/schemas/employee-schema'
 import type { GroupResponse } from '@/app/types/admin/api/group-response'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -21,6 +21,39 @@ interface Props {
 }
 
 const NO_GROUP = '__none__'
+
+const ROLE_LABELS: Record<string, string> = {
+  USER: 'Usuario (Fichaje)',
+  ADMINISTRATOR: 'Administrador (Gestión)',
+}
+
+function BulkGroupSelect({ groups, onApply }: { groups: GroupResponse[]; onApply: (id: string) => void }) {
+  const [value, setValue] = useState<string | null>(null)
+  const label = value == null
+    ? 'Elegir grupo...'
+    : value === NO_GROUP
+      ? 'Sin grupo'
+      : (groups.find((g) => String(g.id) === value)?.name ?? 'Elegir grupo...')
+  return (
+    <Select
+      value={value ?? undefined}
+      onValueChange={(v: string | null) => {
+        setValue(v)
+        onApply(v === NO_GROUP ? '' : (v ?? ''))
+      }}
+    >
+      <SelectTrigger className="w-full bg-surface h-10 border-divider/50 rounded-xl">
+        <span className="truncate text-left">{label}</span>
+      </SelectTrigger>
+      <SelectContent className="rounded-xl border-divider">
+        <SelectItem value={NO_GROUP}>Sin grupo</SelectItem>
+        {groups.map((g) => (
+          <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+}
 
 export default function CreateEmployeeForm({ departmentId, groups, onClose }: Props) {
   const router = useRouter()
@@ -68,17 +101,7 @@ export default function CreateEmployeeForm({ departmentId, groups, onClose }: Pr
             <div className="flex items-center gap-3">
               <span className="text-xs text-text-hint">Asignar grupo a todos:</span>
               <div className="flex-1">
-                <Select onValueChange={(v: string | null) => applyGroupToAll(v === NO_GROUP ? '' : (v ?? ''))}>
-                  <SelectTrigger className="w-full bg-surface h-10 border-divider/50 rounded-xl">
-                    <SelectValue placeholder="Elegir grupo..." />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl border-divider">
-                    <SelectItem value={NO_GROUP}>Sin grupo</SelectItem>
-                    {groups.map((g) => (
-                      <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <BulkGroupSelect groups={groups} onApply={applyGroupToAll} />
               </div>
             </div>
           </div>
@@ -135,7 +158,7 @@ export default function CreateEmployeeForm({ departmentId, groups, onClose }: Pr
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="w-full bg-surface/50 h-11 border-divider/50 rounded-xl">
-                          <SelectValue placeholder="Rol" />
+                          <span className="truncate text-left">{ROLE_LABELS[field.value] ?? 'Rol'}</span>
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent className="rounded-xl border-divider">
@@ -146,28 +169,34 @@ export default function CreateEmployeeForm({ departmentId, groups, onClose }: Pr
                     <FormMessage />
                   </FormItem>
                 )} />
-                <FormField control={form.control} name={`rows.${i}.group_id`} render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Grupo asignado</FormLabel>
-                    <Select
-                      value={field.value === '' || field.value === undefined ? NO_GROUP : field.value}
-                      onValueChange={(v) => field.onChange(v === NO_GROUP ? '' : v)}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full bg-surface/50 h-11 border-divider/50 rounded-xl">
-                          <SelectValue placeholder="Sin grupo" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="rounded-xl border-divider">
-                        <SelectItem value={NO_GROUP}>Sin grupo</SelectItem>
-                        {groups.map((g) => (
-                          <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                <FormField control={form.control} name={`rows.${i}.group_id`} render={({ field }) => {
+                  const currentValue = field.value === '' || field.value === undefined ? NO_GROUP : field.value
+                  const groupLabel = currentValue === NO_GROUP
+                    ? 'Sin grupo'
+                    : (groups.find((g) => String(g.id) === currentValue)?.name ?? 'Sin grupo')
+                  return (
+                    <FormItem>
+                      <FormLabel>Grupo asignado</FormLabel>
+                      <Select
+                        value={currentValue}
+                        onValueChange={(v) => field.onChange(v === NO_GROUP ? '' : v)}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full bg-surface/50 h-11 border-divider/50 rounded-xl">
+                            <span className="truncate text-left">{groupLabel}</span>
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="rounded-xl border-divider">
+                          <SelectItem value={NO_GROUP}>Sin grupo</SelectItem>
+                          {groups.map((g) => (
+                            <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )
+                }} />
               </div>
             </div>
           ))}

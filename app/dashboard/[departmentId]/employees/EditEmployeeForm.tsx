@@ -10,7 +10,7 @@ import { editEmployeeSchema, type EditEmployeeFormValues } from '@/app/types/adm
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
 import type { GroupResponse } from '@/app/types/admin/api/group-response'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -31,6 +31,16 @@ interface Props {
 }
 
 const NO_GROUP = '__none__'
+
+const ROLE_LABELS: Record<string, string> = {
+  USER: 'Usuario (Fichaje)',
+  ADMINISTRATOR: 'Administrador (Gestión)',
+}
+
+const STATUS_LABELS: Record<string, string> = {
+  'true': 'Cuenta Activa',
+  'false': 'Cuenta Inactiva',
+}
 
 export default function EditEmployeeForm({ employee, departmentId, groups, onClose }: Props) {
   const router = useRouter()
@@ -135,7 +145,7 @@ export default function EditEmployeeForm({ employee, departmentId, groups, onClo
                 <Select value={field.value} onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger className="w-full bg-surface/50 h-11 border-divider/50 rounded-xl">
-                      <SelectValue placeholder="Rol" />
+                      <span className="truncate text-left">{ROLE_LABELS[field.value] ?? 'Rol'}</span>
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="rounded-xl border-divider">
@@ -152,7 +162,9 @@ export default function EditEmployeeForm({ employee, departmentId, groups, onClo
                 <Select value={field.value} onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger className="w-full bg-surface/50 h-11 border-divider/50 rounded-xl">
-                      <SelectValue placeholder="Estado" />
+                      <span className={`truncate text-left ${field.value === 'true' ? 'text-success' : 'text-error'}`}>
+                        {STATUS_LABELS[field.value] ?? 'Estado'}
+                      </span>
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent className="rounded-xl border-divider">
@@ -163,28 +175,34 @@ export default function EditEmployeeForm({ employee, departmentId, groups, onClo
                 <FormMessage />
               </FormItem>
             )} />
-            <FormField control={form.control} name="group_id" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Grupo de trabajo</FormLabel>
-                <Select
-                  value={field.value === '' || field.value === undefined ? NO_GROUP : field.value}
-                  onValueChange={(v) => field.onChange(v === NO_GROUP ? '' : v)}
-                >
-                  <FormControl>
-                    <SelectTrigger className="w-full bg-surface/50 h-11 border-divider/50 rounded-xl">
-                      <SelectValue placeholder="Sin grupo" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="rounded-xl border-divider">
-                    <SelectItem value={NO_GROUP}>Sin grupo</SelectItem>
-                    {groups.map((g) => (
-                      <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )} />
+            <FormField control={form.control} name="group_id" render={({ field }) => {
+              const currentValue = field.value === '' || field.value === undefined ? NO_GROUP : field.value
+              const groupLabel = currentValue === NO_GROUP
+                ? 'Sin grupo'
+                : (groups.find((g) => String(g.id) === currentValue)?.name ?? 'Sin grupo')
+              return (
+                <FormItem>
+                  <FormLabel>Grupo de trabajo</FormLabel>
+                  <Select
+                    value={currentValue}
+                    onValueChange={(v) => field.onChange(v === NO_GROUP ? '' : v)}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full bg-surface/50 h-11 border-divider/50 rounded-xl">
+                        <span className="truncate text-left">{groupLabel}</span>
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="rounded-xl border-divider">
+                      <SelectItem value={NO_GROUP}>Sin grupo</SelectItem>
+                      {groups.map((g) => (
+                        <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )
+            }} />
           </div>
         </div>
 
