@@ -26,7 +26,7 @@ const DEFAULT_MESSAGE = {
 
 export default async function ErrorPage({ searchParams }: Props) {
   const { reason } = await searchParams
-  const message = (reason && REASON_MESSAGES[reason]) ?? DEFAULT_MESSAGE
+  const message = (reason ? REASON_MESSAGES[reason] : null) ?? DEFAULT_MESSAGE
 
   return (
     <div className="min-h-screen bg-bg flex flex-col items-center justify-center gap-6 px-6">

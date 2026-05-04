@@ -104,7 +104,7 @@ export default function ProjectForm({
                 <label className="text-xs font-medium text-text-secondary">
                     Grupo
                 </label>
-                <Select value={groupId} onValueChange={setGroupId}>
+                <Select value={groupId} onValueChange={(v) => setGroupId(v ?? NO_GROUP)}>
                     <SelectTrigger className="w-full bg-surface/50 h-11 border-divider/50 rounded-xl">
                         <span className="truncate text-left">{groupLabel}</span>
                     </SelectTrigger>
@@ -122,7 +122,7 @@ export default function ProjectForm({
                 <label className="text-xs font-medium text-text-secondary">
                     Estado
                 </label>
-                <Select value={isActive} onValueChange={setIsActive}>
+                <Select value={isActive} onValueChange={(v) => setIsActive(v ?? 'true')}>
                     <SelectTrigger className="w-full bg-surface/50 h-11 border-divider/50 rounded-xl">
                         <span className={`truncate text-left ${isActive === 'true' ? 'text-success' : 'text-error'}`}>
                             {statusLabel}
