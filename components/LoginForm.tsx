@@ -3,6 +3,7 @@
 import { useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'sonner'
 import { loginSchema, type LoginFormValues } from '@/app/types/auth/schemas/login-schema'
 import { login } from '@/app/actions/auth/login'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
@@ -101,7 +102,12 @@ export default function LoginForm({ onClose }: Props) {
               >
                 {isPending ? 'Validando credenciales...' : 'Entrar en el panel'}
               </Button>
-              <Button type="button" variant="ghost" onClick={onClose} className="text-xs text-text-hint hover:text-text-primary">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => toast.info('Contacta con la empresa propietaria de la aplicación para recuperar tu contraseña.', { duration: 6000 })}
+                className="text-xs text-text-hint hover:text-text-primary"
+              >
                 ¿Has olvidado tu contraseña?
               </Button>
             </div>

@@ -1,6 +1,7 @@
 import { fetchWithAuth } from '@/app/lib/api'
 import type {
   CreateScheduleBody,
+  UpdateScheduleBody,
   CreateGroupScheduleAssignmentBody,
   CreateUserScheduleAssignmentBody,
 } from '@/app/types/admin/api/schedule-request'
@@ -9,6 +10,7 @@ import type {
   ScheduleTemplateResponse,
   GroupScheduleAssignmentResponse,
   UserScheduleAssignmentResponse,
+  ScheduleAssignmentsResponse,
 } from '@/app/types/admin/api/schedule-response'
 
 /**
@@ -46,6 +48,30 @@ export async function createSchedule(
   if (!res.ok) {
     const json = await res.json().catch(() => null)
     throw new Error(json?.error?.message ?? 'Error al crear la plantilla de horario')
+  }
+
+  const json = await res.json()
+  return json.data as ScheduleTemplateResponse
+}
+
+/**
+ * Actualiza una plantilla de horario existente con sus días.
+ *
+ * Llama a:
+ * PUT /admin/schedule/:id
+ */
+export async function updateSchedule(
+  templateId: number,
+  body: UpdateScheduleBody,
+): Promise<ScheduleTemplateResponse> {
+  const res = await fetchWithAuth(`/admin/schedule/${templateId}`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  })
+
+  if (!res.ok) {
+    const json = await res.json().catch(() => null)
+    throw new Error(json?.error?.message ?? 'Error al actualizar la plantilla de horario')
   }
 
   const json = await res.json()
@@ -96,4 +122,62 @@ export async function createUserScheduleAssignment(
 
   const json = await res.json()
   return json.data as UserScheduleAssignmentResponse
+}
+
+/**
+ * Obtiene las asignaciones de horario (usuario y grupo) de un departamento.
+ *
+ * Llama a:
+ * GET /admin/schedule/assignments?departmentId=...
+ */
+export async function getScheduleAssignments(
+  departmentId: number,
+): Promise<ScheduleAssignmentsResponse> {
+  const res = await fetchWithAuth(`/admin/schedule/assignments?departmentId=${departmentId}`)
+
+  if (!res.ok) {
+    const json = await res.json().catch(() => null)
+    throw new Error(json?.error?.message ?? 'No se pudieron cargar las asignaciones de horario')
+  }
+
+  const json = await res.json()
+  return json.data as ScheduleAssignmentsResponse
+}
+
+/**
+ * Borra una asignación de horario individual.
+ *
+ * Llama a:
+ * DELETE /admin/schedule/user-assignment/:id
+ */
+export async function deleteUserScheduleAssignment(
+  assignmentId: number,
+): Promise<void> {
+  const res = await fetchWithAuth(`/admin/schedule/user-assignment/${assignmentId}`, {
+    method: 'DELETE',
+  })
+
+  if (!res.ok) {
+    const json = await res.json().catch(() => null)
+    throw new Error(json?.error?.message ?? 'Error al borrar la asignación')
+  }
+}
+
+/**
+ * Borra una asignación de horario de grupo.
+ *
+ * Llama a:
+ * DELETE /admin/schedule/group-assignment/:id
+ */
+export async function deleteGroupScheduleAssignment(
+  assignmentId: number,
+): Promise<void> {
+  const res = await fetchWithAuth(`/admin/schedule/group-assignment/${assignmentId}`, {
+    method: 'DELETE',
+  })
+
+  if (!res.ok) {
+    const json = await res.json().catch(() => null)
+    throw new Error(json?.error?.message ?? 'Error al borrar la asignación')
+  }
 }

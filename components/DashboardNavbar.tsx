@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
+import ThemeToggle from '@/components/ThemeToggle'
 import { logout } from '@/app/actions/auth/logout'
 import { Button, buttonVariants } from '@/components/ui/button'
 
@@ -15,6 +16,19 @@ export default function DashboardNavbar() {
           </svg>
           <span className="hidden sm:inline">Volver a la web</span>
         </Link>
+
+        <div className="w-px h-4 bg-divider mx-1 sm:mx-2" />
+
+        <Link href="/dashboard/profile" className={buttonVariants({ variant: "ghost", className: "text-text-secondary hover:text-text-primary px-2 sm:px-3" })}>
+          <svg className="w-4 h-4 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <span className="hidden sm:inline">Mi perfil</span>
+        </Link>
+
+        <div className="w-px h-4 bg-divider mx-1 sm:mx-2" />
+
+        <ThemeToggle />
 
         <div className="w-px h-4 bg-divider mx-1 sm:mx-2" />
 

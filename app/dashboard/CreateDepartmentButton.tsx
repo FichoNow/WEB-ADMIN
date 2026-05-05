@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { createDepartmentAction } from '@/app/actions/superadmin/department/create-department'
 import { departmentSchema, type DepartmentFormValues } from '@/app/types/superadmin/schemas/department-schema'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
@@ -29,8 +30,10 @@ function CreateDepartmentForm({ onClose }: { onClose: () => void }) {
       const result = await createDepartmentAction(undefined, formData)
       if (result && 'error' in result) {
         form.setError('root', { message: result.error })
+        toast.error(result.error)
         return
       }
+      if (result && 'success' in result) toast.success(result.success)
       router.refresh()
       onClose()
     })

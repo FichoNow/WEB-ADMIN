@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import {
   registerSchema,
   type RegisterFormValues,
@@ -64,12 +65,15 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
       if (!result) return;
       if ("success" in result) {
         setSuccess(true);
+        toast.success("Empresa creada correctamente");
       } else if ("fieldError" in result) {
         form.setError(result.fieldError.field as keyof RegisterFormValues, {
           message: result.fieldError.message,
         });
+        toast.error(result.fieldError.message);
       } else if ("error" in result) {
         form.setError("root", { message: result.error });
+        toast.error(result.error);
       }
     });
   };

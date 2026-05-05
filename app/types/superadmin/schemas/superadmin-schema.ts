@@ -7,3 +7,10 @@ export const addSuperadminSchema = z.object({
 })
 
 export type AddSuperadminFormValues = z.infer<typeof addSuperadminSchema>
+
+export const editSuperadminSchema = z.object({
+  name:  z.string().trim().min(1, 'Obligatorio').max(150).optional().or(z.literal('')),
+  email: z.string().trim().email('Email inválido').optional().or(z.literal('')),
+})
+
+export type EditSuperadminFormValues = z.infer<typeof editSuperadminSchema>

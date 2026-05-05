@@ -2,11 +2,15 @@
 
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Users, Search, Plus, Filter, MoreVertical, Mail, Hash } from 'lucide-react'
+import { Users, Search, Plus, Filter, MoreVertical, Mail, Hash, Clock, Shield, type LucideIcon } from 'lucide-react'
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
 import type { GroupResponse } from '@/app/types/admin/api/group-response'
+import type {
+  GroupScheduleAssignmentItem,
+  ScheduleAssignmentsResponse,
+  UserScheduleAssignmentItem,
+} from '@/app/types/admin/api/schedule-response'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
@@ -15,23 +19,115 @@ import CreateEmployeeForm from './CreateEmployeeForm'
 import EditEmployeeForm from './EditEmployeeForm'
 import GroupsManager from './GroupsManager'
 
-function RoleBadge({ role }: { role: string }) {
-  return (
-    <Badge 
-      variant={role === 'ADMINISTRATOR' ? 'default' : 'secondary'} 
-      className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-md ${
-        role === 'ADMINISTRATOR' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-surface-variant text-text-secondary border-divider'
-      }`}
-    >
-      {role === 'ADMINISTRATOR' ? 'Admin' : 'Usuario'}
-    </Badge>
-  )
-}
-
 interface Props {
   employees: EmployeeListItem[]
   groups: GroupResponse[]
+  assignments: ScheduleAssignmentsResponse
   departmentId: number
+}
+
+/**
+ * Resultado de calcular el horario efectivo de un empleado.
+ *
+ * `source` indica de dónde viene la asignación:
+ *  - "user"  → el empleado tiene una asignación individual (prioritaria).
+ *  - "group" → hereda la asignación de su grupo.
+ *  - "none"  → no hay horario asignado para hoy.
+ */
+type EffectiveSchedule =
+  | { source: 'user'; templateId: number; templateName: string; startDate: string; endDate: string | null }
+  | { source: 'group'; templateId: number; templateName: string; startDate: string; endDate: string | null; groupName: string }
+  | { source: 'none' }
+
+function todayIso() {
+  const d = new Date()
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
+/**
+ * Devuelve el horario efectivo de un empleado a día de hoy aplicando la regla
+ * "asignación individual > asignación de grupo".
+ *
+ * Si el usuario tiene varias asignaciones individuales activas, gana la de
+ * `start_date` más reciente. Mismo criterio para grupos.
+ */
+function computeEffectiveSchedule(
+  emp: EmployeeListItem,
+  userAssignments: UserScheduleAssignmentItem[],
+  groupAssignments: GroupScheduleAssignmentItem[],
+  today: string,
+): EffectiveSchedule {
+  const userMatch = userAssignments
+    .filter((a) => a.user_id === emp.id)
+    .filter((a) => a.start_date <= today && (a.end_date === null || a.end_date >= today))
+    .sort((a, b) => b.start_date.localeCompare(a.start_date))[0]
+
+  if (userMatch) {
+    return {
+      source: 'user',
+      templateId: userMatch.template_id,
+      templateName: userMatch.template_name,
+      startDate: userMatch.start_date,
+      endDate: userMatch.end_date,
+    }
+  }
+
+  if (emp.group_id != null) {
+    const groupMatch = groupAssignments
+      .filter((a) => a.group_id === emp.group_id)
+      .filter((a) => a.start_date <= today && (a.end_date === null || a.end_date >= today))
+      .sort((a, b) => b.start_date.localeCompare(a.start_date))[0]
+
+    if (groupMatch) {
+      return {
+        source: 'group',
+        templateId: groupMatch.template_id,
+        templateName: groupMatch.template_name,
+        startDate: groupMatch.start_date,
+        endDate: groupMatch.end_date,
+        groupName: groupMatch.group_name,
+      }
+    }
+  }
+
+  return { source: 'none' }
+}
+
+interface MetaChipProps {
+  icon: LucideIcon
+  label: string
+  value: string
+  hint?: string
+  tooltip?: string
+  tone?: 'default' | 'primary' | 'muted'
+}
+
+function MetaChip({ icon: Icon, label, value, hint, tooltip, tone = 'default' }: MetaChipProps) {
+  const valueColor =
+    tone === 'primary'
+      ? 'text-primary'
+      : tone === 'muted'
+      ? 'text-text-hint'
+      : 'text-text-primary'
+  const iconColor = tone === 'primary' ? 'text-primary' : 'text-text-hint'
+
+  return (
+    <div className="flex items-center gap-2 min-w-0" title={tooltip}>
+      <div className={`shrink-0 w-7 h-7 rounded-lg flex items-center justify-center bg-surface-variant/50 ${iconColor}`}>
+        <Icon className="w-3.5 h-3.5" />
+      </div>
+      <div className="flex flex-col leading-tight min-w-0">
+        <span className="text-[9px] uppercase tracking-wider font-bold text-text-hint">{label}</span>
+        <span className={`text-xs font-semibold truncate ${valueColor}`}>
+          {value}
+          {hint && <span className="ml-1 opacity-60 font-medium normal-case">{hint}</span>}
+        </span>
+      </div>
+    </div>
+  )
 }
 
 const FILTER_ALL = '__all__'
@@ -42,12 +138,13 @@ const GROUP_LABELS: Record<string, string> = {
   [FILTER_NONE]: 'Sin grupo',
 }
 
-export default function EmployeesClient({ employees, groups, departmentId }: Props) {
+export default function EmployeesClient({ employees, groups, assignments, departmentId }: Props) {
   const [showCreate, setShowCreate] = useState(false)
   const [showGroups, setShowGroups] = useState(false)
   const [editEmployee, setEditEmployee] = useState<EmployeeListItem | null>(null)
   const [groupFilter, setGroupFilter] = useState<string>(FILTER_ALL)
   const [search, setSearch] = useState('')
+  const today = useMemo(() => todayIso(), [])
 
   const groupNameById = useMemo(() => {
     const m = new Map<number, string>()
@@ -57,7 +154,7 @@ export default function EmployeesClient({ employees, groups, departmentId }: Pro
 
   const filtered = useMemo(() => {
     let result = employees
-    
+
     // Group filter
     if (groupFilter !== FILTER_ALL) {
       if (groupFilter === FILTER_NONE) {
@@ -71,8 +168,8 @@ export default function EmployeesClient({ employees, groups, departmentId }: Pro
     // Search filter
     if (search.trim()) {
       const s = search.toLowerCase()
-      result = result.filter((e) => 
-        e.name.toLowerCase().includes(s) || 
+      result = result.filter((e) =>
+        e.name.toLowerCase().includes(s) ||
         e.email.toLowerCase().includes(s)
       )
     }
@@ -137,7 +234,7 @@ export default function EmployeesClient({ employees, groups, departmentId }: Pro
       </div>
 
       {filtered.length === 0 ? (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center justify-center py-24 px-4 bg-surface/30 border border-dashed border-divider rounded-[2.5rem]"
@@ -165,6 +262,19 @@ export default function EmployeesClient({ employees, groups, departmentId }: Pro
           <AnimatePresence mode="popLayout">
             {filtered.map((emp) => {
               const groupName = emp.group_id != null ? groupNameById.get(emp.group_id) : null
+              const schedule = computeEffectiveSchedule(
+                emp,
+                assignments.user_assignments,
+                assignments.group_assignments,
+                today,
+              )
+              const isAdmin = emp.role === 'ADMINISTRATOR'
+              const scheduleTooltip =
+                schedule.source === 'user'
+                  ? `Horario individual${schedule.endDate ? ` · ${schedule.startDate} → ${schedule.endDate}` : ` · desde ${schedule.startDate}`}`
+                  : schedule.source === 'group'
+                  ? `Heredado de ${schedule.groupName}${schedule.endDate ? ` · ${schedule.startDate} → ${schedule.endDate}` : ` · desde ${schedule.startDate}`}`
+                  : 'Sin horario asignado'
               return (
                 <motion.div
                   key={emp.id}
@@ -173,56 +283,77 @@ export default function EmployeesClient({ employees, groups, departmentId }: Pro
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.2 }}
-                  className="group relative flex items-center justify-between px-6 py-5 rounded-[2rem] bg-surface border border-divider/50 hover:border-primary/30 hover:bg-surface-variant/30 transition-all duration-300"
+                  className="group relative flex flex-col gap-4 px-6 py-5 rounded-[2rem] bg-surface border border-divider/50 hover:border-primary/30 hover:bg-surface-variant/30 transition-all duration-300"
                 >
-                  <div className="flex items-center gap-5">
-                    {/* Avatar with gradient */}
-                    <div className="relative">
-                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary font-bold text-lg border border-primary/10 shadow-inner group-hover:scale-105 transition-transform">
-                        {emp.name.charAt(0).toUpperCase()}
-                      </div>
-                      {!emp.is_active && (
-                        <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-error border-4 border-surface" />
-                      )}
-                      {emp.is_active && (
-                        <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-success border-4 border-surface shadow-sm" />
-                      )}
-                    </div>
-
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <h4 className="text-base font-bold text-text-primary group-hover:text-primary transition-colors leading-none">
-                          {emp.name}
-                        </h4>
-                        <RoleBadge role={emp.role} />
-                        {groupName && (
-                          <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-wider bg-surface/50 border-divider/50 text-text-secondary">
-                            <Hash className="w-2.5 h-2.5 mr-1 opacity-50" />
-                            {groupName}
-                          </Badge>
-                        )}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-5 min-w-0">
+                      {/* Avatar with gradient */}
+                      <div className="relative shrink-0">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary font-bold text-lg border border-primary/10 shadow-inner group-hover:scale-105 transition-transform">
+                          {emp.name.charAt(0).toUpperCase()}
+                        </div>
                         {!emp.is_active && (
-                          <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-error/10 text-error border border-error/20">Inactivo</span>
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-error border-4 border-surface" />
+                        )}
+                        {emp.is_active && (
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-success border-4 border-surface shadow-sm" />
                         )}
                       </div>
-                      <div className="flex items-center gap-4">
+
+                      <div className="flex flex-col gap-1 min-w-0">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <h4 className="text-base font-bold text-text-primary group-hover:text-primary transition-colors leading-none">
+                            {emp.name}
+                          </h4>
+                          {!emp.is_active && (
+                            <span className="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-error/10 text-error border border-error/20">Inactivo</span>
+                          )}
+                        </div>
                         <div className="flex items-center gap-1.5 text-xs text-text-hint">
                           <Mail className="w-3 h-3" />
-                          {emp.email}
+                          <span className="truncate">{emp.email}</span>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-2">
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => setEditEmployee(emp)}
-                      className="rounded-xl hover:bg-primary/10 hover:text-primary transition-colors"
+                      className="rounded-xl hover:bg-primary/10 hover:text-primary transition-colors shrink-0"
                     >
                       <MoreVertical className="w-5 h-5" />
                     </Button>
+                  </div>
+
+                  {/* Meta row: rol / grupo / horario, claramente etiquetados */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-divider/40">
+                    <MetaChip
+                      icon={Shield}
+                      label="Rol"
+                      value={isAdmin ? 'Admin' : 'Usuario'}
+                      tone={isAdmin ? 'primary' : 'default'}
+                    />
+                    <MetaChip
+                      icon={Hash}
+                      label="Grupo"
+                      value={groupName ?? 'Sin grupo'}
+                      tone={groupName ? 'default' : 'muted'}
+                    />
+                    <MetaChip
+                      icon={Clock}
+                      label="Horario"
+                      value={schedule.source === 'none' ? 'Sin horario' : schedule.templateName}
+                      hint={schedule.source === 'group' ? '(grupo)' : undefined}
+                      tooltip={scheduleTooltip}
+                      tone={
+                        schedule.source === 'none'
+                          ? 'muted'
+                          : schedule.source === 'user'
+                          ? 'primary'
+                          : 'default'
+                      }
+                    />
                   </div>
                 </motion.div>
               )
@@ -292,4 +423,3 @@ export default function EmployeesClient({ employees, groups, departmentId }: Pro
     </div>
   )
 }
-

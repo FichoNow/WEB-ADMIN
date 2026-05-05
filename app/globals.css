@@ -9,14 +9,14 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* Backgrounds */
-  --color-bg:              #13151A;
-  --color-surface:         #1B1D24;
-  --color-surface-variant: #262933;
+  /* Backgrounds (resolved from CSS vars below — light by default, dark via .dark) */
+  --color-bg:              var(--bg);
+  --color-surface:         var(--surface);
+  --color-surface-variant: var(--surface-variant);
 
   /* Primary & Accents */
-  --color-primary:         #4F81E8;
-  --color-primary-dark:    #3A6DD4;
+  --color-primary:         var(--brand-primary);
+  --color-primary-dark:    var(--brand-primary-dark);
   --color-on-primary:      #FFFFFF;
   --color-brand-accent:    #FFB74D;
   --color-accent:          var(--color-surface-variant);
@@ -28,14 +28,14 @@
   --color-error:           #E57373;
 
   /* Text */
-  --color-text-primary:    #E0E0E0;
-  --color-text-secondary:  #9E9E9E;
-  --color-text-hint:       #757575;
+  --color-text-primary:    var(--text-primary);
+  --color-text-secondary:  var(--text-secondary);
+  --color-text-hint:       var(--text-hint);
 
   /* Inputs & dividers */
-  --color-input-stroke:         #262933;
-  --color-input-stroke-focused: #4F81E8;
-  --color-divider:              #262933;
+  --color-input-stroke:         var(--input-stroke);
+  --color-input-stroke-focused: var(--brand-primary);
+  --color-divider:              var(--divider);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -110,7 +110,20 @@ input, textarea { user-select: auto; -webkit-user-select: auto; }
 
 /* Global Scrollbar Settings */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+
+  /* Custom palette — light */
+  --bg:              #EEF1F6;
+  --surface:         #FFFFFF;
+  --surface-variant: #E4E8EE;
+  --brand-primary:   #2563EB;
+  --brand-primary-dark: #1D4ED8;
+  --text-primary:    #0B0E14;
+  --text-secondary:  #2F3743;
+  --text-hint:       #5A6271;
+  --input-stroke:    #C5CCD6;
+  --divider:         #CCD2DC;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -171,6 +184,20 @@ input, textarea { user-select: auto; -webkit-user-select: auto; }
 }
 
 .dark {
+  color-scheme: dark;
+
+  /* Custom palette — dark */
+  --bg:              #13151A;
+  --surface:         #1B1D24;
+  --surface-variant: #262933;
+  --brand-primary:   #4F81E8;
+  --brand-primary-dark: #3A6DD4;
+  --text-primary:    #E0E0E0;
+  --text-secondary:  #9E9E9E;
+  --text-hint:       #757575;
+  --input-stroke:    #262933;
+  --divider:         #262933;
+
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);

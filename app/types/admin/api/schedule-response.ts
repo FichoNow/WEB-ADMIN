@@ -76,3 +76,40 @@ export interface UserScheduleAssignmentResponse {
   start_date: string
   end_date: string | null
 }
+
+/**
+ * Asignación de horario individual de un usuario, enriquecida con nombre del
+ * usuario y de la plantilla. La devuelve GET /admin/schedule/assignments.
+ */
+export interface UserScheduleAssignmentItem {
+  id: number
+  user_id: number
+  user_name: string
+  user_email: string
+  template_id: number
+  template_name: string
+  start_date: string
+  end_date: string | null
+}
+
+/**
+ * Asignación de horario de un grupo, enriquecida con nombre del grupo y de la
+ * plantilla. La devuelve GET /admin/schedule/assignments.
+ */
+export interface GroupScheduleAssignmentItem {
+  id: number
+  group_id: number
+  group_name: string
+  template_id: number
+  template_name: string
+  start_date: string
+  end_date: string | null
+}
+
+/**
+ * Respuesta de GET /admin/schedule/assignments?departmentId=...
+ */
+export interface ScheduleAssignmentsResponse {
+  user_assignments: UserScheduleAssignmentItem[]
+  group_assignments: GroupScheduleAssignmentItem[]
+}

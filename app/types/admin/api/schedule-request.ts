@@ -24,6 +24,19 @@ export interface CreateScheduleBody {
 }
 
 /**
+ * Body para actualizar una plantilla de horario existente.
+ *
+ * Lo usa:
+ * PUT /admin/schedule/:id
+ */
+export interface UpdateScheduleBody {
+  name: string
+  description?: string | null
+  is_active: boolean
+  days: CreateScheduleDayBody[]
+}
+
+/**
  * Body para asignar una plantilla de horario a un grupo.
  *
  * Lo usa:

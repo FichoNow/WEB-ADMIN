@@ -4,6 +4,7 @@ import { useState } from 'react'
 import LoginForm from '@/components/LoginForm'
 import RegisterForm from '@/components/RegisterForm'
 import Navbar from '@/components/Navbar'
+import ThemeToggle from '@/components/ThemeToggle'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
@@ -16,9 +17,12 @@ export default function LandingPage() {
     <div className="min-h-screen bg-bg text-text-primary font-sans selection:bg-primary/30">
       
       <Navbar>
-        <Button onClick={() => setShowLogin(true)} className="text-white">
-          Gestionar empresa
-        </Button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Button onClick={() => setShowLogin(true)} className="text-white">
+            Gestionar empresa
+          </Button>
+        </div>
       </Navbar>
 
       {/* Hero Section (Centered with Abstract UI) */}
@@ -301,7 +305,7 @@ export default function LandingPage() {
             whileHover={{ y: -12, scale: 1.02 }} transition={{ type: "spring", stiffness: 400, damping: 25 }}
             className="flex-1 w-full flex justify-center lg:justify-end cursor-default"
           >
-            <div className="relative w-[300px] h-[600px] border-[8px] border-surface-variant bg-[#1A1A1A] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col shrink-0">
+            <div className="relative w-[300px] h-[600px] border-[8px] border-surface-variant bg-bg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col shrink-0">
               
               {/* Minimalist Camera/Notch area */}
               <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-20">
@@ -328,13 +332,13 @@ export default function LandingPage() {
                   </span>
                 </div>
 
-                <div className="bg-[#222222] rounded-2xl p-5 mb-8 border border-divider">
+                <div className="bg-surface rounded-2xl p-5 mb-8 border border-divider">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-primary" />
                       <span className="text-[10px] font-semibold tracking-wider text-text-secondary uppercase">Jornada Activa</span>
                     </div>
-                    <div className="flex items-center gap-1 bg-[#333] px-2 py-1 rounded text-[10px] text-text-primary">
+                    <div className="flex items-center gap-1 bg-surface-variant px-2 py-1 rounded text-[10px] text-text-primary">
                       07:59
                       <svg className="w-3 h-3 ml-1 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                     </div>
@@ -353,7 +357,7 @@ export default function LandingPage() {
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                     </button>
                   </div>
-                  <div className="rounded-xl p-4 bg-[#222222] border border-divider">
+                  <div className="rounded-xl p-4 bg-surface border border-divider">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs text-text-secondary">¿En qué proyecto?</span>
                       <button><svg className="w-4 h-4 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></button>
@@ -428,7 +432,7 @@ export default function LandingPage() {
             whileHover={{ y: -12, scale: 1.02 }} transition={{ type: "spring", stiffness: 400, damping: 25 }}
             className="flex-1 w-full flex justify-center lg:justify-start cursor-default"
           >
-            <div className="relative w-[300px] h-[600px] border-[8px] border-surface-variant bg-[#1A1A1A] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col shrink-0">
+            <div className="relative w-[300px] h-[600px] border-[8px] border-surface-variant bg-bg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col shrink-0">
 
               {/* Notch */}
               <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-20">
@@ -445,7 +449,7 @@ export default function LandingPage() {
               </div>
 
               {/* App Content */}
-              <div className="flex-1 px-4 pt-1 pb-4 overflow-hidden flex flex-col gap-3">
+              <div className="flex-1 px-4 pt-1 pb-4 overflow-hidden flex flex-col gap-2">
 
                 {/* Hamburger */}
                 <svg className="w-5 h-5 text-text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -453,7 +457,7 @@ export default function LandingPage() {
                 </svg>
 
                 {/* Calendar card */}
-                <div className="bg-surface rounded-2xl p-4 flex flex-col gap-3 border border-divider">
+                <div className="bg-surface rounded-2xl p-3 flex flex-col gap-2 border border-divider">
 
                   {/* Month header */}
                   <div className="flex justify-between items-center">
@@ -522,36 +526,16 @@ export default function LandingPage() {
                 </div>
 
                 {/* Horario laboral card */}
-                <div className="bg-surface rounded-2xl px-4 py-4 border border-divider flex flex-col gap-2 relative mb-6">
-                  <h3 className="text-sm font-bold text-text-primary mb-1">Horario laboral</h3>
-                  <span className="text-xs text-text-secondary mb-2">60 min de descanso diario</span>
-                  
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-text-primary">Lun</span>
+                <div className="bg-surface rounded-2xl px-3 py-3 border border-divider flex flex-col gap-1 relative">
+                  <h3 className="text-sm font-bold text-text-primary">Horario laboral</h3>
+                  <span className="text-[10px] text-text-secondary mb-1">60 min de descanso diario</span>
+
+                  <div className="flex justify-between items-center text-[11px]">
+                    <span className="font-bold text-text-primary">Lun - Vie</span>
                     <span className="text-text-secondary">09:00 - 18:00</span>
                   </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-text-primary">Mar</span>
-                    <span className="text-text-secondary">09:00 - 18:00</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-text-primary">Mié</span>
-                    <span className="text-text-secondary">09:00 - 18:00</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-text-primary">Jue</span>
-                    <span className="text-text-secondary">09:00 - 18:00</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-text-primary">Vie</span>
-                    <span className="text-text-secondary">09:00 - 18:00</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-text-primary">Sáb</span>
-                    <span className="text-text-hint">Descanso</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-text-primary">Dom</span>
+                  <div className="flex justify-between items-center text-[11px]">
+                    <span className="font-bold text-text-primary">Sáb - Dom</span>
                     <span className="text-text-hint">Descanso</span>
                   </div>
                 </div>

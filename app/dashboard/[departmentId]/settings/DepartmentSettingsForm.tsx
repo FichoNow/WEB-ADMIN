@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
+import { toast } from 'sonner'
 import { updateDepartmentAction } from '@/app/actions/superadmin/department/update-department'
 import { departmentSchema, type DepartmentFormValues } from '@/app/types/superadmin/schemas/department-schema'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -38,8 +39,10 @@ export default function DepartmentSettingsForm({ departmentId, initialName }: Pr
       const result = await updateDepartmentAction(departmentId, undefined, formData)
       if (result && 'error' in result) {
         form.setError('root', { message: result.error })
+        toast.error(result.error)
         return
       }
+      if (result && 'success' in result) toast.success(result.success)
       setSuccess(true)
       router.refresh()
     })

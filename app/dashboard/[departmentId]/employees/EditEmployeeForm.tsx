@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { deleteEmployeeAction } from '@/app/actions/admin/employees/delete-employee'
 import { updateEmployeeAction } from '@/app/actions/admin/employees/update-employee'
 import { editEmployeeSchema, type EditEmployeeFormValues } from '@/app/types/admin/schemas/employee-schema'
@@ -15,13 +16,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { User, Settings, Trash2, ShieldCheck, Mail, Lock } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 interface Props {
   employee: EmployeeListItem
@@ -65,8 +60,10 @@ export default function EditEmployeeForm({ employee, departmentId, groups, onClo
       const result = await updateEmployeeAction(departmentId, employee.id, values)
       if (result && 'error' in result) {
         form.setError('root', { message: result.error })
+        toast.error(result.error)
         return
       }
+      if (result && 'success' in result) toast.success(result.success)
       router.refresh()
       onClose()
     })
@@ -78,8 +75,10 @@ export default function EditEmployeeForm({ employee, departmentId, groups, onClo
       const result = await deleteEmployeeAction(departmentId, employee.id)
       if (result && 'error' in result) {
         setDeleteError(result.error)
+        toast.error(result.error)
         return
       }
+      if (result && 'success' in result) toast.success(result.success)
       setConfirmDelete(false)
       router.refresh()
       onClose()
@@ -235,43 +234,20 @@ export default function EditEmployeeForm({ employee, departmentId, groups, onClo
           </div>
         </div>
 
-        <Dialog open={confirmDelete} onOpenChange={(open) => !open && setConfirmDelete(false)}>
-          <DialogContent className="sm:max-w-[420px] bg-surface border-divider rounded-[2rem]">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-text-primary">
-                ¿Eliminar empleado?
-              </DialogTitle>
-              <DialogDescription className="text-sm text-text-secondary mt-2">
-                Estás a punto de eliminar a <span className="font-bold text-text-primary">"{employee.name}"</span>. Esta acción borrará permanentemente sus fichajes, solicitudes y configuración.
-              </DialogDescription>
-            </DialogHeader>
-            {deleteError && (
-              <Alert variant="destructive">
-                <AlertDescription>{deleteError}</AlertDescription>
-              </Alert>
-            )}
-            <div className="flex flex-col gap-3 pt-4">
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={handleConfirmDelete}
-                disabled={isPending}
-                className="w-full h-11 rounded-xl"
-              >
-                {isPending ? 'Eliminando...' : 'Sí, eliminar permanentemente'}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setConfirmDelete(false)}
-                disabled={isPending}
-                className="w-full h-11 border-divider/50 hover:bg-surface-variant text-text-hint hover:text-text-primary rounded-xl"
-              >
-                Cancelar
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <ConfirmDialog
+          open={confirmDelete}
+          title="Eliminar empleado"
+          description={
+            <>
+              Vas a eliminar a <span className="font-bold text-text-primary">"{employee.name}"</span>. Esta acción borrará permanentemente sus fichajes, solicitudes y configuración. No se puede deshacer.
+            </>
+          }
+          confirmLabel="Eliminar empleado"
+          pending={isPending}
+          errorMessage={deleteError}
+          onConfirm={handleConfirmDelete}
+          onClose={() => { setDeleteError(null); setConfirmDelete(false) }}
+        />
       </form>
     </Form>
   )

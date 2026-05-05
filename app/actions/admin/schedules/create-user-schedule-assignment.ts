@@ -2,45 +2,36 @@
 
 import { revalidatePath } from "next/cache"
 import { createUserScheduleAssignment } from "@/app/repositories/schedules-repository"
+import { createUserScheduleAssignmentSchema } from "@/app/types/admin/schemas/schedule-schema"
 import type { ScheduleActionState } from "@/app/types/admin/action-states/schedule-state"
 
 /**
  * Server Action para asignar una plantilla de horario a un usuario individual.
- *
- * Recibe el FormData del formulario y llama al repository,
- * que a su vez llama a la API.
  */
 export async function createUserScheduleAssignmentAction(
   departmentId: number,
   _prev: ScheduleActionState,
   formData: FormData,
 ): Promise<ScheduleActionState> {
-  const userIdRaw = formData.get("user_id") as string | null
-  const templateIdRaw = formData.get("template_id") as string | null
-  const startDate = formData.get("start_date") as string | null
-  const endDateRaw = formData.get("end_date") as string | null
+  const parsed = createUserScheduleAssignmentSchema.safeParse({
+    user_id: formData.get("user_id") ?? "",
+    template_id: formData.get("template_id") ?? "",
+    start_date: formData.get("start_date") ?? "",
+    end_date: (formData.get("end_date") as string | null) || undefined,
+  })
 
-  const user_id = Number(userIdRaw)
-  const template_id = Number(templateIdRaw)
-
-  if (!Number.isInteger(user_id) || user_id <= 0) {
-    return { error: "Selecciona un usuario válido" }
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0].message }
   }
 
-  if (!Number.isInteger(template_id) || template_id <= 0) {
-    return { error: "Selecciona una plantilla válida" }
-  }
-
-  if (!startDate) {
-    return { error: "La fecha de inicio es obligatoria" }
-  }
+  const data = parsed.data
 
   try {
     await createUserScheduleAssignment({
-      user_id,
-      template_id,
-      start_date: startDate,
-      end_date: endDateRaw || null,
+      user_id: Number(data.user_id),
+      template_id: Number(data.template_id),
+      start_date: data.start_date,
+      end_date: data.end_date?.length ? data.end_date : null,
     })
 
     revalidatePath(`/dashboard/${departmentId}/schedules`)

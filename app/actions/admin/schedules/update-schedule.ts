@@ -1,18 +1,19 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { createSchedule } from "@/app/repositories/schedules-repository"
+import { updateSchedule } from "@/app/repositories/schedules-repository"
 import { createScheduleSchema } from "@/app/types/admin/schemas/schedule-schema"
 import type { ScheduleActionState } from "@/app/types/admin/action-states/schedule-state"
 
 /**
- * Server Action para crear una plantilla de horario desde el panel admin.
+ * Server Action para actualizar una plantilla de horario desde el panel admin.
  *
  * Recibe el FormData del formulario, construye los 7 días de la semana,
  * valida con Zod y llama al repository.
  */
-export async function createScheduleAction(
+export async function updateScheduleAction(
   departmentId: number,
+  templateId: number,
   _prev: ScheduleActionState,
   formData: FormData,
 ): Promise<ScheduleActionState> {
@@ -46,8 +47,7 @@ export async function createScheduleAction(
   const data = parsed.data
 
   try {
-    await createSchedule({
-      department_id: departmentId,
+    await updateSchedule(templateId, {
       name: data.name,
       description: data.description?.length ? data.description : null,
       is_active: data.is_active === "true",
@@ -62,10 +62,10 @@ export async function createScheduleAction(
 
     revalidatePath(`/dashboard/${departmentId}/schedules`)
 
-    return { success: "Plantilla de horario creada correctamente" }
+    return { success: "Plantilla de horario actualizada correctamente" }
   } catch (err) {
     return {
-      error: err instanceof Error ? err.message : "Error al crear la plantilla de horario",
+      error: err instanceof Error ? err.message : "Error al actualizar la plantilla de horario",
     }
   }
 }

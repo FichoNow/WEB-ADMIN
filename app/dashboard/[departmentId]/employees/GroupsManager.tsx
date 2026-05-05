@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { createGroupAction } from '@/app/actions/admin/groups/create-group'
 import { deleteGroupAction } from '@/app/actions/admin/groups/delete-group'
 import { updateGroupAction } from '@/app/actions/admin/groups/update-group'
@@ -18,13 +19,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import ConfirmDialog from '@/components/ConfirmDialog'
 import { Trash2, Edit3, Plus, X, Check, Users } from 'lucide-react'
 
 interface Props {
@@ -49,8 +44,10 @@ export default function GroupsManager({ departmentId, groups }: Props) {
       const res = await createGroupAction(departmentId, values)
       if (res && 'error' in res) {
         createForm.setError('root', { message: res.error })
+        toast.error(res.error)
         return
       }
+      if (res && 'success' in res) toast.success(res.success)
       createForm.reset()
       router.refresh()
     })
@@ -152,8 +149,10 @@ function GroupRow({ group, departmentId, isEditing, isPending, onStartEdit, onCa
       const res = await updateGroupAction(departmentId, group.id, values)
       if (res && 'error' in res) {
         editForm.setError('name', { message: res.error })
+        toast.error(res.error)
         return
       }
+      if (res && 'success' in res) toast.success(res.success)
       onSaved()
     })
   }
@@ -234,51 +233,30 @@ function DeleteGroupDialog({ group, departmentId, onClose, onDeleted }: DeleteGr
       const res = await deleteGroupAction(departmentId, group.id)
       if (res && 'error' in res) {
         setError(res.error)
+        toast.error(res.error)
         return
       }
+      if (res && 'success' in res) toast.success(res.success)
       onDeleted()
     })
   }
 
   return (
-    <Dialog open={!!group} onOpenChange={(open) => { if (!open) { setError(null); onClose() } }}>
-      <DialogContent className="sm:max-w-[400px] bg-surface border-divider rounded-[2rem]">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-text-primary">
-            Eliminar grupo
-          </DialogTitle>
-          <DialogDescription className="text-sm text-text-secondary mt-2">
-            {group && (
-              <>
-                ¿Seguro que quieres eliminar el grupo <span className="font-bold text-text-primary">"{group.name}"</span>? Esta acción no se puede deshacer.
-              </>
-            )}
-          </DialogDescription>
-        </DialogHeader>
-        {error && (
-          <Alert variant="destructive" className="rounded-xl">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-        <div className="flex flex-col gap-3 pt-4">
-          <Button
-            variant="destructive"
-            onClick={handleConfirm}
-            disabled={isPending}
-            className="w-full h-11 rounded-xl"
-          >
-            {isPending ? 'Eliminando...' : 'Eliminar grupo'}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={onClose}
-            disabled={isPending}
-            className="w-full h-11 rounded-xl"
-          >
-            Cancelar
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <ConfirmDialog
+      open={!!group}
+      title="Eliminar grupo"
+      description={
+        group ? (
+          <>
+            Vas a eliminar el grupo <span className="font-bold text-text-primary">"{group.name}"</span>. Esta acción no se puede deshacer.
+          </>
+        ) : ''
+      }
+      confirmLabel="Eliminar grupo"
+      pending={isPending}
+      errorMessage={error}
+      onConfirm={handleConfirm}
+      onClose={() => { setError(null); onClose() }}
+    />
   )
 }

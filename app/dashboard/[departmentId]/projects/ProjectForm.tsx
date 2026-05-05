@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import { createProjectAction } from "@/app/actions/admin/projects/create-project"
 import { updateProjectAction } from "@/app/actions/admin/projects/update-project"
 import type { ProjectListItem } from "@/app/types/admin/api/project-response"
@@ -71,9 +72,13 @@ export default function ProjectForm({
     )
 
     useEffect(() => {
-        if (state && 'success' in state) {
+        if (!state) return
+        if ('success' in state) {
+            toast.success(state.success)
             router.refresh()
             onClose()
+        } else if ('error' in state) {
+            toast.error(state.error)
         }
     }, [state, router, onClose])
 

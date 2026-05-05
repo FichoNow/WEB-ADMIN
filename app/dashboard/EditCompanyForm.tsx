@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { updateCompanyAction } from '@/app/actions/superadmin/company/update-company'
 import { updateCompanySchema, type UpdateCompanyFormValues } from '@/app/types/superadmin/schemas/company-schema'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
@@ -54,8 +55,10 @@ export default function EditCompanyForm({ company, open, onClose }: Props) {
       const result = await updateCompanyAction({}, formData)
       if (result?.error) {
         form.setError('root', { message: result.error })
+        toast.error(result.error)
         return
       }
+      if (result && 'success' in result && result.success) toast.success(result.success)
       setSuccess(true)
       router.refresh()
     })

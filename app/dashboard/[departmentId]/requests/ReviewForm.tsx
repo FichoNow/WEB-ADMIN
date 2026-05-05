@@ -4,6 +4,7 @@ import { useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { approveRequestAction } from '@/app/actions/admin/requests/approve-request'
 import { rejectRequestAction } from '@/app/actions/admin/requests/reject-request'
 import { reviewRequestSchema, type ReviewRequestFormValues } from '@/app/types/admin/schemas/review-request-schema'
@@ -41,8 +42,10 @@ export default function ReviewForm({ mode, request, typeName, departmentId, onCl
 
       if (result && 'error' in result) {
         form.setError('root', { message: result.error })
+        toast.error(result.error)
         return
       }
+      if (result && 'success' in result) toast.success(result.success)
 
       router.refresh()
       onClose()

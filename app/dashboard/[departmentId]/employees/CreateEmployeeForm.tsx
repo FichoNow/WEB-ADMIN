@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { createBulkEmployeesAction } from '@/app/actions/admin/employees/create-employees'
 import { createEmployeesSchema, type CreateEmployeesFormValues } from '@/app/types/admin/schemas/employee-schema'
 import type { GroupResponse } from '@/app/types/admin/api/group-response'
@@ -72,8 +73,10 @@ export default function CreateEmployeeForm({ departmentId, groups, onClose }: Pr
       const result = await createBulkEmployeesAction(departmentId, values.rows)
       if (result && 'error' in result) {
         form.setError('root', { message: result.error })
+        toast.error(result.error)
         return
       }
+      if (result && 'success' in result) toast.success(result.success)
       router.refresh()
       onClose()
     })
