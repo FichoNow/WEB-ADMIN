@@ -30,7 +30,7 @@ const MODULES = [
     iconColor: 'text-amber-500',
   },
   {
-    key: 'horarios',
+    key: 'schedules',
     title: 'Horarios',
     description: 'Configura horarios y turnos de trabajo.',
     icon: <Clock className="w-5 h-5" />,
