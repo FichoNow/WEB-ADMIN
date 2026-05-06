@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { updateSuperadminRequest } from "@/app/repositories/company-repository"
 import { editSuperadminSchema } from "@/app/types/superadmin/schemas/superadmin-schema"
+import type { UpdateSuperadminRequest } from "@/app/types/superadmin/api/superadmin-request"
 
 export type UpdateSuperadminState =
   | { error: string }
@@ -18,7 +19,7 @@ export async function updateSuperadminAction(
     return { error: parsed.error.issues[0].message }
   }
 
-  const body: { name?: string; email?: string } = {}
+  const body: UpdateSuperadminRequest = {}
   if (parsed.data.name) body.name = parsed.data.name.trim()
   if (parsed.data.email) body.email = parsed.data.email.trim().toLowerCase()
 

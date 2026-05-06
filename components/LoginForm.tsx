@@ -3,6 +3,7 @@
 import { useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { loginSchema, type LoginFormValues } from '@/app/types/auth/schemas/login-schema'
 import { login } from '@/app/actions/auth/login'
@@ -12,13 +13,14 @@ import { Input } from '@/components/ui/input'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 
-import { Lock, Mail, LogIn } from 'lucide-react'
+import { Lock, Mail } from 'lucide-react'
 
 interface Props {
   onClose: () => void
 }
 
 export default function LoginForm({ onClose }: Props) {
+  const t = useTranslations('auth.login')
   const [isPending, startTransition] = useTransition()
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -47,10 +49,10 @@ export default function LoginForm({ onClose }: Props) {
           <div className="flex items-center gap-4">
             <div className="flex flex-col">
               <DialogTitle className="text-2xl font-bold tracking-tight text-text-primary">
-                ¡Bienvenido!
+                {t('title')}
               </DialogTitle>
               <DialogDescription className="text-sm text-text-secondary">
-                Inicia sesión para gestionar tu empresa.
+                {t('subtitle')}
               </DialogDescription>
             </div>
           </div>
@@ -70,9 +72,9 @@ export default function LoginForm({ onClose }: Props) {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-2"><Mail className="w-4 h-4 opacity-50" /> Email corporativo</FormLabel>
+                    <FormLabel className="flex items-center gap-2"><Mail className="w-4 h-4 opacity-50" /> {t('emailLabel')}</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="tucorreo@empresa.com" {...field} />
+                      <Input type="email" placeholder={t('emailPlaceholder')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -84,9 +86,9 @@ export default function LoginForm({ onClose }: Props) {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-2"><Lock className="w-4 h-4 opacity-50" /> Contraseña</FormLabel>
+                    <FormLabel className="flex items-center gap-2"><Lock className="w-4 h-4 opacity-50" /> {t('passwordLabel')}</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
+                      <Input type="password" placeholder={t('passwordPlaceholder')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -95,20 +97,20 @@ export default function LoginForm({ onClose }: Props) {
             </div>
 
             <div className="pt-2 flex flex-col gap-4">
-              <Button 
-                type="submit" 
-                disabled={isPending} 
+              <Button
+                type="submit"
+                disabled={isPending}
                 className="w-full h-12 text-base font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
-                {isPending ? 'Validando credenciales...' : 'Entrar en el panel'}
+                {isPending ? t('submitPending') : t('submit')}
               </Button>
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => toast.info('Contacta con la empresa propietaria de la aplicación para recuperar tu contraseña.', { duration: 6000 })}
+                onClick={() => toast.info(t('forgotToast'), { duration: 6000 })}
                 className="text-xs text-text-hint hover:text-text-primary"
               >
-                ¿Has olvidado tu contraseña?
+                {t('forgot')}
               </Button>
             </div>
           </form>

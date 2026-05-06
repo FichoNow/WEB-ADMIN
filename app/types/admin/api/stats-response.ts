@@ -135,3 +135,21 @@ export interface ProjectsOverviewResponse {
   total_minutes: number
   total_projects: number
 }
+
+/**
+ * Bundle agregado de todas las respuestas de estadísticas de un departamento
+ * para un período concreto. Lo construye la página `statistics/page.tsx` y lo
+ * consumen `StatsClient` y sus subvistas.
+ */
+export interface DepartmentStatsBundle {
+  overview:        OverviewResponse
+  ranking:         RankingResponse
+  projectHours:    ProjectsPeriodResponse
+  activeNow:       ActiveNowResponse
+  hourly:          HourlyResponse
+  absences:        AbsencesResponse
+  topDays:         TopDaysResponse
+  breaks:          BreaksResponse
+  overtimeYearly:  OvertimeYearlyResponse
+  groups:          GroupsResponse
+}

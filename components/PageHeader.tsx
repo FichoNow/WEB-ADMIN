@@ -1,8 +1,9 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import { useTranslations } from 'next-intl'
 import { Menu } from 'lucide-react'
-import { useSidebar } from '@/app/dashboard/[departmentId]/SidebarContext'
+import { useSidebar } from '@/app/[locale]/dashboard/[departmentId]/SidebarContext'
 
 interface Props {
   title: string
@@ -12,6 +13,7 @@ interface Props {
 
 export default function PageHeader({ title, description, actions }: Props) {
   const { toggle } = useSidebar()
+  const t = useTranslations('common')
 
   return (
     <div className="flex flex-col gap-4 sm:gap-6">
@@ -20,7 +22,7 @@ export default function PageHeader({ title, description, actions }: Props) {
         <button
           onClick={toggle}
           className="lg:hidden shrink-0 mt-0.5 w-9 h-9 rounded-xl flex items-center justify-center text-text-secondary hover:bg-surface-variant hover:text-text-primary transition-colors border border-divider/50"
-          aria-label="Abrir menú"
+          aria-label={t('openMenu')}
         >
           <Menu className="w-4 h-4" />
         </button>

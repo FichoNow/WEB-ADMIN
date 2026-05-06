@@ -1,4 +1,4 @@
-import type { EmployeeRole } from '@/app/types/admin/api/employee-role'
+import type { EmployeeRole } from '@/app/types/admin/api/employee-response'
 
 export interface BulkEmployeeRow {
   name: string

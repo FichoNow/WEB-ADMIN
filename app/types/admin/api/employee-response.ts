@@ -1,4 +1,10 @@
-import type { EmployeeRole } from '@/app/types/admin/api/employee-role'
+import type { UserRole } from '@/app/types/auth/api/login-response'
+
+/**
+ * Roles que puede tener un empleado dentro de un departamento.
+ * Excluye SUPERADMIN porque ese rol es transversal a la empresa.
+ */
+export type EmployeeRole = Exclude<UserRole, 'SUPERADMIN'>
 
 export interface EmployeeListItem {
   id: number

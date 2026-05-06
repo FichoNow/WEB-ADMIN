@@ -1,5 +1,10 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import createMiddleware from 'next-intl/middleware'
+import { NextResponse, type NextRequest } from 'next/server'
+import { routing } from './i18n/routing'
+
+const handleI18n = createMiddleware(routing)
+
+const DASHBOARD = /^\/(es|cat|en)\/dashboard(?:\/.*)?$/
 
 function isValidJwt(token: string): boolean {
   const parts = token.split('.')
@@ -7,15 +12,19 @@ function isValidJwt(token: string): boolean {
 }
 
 export function proxy(request: NextRequest) {
-  const token = request.cookies.get('accessToken')?.value
+  const path = request.nextUrl.pathname
 
-  if (!token || !isValidJwt(token)) {
-    return NextResponse.redirect(new URL('/', request.url))
+  if (DASHBOARD.test(path)) {
+    const token = request.cookies.get('accessToken')?.value
+    if (!token || !isValidJwt(token)) {
+      const locale = path.split('/')[1]
+      return NextResponse.redirect(new URL(`/${locale}`, request.url))
+    }
   }
 
-  return NextResponse.next()
+  return handleI18n(request)
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
 }

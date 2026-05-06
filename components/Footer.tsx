@@ -1,6 +1,8 @@
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 
 export default function Footer() {
+  const t = useTranslations('footer')
   return (
     <footer className="border-t border-divider bg-bg pt-16 pb-8 px-6">
       <div className="max-w-7xl mx-auto">
@@ -12,7 +14,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-sm text-text-secondary max-w-sm mb-6 leading-relaxed">
-              La plataforma definitiva para gestionar fichajes, ausencias y horarios de tu equipo. Rápida, intuitiva y cumpliendo con la normativa actual.
+              {t('tagline')}
             </p>
             <div className="flex items-center gap-4">
               <a href="https://github.com/FichajeApp" target="_blank" rel="noopener noreferrer"
@@ -26,30 +28,30 @@ export default function Footer() {
           </div>
 
           <div className="col-span-1">
-            <h4 className="text-sm font-bold text-text-primary mb-5">Producto</h4>
+            <h4 className="text-sm font-bold text-text-primary mb-5">{t('product')}</h4>
             <ul className="flex flex-col gap-3.5 text-sm text-text-secondary">
-              <li><a href="#" className="hover:text-primary transition-colors">Funcionalidades</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Precios</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">{t('features')}</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">{t('pricing')}</a></li>
             </ul>
           </div>
 
           <div className="col-span-1">
-            <h4 className="text-sm font-bold text-text-primary mb-5">Compañía</h4>
+            <h4 className="text-sm font-bold text-text-primary mb-5">{t('company')}</h4>
             <ul className="flex flex-col gap-3.5 text-sm text-text-secondary">
-              <li><Link href="/about" className="hover:text-primary transition-colors">Sobre nosotros</Link></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Contacto</a></li>
+              <li><Link href="/about" className="hover:text-primary transition-colors">{t('about')}</Link></li>
+              <li><a href="#" className="hover:text-primary transition-colors">{t('contact')}</a></li>
             </ul>
           </div>
         </div>
 
         <div className="pt-8 border-t border-divider/50 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-text-hint">
-            &copy; {new Date().getFullYear()} Ficho<span className="text-primary">Now</span>. Todos los derechos reservados.
+            &copy; {new Date().getFullYear()} Ficho<span className="text-primary">Now</span>. {t('rights')}
           </p>
           <div className="flex items-center gap-6 text-sm text-text-hint">
-            <a href="#" className="hover:text-text-primary transition-colors">Términos legales</a>
-            <a href="#" className="hover:text-text-primary transition-colors">Política de privacidad</a>
-            <a href="#" className="hover:text-text-primary transition-colors">Seguridad</a>
+            <a href="#" className="hover:text-text-primary transition-colors">{t('legal')}</a>
+            <a href="#" className="hover:text-text-primary transition-colors">{t('privacy')}</a>
+            <a href="#" className="hover:text-text-primary transition-colors">{t('security')}</a>
           </div>
         </div>
       </div>

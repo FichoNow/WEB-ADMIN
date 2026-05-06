@@ -1,45 +1,37 @@
-'use client'
-
-import Link from 'next/link'
+import { cookies } from 'next/headers'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import Navbar from '@/components/Navbar'
 import ThemeToggle from '@/components/ThemeToggle'
-import { logout } from '@/app/actions/auth/logout'
-import { Button, buttonVariants } from '@/components/ui/button'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import UserMenu from '@/components/UserMenu'
+import { buttonVariants } from '@/components/ui/button'
+import { ArrowLeft } from 'lucide-react'
 
-export default function DashboardNavbar() {
+export default async function DashboardNavbar() {
+  const cookieStore = await cookies()
+  const t = await getTranslations('navbar')
+  const name = cookieStore.get('userName')?.value ?? t('myAccount')
+  const email = cookieStore.get('userEmail')?.value ?? ''
+
   return (
     <Navbar fullWidth>
-      <div className="flex items-center gap-1 sm:gap-2">
-        <Link href="/" className={buttonVariants({ variant: "ghost", className: "text-text-secondary hover:text-text-primary px-2 sm:px-3" })}>
-          <svg className="w-4 h-4 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span className="hidden sm:inline">Volver a la web</span>
-        </Link>
-
-        <div className="w-px h-4 bg-divider mx-1 sm:mx-2" />
-
-        <Link href="/dashboard/profile" className={buttonVariants({ variant: "ghost", className: "text-text-secondary hover:text-text-primary px-2 sm:px-3" })}>
-          <svg className="w-4 h-4 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-          </svg>
-          <span className="hidden sm:inline">Mi perfil</span>
-        </Link>
-
-        <div className="w-px h-4 bg-divider mx-1 sm:mx-2" />
-
+      <div className="flex items-center gap-2 sm:gap-3">
         <ThemeToggle />
-
-        <div className="w-px h-4 bg-divider mx-1 sm:mx-2" />
-
-        <form action={logout}>
-          <Button variant="ghost" type="submit" className="text-text-secondary hover:text-error hover:bg-error/10 px-2 sm:px-3">
-            <svg className="w-4 h-4 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            <span className="hidden sm:inline">Cerrar sesión</span>
-          </Button>
-        </form>
+        <LanguageSwitcher />
+        <Link
+          href="/"
+          className={buttonVariants({
+            variant: 'outline',
+            size: 'sm',
+            className: 'border-divider bg-surface/60 text-text-secondary hover:text-text-primary hover:bg-surface gap-2',
+          })}
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span className="hidden sm:inline">{t('backToWeb')}</span>
+        </Link>
+        <div className="w-px h-6 bg-divider mx-1" />
+        <UserMenu name={name} email={email} />
       </div>
     </Navbar>
   )

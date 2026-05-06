@@ -2,11 +2,12 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 
 import { loginRequest } from "@/app/repositories/auth-repository";
 import { loginSchema } from "@/app/types/auth/schemas/login-schema";
 import type { LoginResponse } from "@/app/types/auth/api/login-response";
-import type { LoginState } from "@/app/types/auth/states/login-state";
+import type { LoginState } from "@/app/types/auth/action-states/login-state";
 
 export async function login(
   _prevState: LoginState,
@@ -61,5 +62,22 @@ export async function login(
     maxAge: 60 * 60 * 24 * 7,
   });
 
-  redirect("/dashboard");
+  cookieStore.set("userName", data.userData.name, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
+  cookieStore.set("userEmail", data.userData.email, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  });
+
+  const locale = await getLocale();
+  redirect(`/${locale}/dashboard`);
 }

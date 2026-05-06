@@ -1,15 +1,6 @@
 import { fetchWithAuth } from '@/app/lib/api'
-
-export interface UpdateProfileRequest {
-  name?: string
-  email?: string
-  password?: string
-}
-
-export interface UpdateProfileResponse {
-  name: string
-  email: string
-}
+import type { UpdateProfileRequest } from '@/app/types/auth/api/profile-request'
+import type { UpdateProfileResponse } from '@/app/types/auth/api/profile-response'
 
 export async function updateOwnProfile(body: UpdateProfileRequest): Promise<UpdateProfileResponse> {
   const res = await fetchWithAuth('/user/update', {

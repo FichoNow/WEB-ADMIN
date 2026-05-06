@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { getLocale } from 'next-intl/server'
 
 const API_URL = process.env.API_URL ?? 'http://localhost:3000'
 
@@ -45,7 +46,9 @@ export async function fetchWithAuth(path: string, options?: RequestInit): Promis
   const cookieStore = await cookies()
   const accessToken = cookieStore.get('accessToken')?.value
 
-  if (!accessToken) redirect('/')
+  const locale = await getLocale()
+
+  if (!accessToken) redirect(`/${locale}`)
 
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
@@ -62,14 +65,14 @@ export async function fetchWithAuth(path: string, options?: RequestInit): Promis
   // —— Token expirado: intentar refresh ——
   const refreshToken = cookieStore.get('refreshToken')?.value
 
-  if (!refreshToken) redirect('/error?reason=session-expired')
+  if (!refreshToken) redirect(`/${locale}/error?reason=session-expired`)
 
   const refreshRes = await fetchPublic('/auth/refresh', {
     method: 'POST',
     body: JSON.stringify({ refreshToken }),
   })
 
-  if (!refreshRes.ok) redirect('/error?reason=refresh-failed')
+  if (!refreshRes.ok) redirect(`/${locale}/error?reason=refresh-failed`)
 
   const { data } = await refreshRes.json()
 
@@ -78,7 +81,7 @@ export async function fetchWithAuth(path: string, options?: RequestInit): Promis
     cookieStore.set('refreshToken', data.refreshToken, { ...COOKIE_OPTS, maxAge: 60 * 60 * 24 * 7 })
   } catch {
     // set() solo funciona en Server Actions / Route Handlers.
-    redirect('/error?reason=cookie')
+    redirect(`/${locale}/error?reason=cookie`)
   }
 
   // —— Reintentar con el nuevo accessToken ——

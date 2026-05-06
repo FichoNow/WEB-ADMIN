@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import {
   registerSchema,
@@ -35,6 +36,7 @@ interface Props {
 }
 
 export default function RegisterForm({ onClose, onShowLogin }: Props) {
+  const t = useTranslations("auth.register");
   const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -65,7 +67,7 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
       if (!result) return;
       if ("success" in result) {
         setSuccess(true);
-        toast.success("Empresa creada correctamente");
+        toast.success(t("successToast"));
       } else if ("fieldError" in result) {
         form.setError(result.fieldError.field as keyof RegisterFormValues, {
           message: result.fieldError.message,
@@ -83,10 +85,10 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0">
         <DialogHeader className="px-6 py-4 border-b shrink-0">
           <DialogTitle className="text-2xl font-light tracking-tight">
-            Crea tu empresa
+            {t("title")}
           </DialogTitle>
           <DialogDescription className="text-xs font-light tracking-widest uppercase">
-            Registro de empresa y administrador
+            {t("subtitle")}
           </DialogDescription>
         </DialogHeader>
 
@@ -97,14 +99,13 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                 <CheckCircle2 className="w-8 h-8 text-emerald-500" />
               </div>
               <h3 className="text-2xl font-medium text-center">
-                ¡Empresa creada con éxito!
+                {t("successTitle")}
               </h3>
               <p className="text-base text-muted-foreground text-center max-w-md">
-                Ya puedes iniciar sesión con tus credenciales de administrador
-                en el panel.
+                {t("successDescription")}
               </p>
               <Button onClick={() => { onClose(); onShowLogin() }} className="mt-6 px-8">
-                Ir a iniciar sesión
+                {t("successCta")}
               </Button>
             </div>
           ) : (
@@ -125,7 +126,7 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                   <div className="flex items-center gap-2 border-b pb-2">
                     <Building2 className="w-5 h-5 text-primary shrink-0" />
                     <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                      Datos de la empresa
+                      {t("companySection")}
                     </h3>
                   </div>
 
@@ -135,9 +136,9 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                       name="company_name"
                       render={({ field }) => (
                         <FormItem className="md:col-span-2">
-                          <FormLabel>Nombre de la empresa</FormLabel>
+                          <FormLabel>{t("companyName")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Mi Empresa S.L." {...field} />
+                            <Input placeholder={t("companyNamePh")} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -148,9 +149,9 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                       name="company_cif_nif"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>CIF / NIF</FormLabel>
+                          <FormLabel>{t("cifNif")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="B12345678" {...field} />
+                            <Input placeholder={t("cifNifPh")} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -161,11 +162,11 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                       name="company_email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email de la empresa</FormLabel>
+                          <FormLabel>{t("companyEmail")}</FormLabel>
                           <FormControl>
                             <Input
                               type="email"
-                              placeholder="empresa@ejemplo.com"
+                              placeholder={t("companyEmailPh")}
                               {...field}
                             />
                           </FormControl>
@@ -178,10 +179,10 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                       name="company_address_line"
                       render={({ field }) => (
                         <FormItem className="md:col-span-2">
-                          <FormLabel>Dirección</FormLabel>
+                          <FormLabel>{t("address")}</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Calle Ejemplo, 123"
+                              placeholder={t("addressPh")}
                               {...field}
                             />
                           </FormControl>
@@ -194,9 +195,9 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                       name="company_city"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Ciudad</FormLabel>
+                          <FormLabel>{t("city")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Barcelona" {...field} />
+                            <Input placeholder={t("cityPh")} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -207,9 +208,9 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                       name="company_postal_code"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Código postal</FormLabel>
+                          <FormLabel>{t("postalCode")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="08001" {...field} />
+                            <Input placeholder={t("postalCodePh")} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -223,7 +224,7 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                   <div className="flex items-center gap-2 border-b pb-2">
                     <User className="w-5 h-5 text-primary shrink-0" />
                     <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                      Datos del administrador
+                      {t("adminSection")}
                     </h3>
                   </div>
 
@@ -233,9 +234,9 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                       name="user_name"
                       render={({ field }) => (
                         <FormItem className="md:col-span-2">
-                          <FormLabel>Nombre completo</FormLabel>
+                          <FormLabel>{t("fullName")}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Juan García" {...field} />
+                            <Input placeholder={t("fullNamePh")} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -246,11 +247,11 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                       name="user_email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>{t("email")}</FormLabel>
                           <FormControl>
                             <Input
                               type="email"
-                              placeholder="admin@ejemplo.com"
+                              placeholder={t("emailPh")}
                               {...field}
                             />
                           </FormControl>
@@ -264,11 +265,11 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                       name="user_password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Contraseña</FormLabel>
+                          <FormLabel>{t("password")}</FormLabel>
                           <FormControl>
                             <Input
                               type="password"
-                              placeholder="Mín. 8 caracteres"
+                              placeholder={t("passwordPh")}
                               {...field}
                             />
                           </FormControl>
@@ -281,11 +282,11 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                       name="user_password_confirm"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Confirmar contraseña</FormLabel>
+                          <FormLabel>{t("passwordConfirm")}</FormLabel>
                           <FormControl>
                             <Input
                               type="password"
-                              placeholder="Repite tu contraseña"
+                              placeholder={t("passwordConfirmPh")}
                               {...field}
                             />
                           </FormControl>
@@ -303,13 +304,10 @@ export default function RegisterForm({ onClose, onShowLogin }: Props) {
                     disabled={isPending}
                     className="w-full py-6 text-base"
                   >
-                    {isPending
-                      ? "Creando empresa..."
-                      : "Finalizar y crear empresa"}
+                    {isPending ? t("submitPending") : t("submit")}
                   </Button>
                   <p className="text-center text-xs text-muted-foreground mt-4">
-                    Al crear la empresa, aceptas nuestros términos de servicio y
-                    política de privacidad.
+                    {t("terms")}
                   </p>
                 </div>
               </form>

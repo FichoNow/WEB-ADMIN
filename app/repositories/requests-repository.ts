@@ -1,7 +1,6 @@
 import { fetchWithAuth } from '@/app/lib/api'
 import type { AdminRequestListItem } from '@/app/types/admin/api/admin-request-response'
-import type { ReviewRequestBody } from '@/app/types/admin/api/review-request-body'
-import type { ReviewRequestResponse } from '@/app/types/admin/api/review-request-response'
+import type { ReviewRequestBody, ReviewRequestResponse } from '@/app/types/admin/api/review-request-response'
 
 export async function getRequests(departmentId: number): Promise<AdminRequestListItem[]> {
   const res = await fetchWithAuth(`/admin/requests?departmentId=${departmentId}`)
