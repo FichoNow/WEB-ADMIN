@@ -43,10 +43,6 @@ export default function SobreNosotros() {
           <div className="absolute inset-0 z-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
 
           <div className="max-w-3xl mx-auto relative z-10">
-            <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-wider mb-8">
-              {t('tag')}
-            </div>
-
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-text-primary leading-[1.1] mb-8">
               {t('title1')} <span className="text-primary">FichoNow</span>
             </h1>
@@ -77,7 +73,7 @@ export default function SobreNosotros() {
                 </div>
               </div>
 
-              <div className="bg-[#151515] rounded-3xl p-8 md:p-10 border border-divider relative overflow-hidden">
+              <div className="bg-surface rounded-3xl p-8 md:p-10 border border-divider relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
                 <h2 className="text-2xl font-bold text-text-primary mb-4">{t('schoolTitle')}</h2>

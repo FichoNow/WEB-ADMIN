@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { X, GitCompare, Users, Loader2, Clock, Target, Zap, Coffee } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import type { UserStatsResponse } from '@/app/types/admin/api/stats-response'
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
@@ -147,7 +147,7 @@ export default function EmployeeCompareForm({ open, employees, departmentId, mon
               <span className="text-[10px] font-black uppercase tracking-widest text-text-hint">Empleado A</span>
               <Select value={userA ? String(userA) : ''} onValueChange={(v) => setUserA(Number(v))}>
                 <SelectTrigger className="w-full h-11 bg-surface-variant/20 border-divider/50 text-text-primary rounded-xl">
-                  <SelectValue placeholder="Selecciona…" />
+                  <span className="truncate text-left">{empA?.name ?? 'Selecciona…'}</span>
                 </SelectTrigger>
                 <SelectContent className="bg-surface/95 backdrop-blur-xl border-divider">
                   {employees.filter((e) => e.id !== userB).map((e) => (
@@ -160,7 +160,7 @@ export default function EmployeeCompareForm({ open, employees, departmentId, mon
               <span className="text-[10px] font-black uppercase tracking-widest text-text-hint">Empleado B</span>
               <Select value={userB ? String(userB) : ''} onValueChange={(v) => setUserB(Number(v))}>
                 <SelectTrigger className="w-full h-11 bg-surface-variant/20 border-divider/50 text-text-primary rounded-xl">
-                  <SelectValue placeholder="Selecciona…" />
+                  <span className="truncate text-left">{empB?.name ?? 'Selecciona…'}</span>
                 </SelectTrigger>
                 <SelectContent className="bg-surface/95 backdrop-blur-xl border-divider">
                   {employees.filter((e) => e.id !== userA).map((e) => (
