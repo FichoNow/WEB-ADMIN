@@ -23,7 +23,11 @@ export default function ThemeToggle() {
       variant="outline"
       size="icon"
       aria-label={isDark ? t('toLight') : t('toDark')}
-      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      onClick={() => {
+        const next = isDark ? 'light' : 'dark'
+        document.cookie = `theme=${next};path=/;max-age=31536000;SameSite=Lax`
+        setTheme(next)
+      }}
       className="h-9 w-9 border-divider bg-surface/60 text-text-secondary hover:text-text-primary hover:bg-surface"
     >
       {mounted ? (
