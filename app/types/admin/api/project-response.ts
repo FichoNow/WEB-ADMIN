@@ -7,7 +7,7 @@
 export interface ProjectListItem {
     id: number
     department_id: number
-    group_id: number
+    group_id: number | null
     name: string
     is_active: boolean
     created_at: string
@@ -23,7 +23,7 @@ export interface ProjectListItem {
 export interface ProjectResponse {
     id: number
     department_id: number
-    group_id: number
+    group_id: number | null
     name: string
     is_active: boolean
 }

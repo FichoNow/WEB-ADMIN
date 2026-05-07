@@ -1,14 +1,18 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FolderKanban, Plus, MoreVertical, Hash, Calendar } from 'lucide-react'
+import { FolderKanban, Plus, Pencil, Trash2, Hash, Calendar } from 'lucide-react'
+import { toast } from 'sonner'
 import type { ProjectListItem } from "@/app/types/admin/api/project-response"
 import type { GroupResponse } from '@/app/types/admin/api/group-response'
+import { deleteProjectAction } from '@/app/actions/admin/projects/delete-project'
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import ConfirmDialog from '@/components/ConfirmDialog'
 import PageHeader from '@/components/PageHeader'
 import ProjectForm from "./ProjectForm"
 
@@ -41,8 +45,26 @@ export default function ProjectsClient({
     const dateLocale = LOCALE_MAP[locale] ?? 'es-ES'
     const formatDate = (date: string) => new Date(date).toLocaleDateString(dateLocale)
 
+    const router = useRouter()
+    const [isPending, startTransition] = useTransition()
+
     const [showCreate, setShowCreate] = useState(false)
     const [editProject, setEditProject] = useState<ProjectListItem | null>(null)
+    const [confirmDelete, setConfirmDelete] = useState<ProjectListItem | null>(null)
+
+    const handleDelete = () => {
+        if (!confirmDelete) return
+        startTransition(async () => {
+            const res = await deleteProjectAction(departmentId, confirmDelete.id)
+            setConfirmDelete(null)
+            if (res && 'error' in res) {
+                toast.error(res.error)
+            } else if (res && 'success' in res) {
+                toast.success(res.success)
+                router.refresh()
+            }
+        })
+    }
 
     const groupNameById = useMemo(() => {
         const m = new Map<number, string>()
@@ -113,14 +135,22 @@ export default function ProjectsClient({
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1">
                                         <Button
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => setEditProject(project)}
                                             className="rounded-xl hover:bg-primary/10 hover:text-primary transition-colors"
                                         >
-                                            <MoreVertical className="w-5 h-5" />
+                                            <Pencil className="w-4 h-4" />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => setConfirmDelete(project)}
+                                            className="rounded-xl hover:bg-error/10 hover:text-error transition-colors"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
                                         </Button>
                                     </div>
                                 </motion.div>
@@ -150,6 +180,17 @@ export default function ProjectsClient({
                     </div>
                 </DialogContent>
             </Dialog>
+
+            <ConfirmDialog
+                open={!!confirmDelete}
+                title={t('deleteTitle')}
+                description={t('deleteDesc', { name: confirmDelete?.name ?? '' })}
+                confirmLabel={t('deleteConfirm')}
+                cancelLabel={t('deleteCancel')}
+                pending={isPending}
+                onConfirm={handleDelete}
+                onClose={() => setConfirmDelete(null)}
+            />
 
             <Dialog open={!!editProject} onOpenChange={(open) => !open && setEditProject(null)}>
                 <DialogContent className="sm:max-w-[600px] bg-surface border-divider rounded-[2.5rem] p-0 overflow-hidden flex flex-col">

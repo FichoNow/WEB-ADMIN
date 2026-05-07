@@ -56,8 +56,20 @@
       "chartLegendExtra": "Extras"
     },
     "days": {
-      "mon": "Lun", "tue": "Mar", "wed": "Mié", "thu": "Jue", "fri": "Vie", "sat": "Sáb", "sun": "Dom",
-      "monShort": "L", "tueShort": "M", "wedShort": "X", "thuShort": "J", "friShort": "V", "satShort": "S", "sunShort": "D"
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mié",
+      "thu": "Jue",
+      "fri": "Vie",
+      "sat": "Sáb",
+      "sun": "Dom",
+      "monShort": "L",
+      "tueShort": "M",
+      "wedShort": "X",
+      "thuShort": "J",
+      "friShort": "V",
+      "satShort": "S",
+      "sunShort": "D"
     },
     "fichaje": {
       "title": "Fichaje profesional y avanzado",
@@ -228,7 +240,6 @@
     "deptNamePh": "Ej: Tecnología",
     "creating": "Creando...",
     "cancel": "Cancelar",
-    "company": "Empresa",
     "companyEdit": "Editar",
     "fieldEmail": "Email",
     "fieldAddress": "Dirección",
@@ -294,11 +305,26 @@
     "welcome": "¡Bienvenido de nuevo!",
     "subtitle": "Selecciona un módulo para gestionar tu departamento y mantente al día con el rendimiento de tu equipo.",
     "access": "Acceder",
-    "employees": { "title": "Empleados", "description": "Gestiona la plantilla, altas y bajas del equipo." },
-    "projects": { "title": "Proyectos", "description": "Administra proyectos y la imputación de horas." },
-    "requests": { "title": "Solicitudes", "description": "Aprueba vacaciones y ausencias del personal." },
-    "schedules": { "title": "Horarios", "description": "Configura horarios y turnos de trabajo." },
-    "statistics": { "title": "Estadísticas", "description": "Analiza datos y métricas de rendimiento del equipo." }
+    "employees": {
+      "title": "Empleados",
+      "description": "Gestiona la plantilla, altas y bajas del equipo."
+    },
+    "projects": {
+      "title": "Proyectos",
+      "description": "Administra proyectos y la imputación de horas."
+    },
+    "requests": {
+      "title": "Solicitudes",
+      "description": "Aprueba vacaciones y ausencias del personal."
+    },
+    "schedules": {
+      "title": "Horarios",
+      "description": "Configura horarios y turnos de trabajo."
+    },
+    "statistics": {
+      "title": "Estadísticas",
+      "description": "Analiza datos y métricas de rendimiento del equipo."
+    }
   },
   "employees": {
     "title": "Empleados",
@@ -438,7 +464,11 @@
       "newDialogDesc": "Crea un proyecto en el departamento.",
       "editDialogTitle": "Editar Proyecto",
       "editDialogDesc": "Modifica los datos de \"{name}\".",
-      "editDialogDescGeneric": "Modifica los datos del proyecto."
+      "editDialogDescGeneric": "Modifica los datos del proyecto.",
+      "deleteTitle": "Eliminar proyecto",
+      "deleteDesc": "¿Seguro que quieres eliminar el proyecto \"{name}\"? Esta acción no se puede deshacer.",
+      "deleteConfirm": "Eliminar",
+      "deleteCancel": "Cancelar"
     }
   },
   "requests": {
@@ -569,7 +599,13 @@
       "save": "Guardar cambios",
       "cancel": "Cancelar",
       "weekdays": {
-        "1": "Lunes", "2": "Martes", "3": "Miércoles", "4": "Jueves", "5": "Viernes", "6": "Sábado", "7": "Domingo"
+        "1": "Lunes",
+        "2": "Martes",
+        "3": "Miércoles",
+        "4": "Jueves",
+        "5": "Viernes",
+        "6": "Sábado",
+        "7": "Domingo"
       }
     },
     "client": {
@@ -605,7 +641,13 @@
       "assignUserDialogTitle": "Asignar Horario a Usuario",
       "assignUserDialogDesc": "Aplica una plantilla a un empleado concreto.",
       "weekdays": {
-        "1": "Lun", "2": "Mar", "3": "Mié", "4": "Jue", "5": "Vie", "6": "Sáb", "7": "Dom"
+        "1": "Lun",
+        "2": "Mar",
+        "3": "Mié",
+        "4": "Jue",
+        "5": "Vie",
+        "6": "Sáb",
+        "7": "Dom"
       }
     }
   },
@@ -645,8 +687,29 @@
       "insightsCount": "{count} hallazgos clave en el período",
       "regularHours": "Horas Regulares",
       "overtimeHours": "Horas Extras",
-      "months": ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"],
-      "days": ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"]
+      "months": [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+      ],
+      "days": [
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+        "Domingo"
+      ]
     }
   },
   "settings": {

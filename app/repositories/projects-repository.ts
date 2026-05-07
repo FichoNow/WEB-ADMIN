@@ -52,7 +52,7 @@ export async function createProject(body: CreateProjectBody): Promise<ProjectRes
 
 /**
  * Edita un proyecto existente.
- * 
+ *
  * Llama a:
  * PATCH /admin/project/:id
  */
@@ -72,4 +72,21 @@ export async function updateProject(
 
     const json = await res.json()
     return json.data as ProjectResponse
+}
+
+/**
+ * Elimina un proyecto por su ID.
+ *
+ * Llama a:
+ * DELETE /admin/project/:id
+ */
+export async function deleteProject(id: number): Promise<void> {
+    const res = await fetchWithAuth(`/admin/project/${id}`, {
+        method: 'DELETE',
+    })
+
+    if (!res.ok) {
+        const json = await res.json().catch(() => null)
+        throw new Error(json?.error?.message ?? 'Error al eliminar el proyecto')
+    }
 }

@@ -56,8 +56,20 @@
       "chartLegendExtra": "Overtime"
     },
     "days": {
-      "mon": "Mon", "tue": "Tue", "wed": "Wed", "thu": "Thu", "fri": "Fri", "sat": "Sat", "sun": "Sun",
-      "monShort": "M", "tueShort": "T", "wedShort": "W", "thuShort": "T", "friShort": "F", "satShort": "S", "sunShort": "S"
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun",
+      "monShort": "M",
+      "tueShort": "T",
+      "wedShort": "W",
+      "thuShort": "T",
+      "friShort": "F",
+      "satShort": "S",
+      "sunShort": "S"
     },
     "fichaje": {
       "title": "Professional and advanced clock-in",
@@ -228,7 +240,6 @@
     "deptNamePh": "e.g. Technology",
     "creating": "Creating...",
     "cancel": "Cancel",
-    "company": "Company",
     "companyEdit": "Edit",
     "fieldEmail": "Email",
     "fieldAddress": "Address",
@@ -294,11 +305,26 @@
     "welcome": "Welcome back!",
     "subtitle": "Select a module to manage your department and stay up to date with your team performance.",
     "access": "Access",
-    "employees": { "title": "Employees", "description": "Manage the team headcount, joiners and leavers." },
-    "projects": { "title": "Projects", "description": "Manage projects and hour allocation." },
-    "requests": { "title": "Requests", "description": "Approve holidays and absences of the staff." },
-    "schedules": { "title": "Schedules", "description": "Configure work schedules and shifts." },
-    "statistics": { "title": "Statistics", "description": "Analyse data and performance metrics of the team." }
+    "employees": {
+      "title": "Employees",
+      "description": "Manage the team headcount, joiners and leavers."
+    },
+    "projects": {
+      "title": "Projects",
+      "description": "Manage projects and hour allocation."
+    },
+    "requests": {
+      "title": "Requests",
+      "description": "Approve holidays and absences of the staff."
+    },
+    "schedules": {
+      "title": "Schedules",
+      "description": "Configure work schedules and shifts."
+    },
+    "statistics": {
+      "title": "Statistics",
+      "description": "Analyse data and performance metrics of the team."
+    }
   },
   "employees": {
     "title": "Employees",
@@ -438,7 +464,11 @@
       "newDialogDesc": "Create a project in the department.",
       "editDialogTitle": "Edit Project",
       "editDialogDesc": "Edit the data of \"{name}\".",
-      "editDialogDescGeneric": "Edit the project data."
+      "editDialogDescGeneric": "Edit the project data.",
+      "deleteTitle": "Delete project",
+      "deleteDesc": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+      "deleteConfirm": "Delete",
+      "deleteCancel": "Cancel"
     }
   },
   "requests": {
@@ -569,7 +599,13 @@
       "save": "Save changes",
       "cancel": "Cancel",
       "weekdays": {
-        "1": "Monday", "2": "Tuesday", "3": "Wednesday", "4": "Thursday", "5": "Friday", "6": "Saturday", "7": "Sunday"
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday",
+        "7": "Sunday"
       }
     },
     "client": {
@@ -605,7 +641,13 @@
       "assignUserDialogTitle": "Assign Schedule to User",
       "assignUserDialogDesc": "Apply a template to a specific employee.",
       "weekdays": {
-        "1": "Mon", "2": "Tue", "3": "Wed", "4": "Thu", "5": "Fri", "6": "Sat", "7": "Sun"
+        "1": "Mon",
+        "2": "Tue",
+        "3": "Wed",
+        "4": "Thu",
+        "5": "Fri",
+        "6": "Sat",
+        "7": "Sun"
       }
     }
   },
@@ -645,8 +687,29 @@
       "insightsCount": "{count} key findings in the period",
       "regularHours": "Regular Hours",
       "overtimeHours": "Overtime",
-      "months": ["January","February","March","April","May","June","July","August","September","October","November","December"],
-      "days": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+      "months": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ],
+      "days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ]
     }
   },
   "settings": {

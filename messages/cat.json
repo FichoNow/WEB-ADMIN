@@ -56,8 +56,20 @@
       "chartLegendExtra": "Extres"
     },
     "days": {
-      "mon": "Dl", "tue": "Dt", "wed": "Dc", "thu": "Dj", "fri": "Dv", "sat": "Ds", "sun": "Dg",
-      "monShort": "L", "tueShort": "M", "wedShort": "X", "thuShort": "J", "friShort": "V", "satShort": "S", "sunShort": "D"
+      "mon": "Dl",
+      "tue": "Dt",
+      "wed": "Dc",
+      "thu": "Dj",
+      "fri": "Dv",
+      "sat": "Ds",
+      "sun": "Dg",
+      "monShort": "L",
+      "tueShort": "M",
+      "wedShort": "X",
+      "thuShort": "J",
+      "friShort": "V",
+      "satShort": "S",
+      "sunShort": "D"
     },
     "fichaje": {
       "title": "Fitxatge professional i avançat",
@@ -228,7 +240,6 @@
     "deptNamePh": "Ex: Tecnologia",
     "creating": "Creant...",
     "cancel": "Cancel·lar",
-    "company": "Empresa",
     "companyEdit": "Editar",
     "fieldEmail": "Correu",
     "fieldAddress": "Adreça",
@@ -294,11 +305,26 @@
     "welcome": "Benvingut de nou!",
     "subtitle": "Selecciona un mòdul per gestionar el teu departament i mantén-te al dia amb el rendiment del teu equip.",
     "access": "Accedir",
-    "employees": { "title": "Empleats", "description": "Gestiona la plantilla, altes i baixes de l'equip." },
-    "projects": { "title": "Projectes", "description": "Administra projectes i la imputació d'hores." },
-    "requests": { "title": "Sol·licituds", "description": "Aprova vacances i absències del personal." },
-    "schedules": { "title": "Horaris", "description": "Configura horaris i torns de treball." },
-    "statistics": { "title": "Estadístiques", "description": "Analitza dades i mètriques de rendiment de l'equip." }
+    "employees": {
+      "title": "Empleats",
+      "description": "Gestiona la plantilla, altes i baixes de l'equip."
+    },
+    "projects": {
+      "title": "Projectes",
+      "description": "Administra projectes i la imputació d'hores."
+    },
+    "requests": {
+      "title": "Sol·licituds",
+      "description": "Aprova vacances i absències del personal."
+    },
+    "schedules": {
+      "title": "Horaris",
+      "description": "Configura horaris i torns de treball."
+    },
+    "statistics": {
+      "title": "Estadístiques",
+      "description": "Analitza dades i mètriques de rendiment de l'equip."
+    }
   },
   "employees": {
     "title": "Empleats",
@@ -438,7 +464,11 @@
       "newDialogDesc": "Crea un projecte al departament.",
       "editDialogTitle": "Editar Projecte",
       "editDialogDesc": "Modifica les dades de \"{name}\".",
-      "editDialogDescGeneric": "Modifica les dades del projecte."
+      "editDialogDescGeneric": "Modifica les dades del projecte.",
+      "deleteTitle": "Eliminar projecte",
+      "deleteDesc": "Segur que vols eliminar el projecte \"{name}\"? Aquesta acció no es pot desfer.",
+      "deleteConfirm": "Eliminar",
+      "deleteCancel": "Cancel·lar"
     }
   },
   "requests": {
@@ -569,7 +599,13 @@
       "save": "Desar canvis",
       "cancel": "Cancel·lar",
       "weekdays": {
-        "1": "Dilluns", "2": "Dimarts", "3": "Dimecres", "4": "Dijous", "5": "Divendres", "6": "Dissabte", "7": "Diumenge"
+        "1": "Dilluns",
+        "2": "Dimarts",
+        "3": "Dimecres",
+        "4": "Dijous",
+        "5": "Divendres",
+        "6": "Dissabte",
+        "7": "Diumenge"
       }
     },
     "client": {
@@ -605,7 +641,13 @@
       "assignUserDialogTitle": "Assignar Horari a Usuari",
       "assignUserDialogDesc": "Aplica una plantilla a un empleat concret.",
       "weekdays": {
-        "1": "Dl", "2": "Dt", "3": "Dc", "4": "Dj", "5": "Dv", "6": "Ds", "7": "Dg"
+        "1": "Dl",
+        "2": "Dt",
+        "3": "Dc",
+        "4": "Dj",
+        "5": "Dv",
+        "6": "Ds",
+        "7": "Dg"
       }
     }
   },
@@ -645,8 +687,29 @@
       "insightsCount": "{count} troballes clau al període",
       "regularHours": "Hores Regulars",
       "overtimeHours": "Hores Extres",
-      "months": ["Gener","Febrer","Març","Abril","Maig","Juny","Juliol","Agost","Setembre","Octubre","Novembre","Desembre"],
-      "days": ["Dilluns","Dimarts","Dimecres","Dijous","Divendres","Dissabte","Diumenge"]
+      "months": [
+        "Gener",
+        "Febrer",
+        "Març",
+        "Abril",
+        "Maig",
+        "Juny",
+        "Juliol",
+        "Agost",
+        "Setembre",
+        "Octubre",
+        "Novembre",
+        "Desembre"
+      ],
+      "days": [
+        "Dilluns",
+        "Dimarts",
+        "Dimecres",
+        "Dijous",
+        "Divendres",
+        "Dissabte",
+        "Diumenge"
+      ]
     }
   },
   "settings": {
