@@ -26,11 +26,11 @@
   },
   "landing": {
     "hero": {
-      "title1": "Control horario",
-      "title2": "sin fricciones.",
-      "subtitle": "La plataforma definitiva para gestionar fichajes, ausencias y horarios de tu equipo. Rápida, intuitiva y cumpliendo con la normativa actual.",
-      "ctaDemo": "Solicitar demostración",
-      "ctaCreate": "Crea tu empresa"
+      "title1": "Controla el horario",
+      "title2": "sin complicaciones.",
+      "subtitle": "Lleva los fichajes, las ausencias y los horarios de tu equipo de forma fácil y cumpliendo la ley.",
+      "ctaDemo": "Ver demo",
+      "ctaCreate": "Crear empresa"
     },
     "mockDashboard": {
       "company": "TechCorp S.L.",
@@ -72,11 +72,11 @@
       "sunShort": "D"
     },
     "fichaje": {
-      "title": "Fichaje profesional y avanzado",
-      "subtitle": "Una experiencia móvil diseñada para que los empleados registren su tiempo sin fricciones. Imputación de horas por proyectos, registro de pausas y gestión inteligente de la jornada.",
-      "feat1": "Imputación directa de horas a proyectos.",
-      "feat2": "Registro de descansos remunerados.",
-      "feat3": "Cronómetro exacto al segundo.",
+      "title": "Fichar nunca fue tan fácil",
+      "subtitle": "Una app móvil para que los empleados fichen, controlen sus pausas y vean sus horas. Fácil de usar.",
+      "feat1": "Apunta las horas que dedicas a cada proyecto.",
+      "feat2": "Controla los descansos pagados.",
+      "feat3": "Cronómetro al segundo.",
       "phoneHistory": "Historial",
       "phoneActive": "Jornada Activa",
       "phoneTasks": "Tareas de hoy",
@@ -85,12 +85,12 @@
       "phoneEnd": "Finalizar jornada"
     },
     "calendar": {
-      "title": "Gestión de ausencias simplificada",
-      "subtitle": "Despídase de los correos interminables y las hojas de cálculo. Nuestro calendario integrado permite a los empleados solicitar vacaciones y reportar bajas médicas en segundos.",
-      "feat1": "Aprobación en un solo clic para managers.",
-      "feat2": "Todo el equipo alineado en una vista única.",
-      "feat3": "Tipos de ausencia totalmente personalizables.",
-      "feat4": "Cálculo automático de días disponibles.",
+      "title": "Vacaciones y bajas, fácil",
+      "subtitle": "Olvídate de los correos y las hojas de cálculo. Tus empleados piden vacaciones o avisan de una baja en segundos desde el calendario.",
+      "feat1": "Los jefes aprueban con un clic.",
+      "feat2": "Todo el equipo a la vista de un vistazo.",
+      "feat3": "Tú eliges qué tipos de ausencia hay.",
+      "feat4": "Calcula solo los días que quedan.",
       "month": "Abril 2026",
       "legendWorkday": "Día laborable",
       "legendWorked": "Trabajado",
@@ -104,13 +104,13 @@
       "scheduleRest": "Descanso"
     },
     "admin": {
-      "title": "Panel de administración completo",
-      "subtitle": "Acceda desde la web a una plataforma centralizada para monitorizar toda su empresa en tiempo real. Gestione usuarios, apruebe solicitudes y consulte reportes sin salir del panel.",
-      "feat1": "Vista global de todos los departamentos.",
-      "feat2": "Aprobación de solicitudes en un clic.",
-      "feat3": "Gestión de usuarios y permisos.",
-      "feat4": "Reportes en tiempo real exportables.",
-      "feat5": "Estadísticas y gráficas de rendimiento.",
+      "title": "Un panel para llevarlo todo",
+      "subtitle": "Desde la web ves toda tu empresa en tiempo real. Gestiona usuarios, aprueba solicitudes y consulta informes sin salir del panel.",
+      "feat1": "Ves todos los departamentos a la vez.",
+      "feat2": "Aprueba solicitudes con un clic.",
+      "feat3": "Controla quién entra y qué puede hacer.",
+      "feat4": "Informes en tiempo real que puedes descargar.",
+      "feat5": "Gráficas claras del rendimiento.",
       "mockHome": "Inicio",
       "mockEmployees": "Empleados",
       "mockProjects": "Proyectos",
@@ -127,12 +127,12 @@
       "mockStatsDesc": "Analiza datos y rendimiento del equipo."
     },
     "features": {
-      "title": "Todo lo que necesita su empresa",
-      "subtitle": "Un ecosistema completo diseñado para integrarse sin problemas en su flujo de trabajo diario.",
-      "orgTitle": "Organización de plantilla",
-      "orgDesc": "Cree departamentos, grupos de trabajo y asigne roles específicos para cada mánager de su organización.",
-      "complianceTitle": "Cumplimiento normativo",
-      "complianceDesc": "Registros inmutables y generación automática de reportes legales listos para cualquier inspección de trabajo."
+      "title": "Todo lo que necesitas",
+      "subtitle": "Una herramienta completa que se adapta a tu día a día.",
+      "orgTitle": "Organiza tu equipo",
+      "orgDesc": "Crea departamentos, grupos y asigna roles a cada jefe.",
+      "complianceTitle": "Cumple con la ley",
+      "complianceDesc": "Registros que no se pueden cambiar e informes listos para cualquier inspección."
     }
   },
   "about": {

@@ -26,11 +26,11 @@
   },
   "landing": {
     "hero": {
-      "title1": "Control horari",
-      "title2": "sense friccions.",
-      "subtitle": "La plataforma definitiva per gestionar fitxatges, absències i horaris del teu equip. Ràpida, intuïtiva i complint la normativa actual.",
-      "ctaDemo": "Sol·licitar demostració",
-      "ctaCreate": "Crea la teva empresa"
+      "title1": "Controla l'horari",
+      "title2": "sense complicacions.",
+      "subtitle": "Porta els fitxatges, les absències i els horaris del teu equip de manera fàcil i complint la llei.",
+      "ctaDemo": "Veure demo",
+      "ctaCreate": "Crear empresa"
     },
     "mockDashboard": {
       "company": "TechCorp S.L.",
@@ -72,11 +72,11 @@
       "sunShort": "D"
     },
     "fichaje": {
-      "title": "Fitxatge professional i avançat",
-      "subtitle": "Una experiència mòbil dissenyada perquè els empleats registrin el seu temps sense friccions. Imputació d'hores per projectes, registre de pauses i gestió intel·ligent de la jornada.",
-      "feat1": "Imputació directa d'hores a projectes.",
-      "feat2": "Registre de descansos remunerats.",
-      "feat3": "Cronòmetre exacte al segon.",
+      "title": "Fitxar mai havia estat tan fàcil",
+      "subtitle": "Una app mòbil perquè els empleats fitxin, controlin les seves pauses i vegin les seves hores. Fàcil d'utilitzar.",
+      "feat1": "Apunta les hores que dediques a cada projecte.",
+      "feat2": "Controla els descansos pagats.",
+      "feat3": "Cronòmetre al segon.",
       "phoneHistory": "Historial",
       "phoneActive": "Jornada Activa",
       "phoneTasks": "Tasques d'avui",
@@ -85,12 +85,12 @@
       "phoneEnd": "Finalitzar jornada"
     },
     "calendar": {
-      "title": "Gestió d'absències simplificada",
-      "subtitle": "Acomiadeu-vos dels correus interminables i els fulls de càlcul. El nostre calendari integrat permet als empleats sol·licitar vacances i reportar baixes mèdiques en segons.",
-      "feat1": "Aprovació en un sol clic per a managers.",
-      "feat2": "Tot l'equip alineat en una vista única.",
-      "feat3": "Tipus d'absència totalment personalitzables.",
-      "feat4": "Càlcul automàtic de dies disponibles.",
+      "title": "Vacances i baixes, fàcil",
+      "subtitle": "Oblida't dels correus i els fulls de càlcul. Els teus empleats demanen vacances o avisen d'una baixa en segons des del calendari.",
+      "feat1": "Els caps aproven amb un clic.",
+      "feat2": "Tot l'equip a la vista d'un cop d'ull.",
+      "feat3": "Tu tries quins tipus d'absència hi ha.",
+      "feat4": "Calcula sols els dies que queden.",
       "month": "Abril 2026",
       "legendWorkday": "Dia laborable",
       "legendWorked": "Treballat",
@@ -104,13 +104,13 @@
       "scheduleRest": "Descans"
     },
     "admin": {
-      "title": "Panell d'administració complet",
-      "subtitle": "Accediu des del web a una plataforma centralitzada per monitoritzar tota la vostra empresa en temps real. Gestioneu usuaris, aproveu sol·licituds i consulteu reports sense sortir del panell.",
-      "feat1": "Vista global de tots els departaments.",
-      "feat2": "Aprovació de sol·licituds en un clic.",
-      "feat3": "Gestió d'usuaris i permisos.",
-      "feat4": "Reports en temps real exportables.",
-      "feat5": "Estadístiques i gràfiques de rendiment.",
+      "title": "Un panell per portar-ho tot",
+      "subtitle": "Des del web veus tota la teva empresa en temps real. Gestiona usuaris, aprova sol·licituds i consulta informes sense sortir del panell.",
+      "feat1": "Veus tots els departaments alhora.",
+      "feat2": "Aprova sol·licituds amb un clic.",
+      "feat3": "Controla qui entra i què pot fer.",
+      "feat4": "Informes en temps real que pots descarregar.",
+      "feat5": "Gràfiques clares del rendiment.",
       "mockHome": "Inici",
       "mockEmployees": "Empleats",
       "mockProjects": "Projectes",
@@ -127,12 +127,12 @@
       "mockStatsDesc": "Analitza dades i rendiment de l'equip."
     },
     "features": {
-      "title": "Tot el que necessita la vostra empresa",
-      "subtitle": "Un ecosistema complet dissenyat per integrar-se sense problemes en el vostre flux de treball diari.",
-      "orgTitle": "Organització de plantilla",
-      "orgDesc": "Creeu departaments, grups de treball i assigneu rols específics per a cada manager de la vostra organització.",
-      "complianceTitle": "Compliment normatiu",
-      "complianceDesc": "Registres immutables i generació automàtica de reports legals llestos per a qualsevol inspecció de treball."
+      "title": "Tot el que necessites",
+      "subtitle": "Una eina completa que s'adapta al teu dia a dia.",
+      "orgTitle": "Organitza el teu equip",
+      "orgDesc": "Crea departaments, grups i assigna rols a cada cap.",
+      "complianceTitle": "Compleix amb la llei",
+      "complianceDesc": "Registres que no es poden canviar i informes llestos per a qualsevol inspecció."
     }
   },
   "about": {

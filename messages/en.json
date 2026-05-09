@@ -26,11 +26,11 @@
   },
   "landing": {
     "hero": {
-      "title1": "Time tracking",
-      "title2": "with no friction.",
-      "subtitle": "The definitive platform to manage time tracking, absences and schedules for your team. Fast, intuitive and compliant with current regulations.",
-      "ctaDemo": "Request demo",
-      "ctaCreate": "Create your company"
+      "title1": "Track time",
+      "title2": "the easy way.",
+      "subtitle": "Manage your team's clock-ins, time off and schedules easily, while staying within the law.",
+      "ctaDemo": "See demo",
+      "ctaCreate": "Create company"
     },
     "mockDashboard": {
       "company": "TechCorp Ltd.",
@@ -72,11 +72,11 @@
       "sunShort": "S"
     },
     "fichaje": {
-      "title": "Professional and advanced clock-in",
-      "subtitle": "A mobile experience designed so employees record their time without friction. Hour allocation per project, break tracking and smart workday management.",
-      "feat1": "Direct hour allocation to projects.",
-      "feat2": "Paid break tracking.",
-      "feat3": "Stopwatch accurate to the second.",
+      "title": "Clocking in has never been so easy",
+      "subtitle": "A mobile app for employees to clock in, manage their breaks and check their hours. Easy to use.",
+      "feat1": "Log the hours you spend on each project.",
+      "feat2": "Track paid breaks.",
+      "feat3": "Stopwatch to the second.",
       "phoneHistory": "History",
       "phoneActive": "Active Workday",
       "phoneTasks": "Today's tasks",
@@ -85,12 +85,12 @@
       "phoneEnd": "End workday"
     },
     "calendar": {
-      "title": "Simplified absence management",
-      "subtitle": "Say goodbye to endless emails and spreadsheets. Our integrated calendar lets employees request vacation and report sick leave in seconds.",
-      "feat1": "One-click approval for managers.",
-      "feat2": "The whole team aligned in a single view.",
-      "feat3": "Fully customisable absence types.",
-      "feat4": "Automatic calculation of available days.",
+      "title": "Time off, made easy",
+      "subtitle": "Forget about endless emails and spreadsheets. Your employees request holidays or report a sick day in seconds from the calendar.",
+      "feat1": "Managers approve with one click.",
+      "feat2": "See the whole team at a glance.",
+      "feat3": "You choose which absence types to use.",
+      "feat4": "Days left are calculated for you.",
       "month": "April 2026",
       "legendWorkday": "Workday",
       "legendWorked": "Worked",
@@ -104,13 +104,13 @@
       "scheduleRest": "Off"
     },
     "admin": {
-      "title": "Complete admin panel",
-      "subtitle": "Access from the web to a centralised platform to monitor your whole company in real time. Manage users, approve requests and check reports without leaving the panel.",
-      "feat1": "Global view of all departments.",
-      "feat2": "One-click request approval.",
-      "feat3": "User and permission management.",
-      "feat4": "Real-time exportable reports.",
-      "feat5": "Performance statistics and charts.",
+      "title": "One panel to run it all",
+      "subtitle": "See your whole company in real time from the web. Manage users, approve requests and check reports without leaving the panel.",
+      "feat1": "See all departments at once.",
+      "feat2": "Approve requests with one click.",
+      "feat3": "Control who logs in and what they can do.",
+      "feat4": "Real-time reports you can download.",
+      "feat5": "Clear performance charts.",
       "mockHome": "Home",
       "mockEmployees": "Employees",
       "mockProjects": "Projects",
@@ -127,12 +127,12 @@
       "mockStatsDesc": "Analyse data and team performance."
     },
     "features": {
-      "title": "Everything your company needs",
-      "subtitle": "A complete ecosystem designed to integrate seamlessly into your daily workflow.",
-      "orgTitle": "Staff organisation",
-      "orgDesc": "Create departments, work groups and assign specific roles for each manager of your organisation.",
-      "complianceTitle": "Regulatory compliance",
-      "complianceDesc": "Immutable records and automatic generation of legal reports ready for any labour inspection."
+      "title": "Everything you need",
+      "subtitle": "A complete tool that fits your day-to-day.",
+      "orgTitle": "Organise your team",
+      "orgDesc": "Create departments, groups and assign roles to each manager.",
+      "complianceTitle": "Stay within the law",
+      "complianceDesc": "Records that can't be changed and reports ready for any inspection."
     }
   },
   "about": {
