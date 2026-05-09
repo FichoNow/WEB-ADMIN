@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Users, Search, Plus, Filter, MoreVertical, Mail, Hash, Clock, Shield, type LucideIcon } from 'lucide-react'
+import { Users, Search, Plus, Filter, MoreVertical, Mail, Hash, Clock, Shield, Upload, type LucideIcon } from 'lucide-react'
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
 import type { GroupResponse } from '@/app/types/admin/api/group-response'
 import type {
@@ -19,6 +19,7 @@ import PageHeader from '@/components/PageHeader'
 import CreateEmployeeForm from './CreateEmployeeForm'
 import EditEmployeeForm from './EditEmployeeForm'
 import GroupsManager from './GroupsManager'
+import ImportEmployeesForm from './ImportEmployeesForm'
 
 interface Props {
   employees: EmployeeListItem[]
@@ -141,6 +142,7 @@ export default function EmployeesClient({ employees, groups, assignments, depart
     [FILTER_NONE]: t('noGroup'),
   }
   const [showCreate, setShowCreate] = useState(false)
+  const [showImport, setShowImport] = useState(false)
   const [showGroups, setShowGroups] = useState(false)
   const [editEmployee, setEditEmployee] = useState<EmployeeListItem | null>(null)
   const [groupFilter, setGroupFilter] = useState<string>(FILTER_ALL)
@@ -189,6 +191,16 @@ export default function EmployeesClient({ employees, groups, assignments, depart
               <Users className="w-4 h-4" />
               <span className="hidden sm:inline">{t('manageGroups')} </span>{t('groupsShort')}
             </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => setShowImport(true)}
+              className="gap-2 rounded-2xl h-10 border-divider/50 hover:bg-surface-variant text-xs sm:text-sm"
+            >
+              <Upload className="w-5 h-4" />
+              <span className="hidden sm:inline">Importar </span>CSV/JSON
+            </Button>
+
             <Button onClick={() => setShowCreate(true)} className="gap-2 rounded-2xl h-10 text-xs sm:text-sm">
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">{t('newEmployee')} </span>{t('newEmployeeShort')}
@@ -362,6 +374,33 @@ export default function EmployeesClient({ employees, groups, assignments, depart
       )}
 
       {/* Dialogs remain similar but with consistent styling */}
+      <Dialog open={showImport} onOpenChange={(open) => !open && setShowImport(false)}>
+        <DialogContent className="sm:max-w-[900px] bg-surface border-divider rounded-[2.5rem] p-0 overflow-hidden flex flex-col">
+          <DialogHeader className="px-8 py-6 border-b border-divider/50">
+            <div className="flex items-center gap-3">
+              <Upload className="w-6 h-6 text-primary shrink-0" />
+              <div className="flex flex-col">
+                <DialogTitle className="text-xl font-bold text-text-primary">
+                  Importar empleados
+                </DialogTitle>
+                <DialogDescription className="text-xs text-text-secondary">
+                  Sube un fichero CSV o JSON, revisa la previsualización y crea empleados en lote.
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <div className="max-h-[75vh] overflow-y-auto px-10 py-8">
+            <ImportEmployeesForm
+              departmentId={departmentId}
+              groups={groups}
+              onClose={() => setShowImport(false)}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+
       <Dialog open={showCreate} onOpenChange={(open) => !open && setShowCreate(false)}>
         <DialogContent className="sm:max-w-[700px] bg-surface border-divider rounded-[2.5rem] p-0 overflow-hidden flex flex-col">
           <DialogHeader className="px-8 py-6 border-b border-divider/50">
