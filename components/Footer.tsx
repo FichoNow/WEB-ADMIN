@@ -17,7 +17,7 @@ export default function Footer() {
               {t('tagline')}
             </p>
             <div className="flex items-center gap-4">
-              <a href="https://github.com/FichajeApp" target="_blank" rel="noopener noreferrer"
+              <a href="https://github.com/FichoNow" target="_blank" rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-surface border border-divider flex items-center justify-center text-text-secondary hover:text-text-primary hover:border-primary/50 transition-colors"
                 aria-label="GitHub">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
