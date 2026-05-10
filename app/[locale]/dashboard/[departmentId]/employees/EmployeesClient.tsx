@@ -197,10 +197,9 @@ export default function EmployeesClient({ employees, groups, assignments, depart
               onClick={() => setShowImport(true)}
               className="gap-2 rounded-2xl h-10 border-divider/50 hover:bg-surface-variant text-xs sm:text-sm"
             >
-              <Upload className="w-5 h-4" />
-              <span className="hidden sm:inline">Importar </span>CSV/JSON
+              <Upload className="w-4 h-4" />
+              <span className="hidden sm:inline">{t('import')} </span>{t('importShort')}
             </Button>
-
             <Button onClick={() => setShowCreate(true)} className="gap-2 rounded-2xl h-10 text-xs sm:text-sm">
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">{t('newEmployee')} </span>{t('newEmployeeShort')}
@@ -381,10 +380,10 @@ export default function EmployeesClient({ employees, groups, assignments, depart
               <Upload className="w-6 h-6 text-primary shrink-0" />
               <div className="flex flex-col">
                 <DialogTitle className="text-xl font-bold text-text-primary">
-                  Importar empleados
+                  {t('importDialogTitle')}
                 </DialogTitle>
                 <DialogDescription className="text-xs text-text-secondary">
-                  Sube un fichero CSV o JSON, revisa la previsualización y crea empleados en lote.
+                  {t('importDialogDesc')}
                 </DialogDescription>
               </div>
             </div>
@@ -394,12 +393,12 @@ export default function EmployeesClient({ employees, groups, assignments, depart
             <ImportEmployeesForm
               departmentId={departmentId}
               groups={groups}
+              existingEmails={employees.map((e) => e.email.toLowerCase())}
               onClose={() => setShowImport(false)}
             />
           </div>
         </DialogContent>
       </Dialog>
-
 
       <Dialog open={showCreate} onOpenChange={(open) => !open && setShowCreate(false)}>
         <DialogContent className="sm:max-w-[700px] bg-surface border-divider rounded-[2.5rem] p-0 overflow-hidden flex flex-col">

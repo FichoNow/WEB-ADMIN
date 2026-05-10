@@ -1,9 +1,10 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { fetchWithAuth } from "@/app/lib/api"
+import { createEmployee, createEmployees } from "@/app/repositories/employees-repository"
 import { createEmployeesSchema } from "@/app/types/admin/schemas/employee-schema"
 import type { EmployeeActionState } from "@/app/types/admin/action-states/employee-state"
+import type { CreateEmployeeBody } from "@/app/types/admin/api/employee-request"
 
 function parseGroupId(raw: string | undefined): number | null {
   if (!raw) return null
@@ -21,32 +22,25 @@ export async function createBulkEmployeesAction(
     return { error: result.error.issues[0].message }
   }
 
-  const body = result.data.rows.map((row) => ({
+  const body: CreateEmployeeBody[] = result.data.rows.map((row) => ({
     department_id: departmentId,
-    group_id: parseGroupId(row.group_id),
-    name:     row.name.trim(),
-    email:    row.email.trim().toLowerCase(),
-    password: row.password,
-    role:     row.role,
+    group_id:  parseGroupId(row.group_id),
+    name:      row.name.trim(),
+    email:     row.email.trim().toLowerCase(),
+    password:  row.password,
+    role:      row.role,
     is_active: true,
   }))
 
-  const isSingle = body.length === 1
-  const endpoint = isSingle ? "/admin/user" : "/admin/users"
-  const payload = isSingle ? body[0] : body
-
   try {
-    const res = await fetchWithAuth(endpoint, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    })
-    if (!res.ok) {
-      const json = await res.json().catch(() => null)
-      throw new Error(json?.error?.message ?? "Error al crear los empleados")
+    if (body.length === 1) {
+      await createEmployee(body[0])
+    } else {
+      await createEmployees(body)
     }
     revalidatePath(`/dashboard/${departmentId}/employees`)
     return {
-      success: isSingle
+      success: body.length === 1
         ? "Empleado creado correctamente"
         : `${body.length} empleados creados correctamente`,
     }

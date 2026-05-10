@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { Menu, X } from 'lucide-react'
+import { AnimatePresence, motion } from 'framer-motion'
 import LoginForm from '@/components/LoginForm'
 import RegisterForm from '@/components/RegisterForm'
 import Navbar from '@/components/Navbar'
@@ -9,37 +11,61 @@ import ThemeToggle from '@/components/ThemeToggle'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
-import { motion } from 'framer-motion'
 
 export default function LandingPage() {
   const [showLogin, setShowLogin] = useState(false)
   const [showRegister, setShowRegister] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const t = useTranslations('landing')
   const tNav = useTranslations('navbar')
   const tCommon = useTranslations('common')
-
-  const days = [
-    { height: '60%', extra: '5%', label: t('days.mon') },
-    { height: '80%', extra: '15%', label: t('days.tue') },
-    { height: '75%', extra: '10%', label: t('days.wed') },
-    { height: '90%', extra: '20%', label: t('days.thu') },
-    { height: '85%', extra: '10%', label: t('days.fri') },
-    { height: '30%', extra: '20%', label: t('days.sat') },
-    { height: '10%', extra: '5%', label: t('days.sun') },
-  ]
 
   return (
     <div className="min-h-screen bg-bg text-text-primary font-sans selection:bg-primary/30">
 
       <Navbar>
-        <div className="flex items-center gap-2">
+        <div className="hidden sm:flex items-center gap-2">
           <ThemeToggle />
           <LanguageSwitcher />
           <Button onClick={() => setShowLogin(true)} className="text-white">
             {tNav('manageCompany')}
           </Button>
         </div>
+        <button
+          type="button"
+          onClick={() => setMobileMenuOpen((o) => !o)}
+          aria-label={tCommon('openMenu')}
+          aria-expanded={mobileMenuOpen}
+          className="sm:hidden w-10 h-10 rounded-xl flex items-center justify-center text-text-primary hover:bg-surface-variant transition-colors"
+        >
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
       </Navbar>
+
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="sm:hidden sticky top-16 z-40 overflow-hidden border-b border-divider bg-surface/95 backdrop-blur-xl shadow-sm"
+          >
+            <div className="flex flex-col gap-2 px-6 py-4">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs font-semibold tracking-wider uppercase text-text-hint">{tNav('settings')}</span>
+                <div className="flex items-center gap-2">
+                  <ThemeToggle />
+                  <LanguageSwitcher />
+                </div>
+              </div>
+              <Button onClick={() => { setMobileMenuOpen(false); setShowLogin(true) }} className="w-full text-white">
+                {tNav('manageCompany')}
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Hero */}
       <section className="pt-16 lg:pt-24 px-6 border-b border-divider bg-surface/30 relative overflow-hidden">
@@ -67,7 +93,7 @@ export default function LandingPage() {
 
         {/* Mock dashboard */}
         <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }} className="max-w-5xl mx-auto relative z-10 pt-8">
-          <div className="w-full h-[300px] md:h-[450px] bg-bg rounded-t-3xl border-t border-x border-divider shadow-[0_-20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative text-[10px] md:text-xs">
+          <div className="w-full md:h-[450px] bg-bg rounded-t-3xl border-t border-x border-divider shadow-[0_-20px_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative text-[10px] md:text-xs">
             <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-50"></div>
 
             <div className="h-12 border-b border-divider flex items-center px-4 md:px-6 justify-between bg-surface shrink-0 z-10">
@@ -99,122 +125,123 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <nav className="flex-1 px-2 py-3 flex flex-col gap-1">
-                  <div className="flex items-center gap-2.5 w-full rounded-lg bg-primary/10 text-primary px-3 py-2 font-medium">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-                    {t('mockDashboard.menuStats')}
+                  <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary px-3 py-2 font-medium">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                    {t('mockDashboard.menuHome')}
                   </div>
-                  <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary hover:bg-surface-variant/50 px-3 py-2 font-medium">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary px-3 py-2 font-medium">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     {t('mockDashboard.menuEmployees')}
                   </div>
-                  <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary hover:bg-surface-variant/50 px-3 py-2 font-medium">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary px-3 py-2 font-medium">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                    {t('mockDashboard.menuProjects')}
+                  </div>
+                  <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary px-3 py-2 font-medium">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    {t('mockDashboard.menuRequests')}
+                  </div>
+                  <div className="flex items-center gap-2.5 w-full rounded-lg text-text-secondary px-3 py-2 font-medium">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     {t('mockDashboard.menuSchedules')}
+                  </div>
+                  <div className="relative flex items-center gap-2.5 w-full rounded-lg bg-primary/10 text-primary px-3 py-2 font-semibold">
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                    {t('mockDashboard.menuStats')}
                   </div>
                 </nav>
               </div>
 
-              <div className="flex-1 bg-bg p-6 md:p-8 flex flex-col gap-6 overflow-hidden">
-                <div className="flex justify-between items-end md:items-center">
-                  <div>
-                    <h1 className="text-xl md:text-2xl font-light text-text-primary tracking-tight">{t('mockDashboard.title')}</h1>
-                    <p className="text-text-secondary text-[10px] md:text-xs mt-1">{t('mockDashboard.subtitle')}</p>
-                  </div>
-                  <div className="hidden md:flex gap-3 items-center">
-                    <div className="flex items-center gap-2 bg-bg px-3 py-1.5 rounded-lg border border-divider text-text-hint w-64">
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                      {t('mockDashboard.search')}
+              <div className="flex-1 bg-bg p-3 md:p-8 flex flex-col gap-3 md:gap-5 overflow-hidden min-w-0">
+                <div className="flex flex-col gap-2 md:gap-3">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="min-w-0">
+                      <h1 className="text-base md:text-2xl font-light text-text-primary tracking-tight">{t('mockDashboard.title')}</h1>
+                      <p className="text-text-secondary text-[9px] md:text-xs mt-0.5 md:mt-1 truncate">{t('mockDashboard.subtitle')}</p>
                     </div>
-                    <div className="px-3 py-1.5 rounded-lg border border-divider bg-surface text-text-primary font-medium flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-success shadow-[0_0_8px_rgba(129,199,132,0.6)]"></span> {t('mockDashboard.online')}
-                    </div>
-                    <div className="px-4 py-1.5 rounded-lg bg-primary text-on-primary font-medium flex items-center gap-2">
-                      {t('mockDashboard.download')}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="bg-surface rounded-xl border border-divider p-4 flex flex-col gap-2 relative overflow-hidden group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="flex justify-between items-start text-text-secondary">
-                      <span className="font-medium">{t('mockDashboard.metricHours')}</span>
-                      <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    </div>
-                    <div className="text-2xl md:text-3xl font-light text-text-primary mt-1 tabular-nums">4,248<span className="text-sm text-text-hint ml-1">h</span></div>
-                    <div className="flex items-center gap-1 text-[10px] text-success font-medium">
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-                      {t('mockDashboard.metricHoursDelta')}
-                    </div>
-                  </div>
-                  <div className="bg-surface rounded-xl border border-divider p-4 flex flex-col gap-2">
-                    <div className="flex justify-between items-start text-text-secondary">
-                      <span className="font-medium">{t('mockDashboard.metricAbsences')}</span>
-                      <svg className="w-4 h-4 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                    </div>
-                    <div className="text-2xl md:text-3xl font-light text-text-primary mt-1 tabular-nums">8</div>
-                    <div className="flex items-center gap-1 text-[10px] text-text-secondary font-medium">
-                      {t('mockDashboard.metricAbsencesDetail')}
-                    </div>
-                  </div>
-                  <div className="bg-surface rounded-xl border border-divider p-4 flex flex-col gap-2">
-                    <div className="flex justify-between items-start text-text-secondary">
-                      <span className="font-medium">{t('mockDashboard.metricPunctuality')}</span>
-                      <svg className="w-4 h-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    </div>
-                    <div className="text-2xl md:text-3xl font-light text-text-primary mt-1 tabular-nums">96.4%</div>
-                    <div className="flex items-center gap-1 text-[10px] text-warning font-medium">
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>
-                      {t('mockDashboard.metricPunctualityDelta')}
-                    </div>
-                  </div>
-                  <div className="bg-surface rounded-xl border border-divider p-4 flex flex-col gap-2">
-                    <div className="flex justify-between items-start text-text-secondary">
-                      <span className="font-medium">{t('mockDashboard.metricOvertime')}</span>
-                      <svg className="w-4 h-4 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    </div>
-                    <div className="text-2xl md:text-3xl font-light text-warning mt-1 tabular-nums">142<span className="text-sm text-warning/50 ml-1">h</span></div>
-                    <div className="flex items-center gap-1 text-[10px] text-error font-medium">
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>
-                      {t('mockDashboard.metricOvertimeDelta')}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex-1 bg-surface rounded-xl border border-divider p-5 flex flex-col gap-4 relative overflow-hidden">
-                  <div className="flex justify-between items-center z-10">
-                    <h3 className="font-medium text-text-primary">{t('mockDashboard.chartTitle')}</h3>
-                    <div className="flex gap-4 text-[10px]">
-                      <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-primary"></span> {t('mockDashboard.chartLegendRegular')}</div>
-                      <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-warning"></span> {t('mockDashboard.chartLegendExtra')}</div>
+                    <div className="flex items-center gap-1 md:gap-2 px-2 md:px-3 py-1 md:py-1.5 rounded-lg border border-divider bg-surface text-text-primary font-medium text-[10px] md:text-[11px] shrink-0">
+                      <svg className="w-3 h-3 md:w-3.5 md:h-3.5 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2a4 4 0 014-4h4m0 0l-3-3m3 3l-3 3M5 5h6a2 2 0 012 2v0M5 5v14a2 2 0 002 2h6a2 2 0 002-2v0" /></svg>
+                      {t('mockDashboard.export')}
                     </div>
                   </div>
 
-                  <div className="flex-1 w-full relative z-10 mt-2 flex items-end justify-between px-2 gap-2">
-                    <div className="absolute inset-0 flex flex-col justify-between border-t border-divider/50 pt-2 pointer-events-none">
-                      <div className="h-px w-full bg-divider/30"></div>
-                      <div className="h-px w-full bg-divider/30"></div>
-                      <div className="h-px w-full bg-divider/30"></div>
-                      <div className="h-px w-full bg-divider/30"></div>
-                    </div>
-
-                    {days.map((day, i) => (
-                      <div key={i} className="flex-1 flex flex-col justify-end items-center gap-2 group h-full z-10">
-                        <div className="w-full max-w-[32px] md:max-w-[48px] flex flex-col justify-end gap-0.5 h-full relative">
-                          <motion.div initial={{ height: 0 }} animate={{ height: day.extra }} transition={{ duration: 1, delay: 0.5 + i * 0.1, ease: "easeOut" }} className="w-full bg-gradient-to-t from-warning/80 to-warning rounded-t-sm" />
-                          <motion.div initial={{ height: 0 }} animate={{ height: day.height }} transition={{ duration: 1, delay: 0.5 + i * 0.1, ease: "easeOut" }} className="w-full bg-gradient-to-t from-primary/80 to-primary rounded-t-sm relative group-hover:brightness-125 transition-all">
-                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface border border-divider px-2 py-1 rounded text-[9px] text-text-primary opacity-0 group-hover:opacity-100 transition-opacity shadow-lg whitespace-nowrap pointer-events-none">
-                              {day.label}
-                            </div>
-                          </motion.div>
-                        </div>
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                    <div className="grid grid-cols-3 md:inline-flex md:items-center bg-surface border border-divider rounded-lg p-1 gap-1 md:self-start min-w-0">
+                      <div className="px-1.5 md:px-3 py-1 md:py-1.5 rounded-md bg-primary/10 text-primary font-bold text-[9px] md:text-[11px] flex items-center justify-center gap-1 md:gap-1.5 min-w-0">
+                        <svg className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                        <span className="truncate">{t('mockDashboard.tabGeneral')}</span>
                       </div>
-                    ))}
+                      <div className="px-1.5 md:px-3 py-1 md:py-1.5 rounded-md text-text-secondary font-medium text-[9px] md:text-[11px] flex items-center justify-center gap-1 md:gap-1.5 min-w-0">
+                        <svg className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                        <span className="truncate">{t('mockDashboard.tabIndividual')}</span>
+                      </div>
+                      <div className="px-1.5 md:px-3 py-1 md:py-1.5 rounded-md text-text-secondary font-medium text-[9px] md:text-[11px] flex items-center justify-center gap-1 md:gap-1.5 min-w-0">
+                        <svg className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7a2 2 0 012-2h4l2 2h7a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" /></svg>
+                        <span className="truncate">{t('mockDashboard.tabProjects')}</span>
+                      </div>
+                    </div>
+
+                    <div className="hidden md:flex items-center gap-2">
+                      <div className="px-3 py-1.5 rounded-lg border border-divider bg-surface text-text-primary font-medium text-[11px] flex items-center gap-2">
+                        <svg className="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        {t('mockDashboard.month')}
+                        <svg className="w-3 h-3 text-text-hint" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                      </div>
+                      <div className="px-3 py-1.5 rounded-lg border border-divider bg-surface text-text-primary font-medium text-[11px] flex items-center gap-2">
+                        <svg className="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        {t('mockDashboard.allGroups')}
+                        <svg className="w-3 h-3 text-text-hint" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                      </div>
+                    </div>
                   </div>
-                  <div className="w-full flex justify-between px-2 text-text-hint text-[9px] z-10 pt-2">
-                    {days.map((d, i) => (
-                      <span key={i} className="flex-1 text-center">{d.label}</span>
-                    ))}
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 md:gap-3">
+                  <div className="bg-surface rounded-xl md:rounded-2xl border border-divider/50 p-2.5 pl-3 md:p-4 md:pl-5 flex flex-col gap-1.5 md:gap-3 relative overflow-hidden min-w-0">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 md:w-1.5 bg-primary"></div>
+                    <div className="flex items-center gap-1 md:gap-1.5 text-[7px] md:text-[9px] font-black uppercase tracking-widest text-text-hint min-w-0">
+                      <svg className="w-3 h-3 md:w-3.5 md:h-3.5 text-primary shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      <span className="leading-tight">{t('mockDashboard.kpiHours')}</span>
+                    </div>
+                    <div className="text-sm md:text-3xl font-light text-text-primary tabular-nums tracking-tight">3977h</div>
+                    <p className="text-[8px] md:text-[10px] text-text-hint font-medium leading-tight">{t('mockDashboard.kpiHoursDesc')}</p>
+                  </div>
+
+                  <div className="bg-surface rounded-xl md:rounded-2xl border border-divider/50 p-2.5 pl-3 md:p-4 md:pl-5 flex flex-col gap-1.5 md:gap-3 relative overflow-hidden min-w-0">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 md:w-1.5 bg-success"></div>
+                    <div className="flex items-center gap-1 md:gap-1.5 text-[7px] md:text-[9px] font-black uppercase tracking-widest text-text-hint min-w-0">
+                      <svg className="w-3 h-3 md:w-3.5 md:h-3.5 text-success shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                      <span className="leading-tight">{t('mockDashboard.kpiPunctuality')}</span>
+                    </div>
+                    <div className="text-sm md:text-3xl font-light text-text-primary tabular-nums tracking-tight">93%</div>
+                    <p className="text-[8px] md:text-[10px] text-text-hint font-medium leading-tight">{t('mockDashboard.kpiPunctualityDesc')}</p>
+                  </div>
+
+                  <div className="bg-surface rounded-xl md:rounded-2xl border border-divider/50 p-2.5 pl-3 md:p-4 md:pl-5 flex flex-col gap-1.5 md:gap-3 relative overflow-hidden min-w-0">
+                    <div className="absolute left-0 top-0 bottom-0 w-1 md:w-1.5 bg-warning"></div>
+                    <div className="flex items-center gap-1 md:gap-1.5 text-[7px] md:text-[9px] font-black uppercase tracking-widest text-text-hint min-w-0">
+                      <svg className="w-3 h-3 md:w-3.5 md:h-3.5 text-warning shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                      <span className="leading-tight">{t('mockDashboard.kpiOvertime')}</span>
+                    </div>
+                    <div className="text-sm md:text-3xl font-light text-text-primary tabular-nums tracking-tight">53h</div>
+                    <p className="text-[8px] md:text-[10px] text-text-hint font-medium leading-tight">{t('mockDashboard.kpiOvertimeDesc')}</p>
+                  </div>
+                </div>
+
+                <div className="bg-surface/60 rounded-xl md:rounded-2xl border border-divider/50 p-2.5 md:p-4 flex items-center justify-between gap-2 md:gap-4 relative overflow-hidden min-w-0">
+                  <div className="absolute left-0 top-0 bottom-0 w-1 md:w-1.5 bg-primary"></div>
+                  <div className="flex items-center gap-2 md:gap-3 pl-1 md:pl-2 min-w-0">
+                    <div className="w-7 h-7 md:w-9 md:h-9 rounded-lg md:rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                      <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-[10px] md:text-xs font-bold text-text-primary truncate">{t('mockDashboard.insightsTitle')}</span>
+                      <span className="text-[7px] md:text-[9px] text-text-hint font-medium uppercase tracking-wider mt-0.5 truncate">{t('mockDashboard.insightsCount')}</span>
+                    </div>
+                  </div>
+                  <div className="w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center justify-center bg-surface border border-divider/50 text-text-hint shrink-0">
+                    <svg className="w-3 h-3 md:w-3.5 md:h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                   </div>
                 </div>
               </div>
@@ -224,8 +251,8 @@ export default function LandingPage() {
       </section>
 
       {/* Fichaje */}
-      <section className="py-24 px-6 border-b border-divider bg-bg overflow-hidden">
-        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+      <section className="py-16 md:py-24 px-6 border-b border-divider bg-bg overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 md:gap-16">
           <div className="flex-1 text-center lg:text-left">
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">{t('fichaje.title')}</h2>
             <p className="text-lg text-text-secondary leading-relaxed mb-8 max-w-2xl mx-auto lg:mx-0">{t('fichaje.subtitle')}</p>
@@ -240,7 +267,7 @@ export default function LandingPage() {
           </div>
 
           <motion.div whileHover={{ y: -12, scale: 1.02 }} transition={{ type: "spring", stiffness: 400, damping: 25 }} className="flex-1 w-full flex justify-center lg:justify-end cursor-default">
-            <div className="relative w-[300px] h-[600px] border-[8px] border-surface-variant bg-bg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col shrink-0">
+            <div className="relative w-[260px] h-[520px] sm:w-[300px] sm:h-[600px] border-[8px] border-surface-variant bg-bg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col shrink-0">
               <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-20"><div className="w-24 h-6 bg-surface-variant rounded-b-2xl"></div></div>
               <div className="pt-2 px-6 pb-2 flex justify-between items-center text-[10px] text-text-secondary font-medium">
                 <span>09:00</span>
@@ -249,16 +276,16 @@ export default function LandingPage() {
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
                 </div>
               </div>
-              <div className="flex-1 px-5 pt-4 pb-6 overflow-hidden flex flex-col">
-                <div className="flex items-center justify-between mb-8">
+              <div className="flex-1 px-4 sm:px-5 pt-3 sm:pt-4 pb-4 sm:pb-6 overflow-hidden flex flex-col">
+                <div className="flex items-center justify-between mb-4 sm:mb-8">
                   <svg className="w-5 h-5 text-text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
                   <span className="text-xs text-primary font-medium flex items-center gap-1">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     {t('fichaje.phoneHistory')}
                   </span>
                 </div>
-                <div className="bg-surface rounded-2xl p-5 mb-8 border border-divider">
-                  <div className="flex items-center justify-between mb-6">
+                <div className="bg-surface rounded-2xl p-4 sm:p-5 mb-4 sm:mb-8 border border-divider">
+                  <div className="flex items-center justify-between mb-4 sm:mb-6">
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-primary" />
                       <span className="text-[10px] font-semibold tracking-wider text-text-secondary uppercase">{t('fichaje.phoneActive')}</span>
@@ -269,7 +296,7 @@ export default function LandingPage() {
                     </div>
                   </div>
                   <div className="text-center">
-                    <span className="text-4xl font-light text-text-primary tabular-nums tracking-tighter">01:01:23</span>
+                    <span className="text-3xl sm:text-4xl font-light text-text-primary tabular-nums tracking-tighter">01:01:23</span>
                   </div>
                 </div>
                 <div className="flex-1">
@@ -308,8 +335,8 @@ export default function LandingPage() {
       </section>
 
       {/* Calendar */}
-      <section className="py-24 px-6 border-b border-divider bg-surface/30 overflow-hidden">
-        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-16">
+      <section className="py-16 md:py-24 px-6 border-b border-divider bg-surface/30 overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="max-w-7xl mx-auto flex flex-col lg:flex-row-reverse items-center gap-10 md:gap-16">
           <div className="flex-1 text-center lg:text-left">
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">{t('calendar.title')}</h2>
             <p className="text-lg text-text-secondary leading-relaxed mb-8 max-w-2xl mx-auto lg:mx-0">{t('calendar.subtitle')}</p>
@@ -324,7 +351,7 @@ export default function LandingPage() {
           </div>
 
           <motion.div whileHover={{ y: -12, scale: 1.02 }} transition={{ type: "spring", stiffness: 400, damping: 25 }} className="flex-1 w-full flex justify-center lg:justify-start cursor-default">
-            <div className="relative w-[300px] h-[600px] border-[8px] border-surface-variant bg-bg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col shrink-0">
+            <div className="relative w-[260px] h-[520px] sm:w-[300px] sm:h-[600px] border-[8px] border-surface-variant bg-bg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col shrink-0">
               <div className="absolute top-0 inset-x-0 h-6 flex justify-center z-20"><div className="w-24 h-6 bg-surface-variant rounded-b-2xl"></div></div>
               <div className="pt-2 px-6 pb-2 flex justify-between items-center text-[10px] text-text-secondary font-medium">
                 <span>09:00</span>
@@ -419,8 +446,8 @@ export default function LandingPage() {
       </section>
 
       {/* Admin Panel */}
-      <section className="py-24 px-6 border-b border-divider bg-bg overflow-hidden">
-        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+      <section className="py-16 md:py-24 px-6 border-b border-divider bg-bg overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-10 md:gap-16">
           <div className="flex-1 text-center lg:text-left">
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">{t('admin.title')}</h2>
             <p className="text-lg text-text-secondary leading-relaxed mb-8 max-w-2xl mx-auto lg:mx-0">{t('admin.subtitle')}</p>
@@ -498,14 +525,14 @@ export default function LandingPage() {
                   </nav>
                 </div>
 
-                <div className="flex-1 p-6 bg-bg flex flex-col gap-6 overflow-hidden">
+                <div className="flex-1 p-4 sm:p-6 bg-bg flex flex-col gap-3 sm:gap-6 overflow-hidden min-w-0">
                   <header className="relative flex flex-col gap-1">
-                    <h1 className="text-2xl font-light tracking-tight text-text-primary">{t('admin.mockWelcome')}</h1>
-                    <p className="text-[10px] text-text-secondary max-w-sm">{t('admin.mockSubtitle')}</p>
+                    <h1 className="text-lg sm:text-2xl font-light tracking-tight text-text-primary">{t('admin.mockWelcome')}</h1>
+                    <p className="text-[10px] text-text-secondary max-w-sm leading-snug">{t('admin.mockSubtitle')}</p>
                     <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-[50px] rounded-full -z-10" />
                   </header>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto pb-4 pr-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 overflow-y-auto pb-4 pr-1">
                     {[
                       { color: 'blue-500', title: t('admin.mockEmployees'), desc: t('admin.mockEmployeesDesc'), icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z' },
                       { color: 'emerald-500', title: t('admin.mockProjects'), desc: t('admin.mockProjectsDesc'), icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
@@ -513,13 +540,17 @@ export default function LandingPage() {
                       { color: 'purple-500', title: t('admin.mockSchedules'), desc: t('admin.mockSchedulesDesc'), icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z M4.22 4.22l15.56 15.56' },
                       { color: 'rose-500', title: t('admin.mockStats'), desc: t('admin.mockStatsDesc'), icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
                     ].map((m, i) => (
-                      <div key={i} className="relative flex flex-col p-4 rounded-2xl bg-surface border border-divider/50 hover:border-primary/20 hover:bg-surface-variant/40 transition-all duration-300 overflow-hidden group">
+                      <div key={i} className="relative flex flex-row sm:flex-col items-center sm:items-stretch gap-2.5 sm:gap-0 p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-surface border border-divider/50 hover:border-primary/20 hover:bg-surface-variant/40 transition-all duration-300 overflow-hidden group">
                         <div className={`absolute left-0 top-0 bottom-0 w-0 group-hover:w-1 transition-all duration-300 bg-${m.color} shadow-[0_0_10px_rgba(0,0,0,0.1)]`} />
-                        <div className="flex items-center gap-2 mb-2">
-                          <svg className={`w-4 h-4 text-${m.color} transition-all duration-300 group-hover:scale-110`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={m.icon} /></svg>
-                          <h3 className="text-xs font-bold text-text-primary group-hover:text-primary transition-colors">{m.title}</h3>
+                        <svg className={`w-4 h-4 sm:hidden text-${m.color} shrink-0`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={m.icon} /></svg>
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <div className="hidden sm:flex items-center gap-2 mb-2">
+                            <svg className={`w-4 h-4 text-${m.color} transition-all duration-300 group-hover:scale-110`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={m.icon} /></svg>
+                            <h3 className="text-xs font-bold text-text-primary group-hover:text-primary transition-colors">{m.title}</h3>
+                          </div>
+                          <h3 className="sm:hidden text-xs font-bold text-text-primary truncate">{m.title}</h3>
+                          <p className="text-[9px] sm:text-[10px] text-text-secondary leading-snug truncate sm:whitespace-normal sm:overflow-visible">{m.desc}</p>
                         </div>
-                        <p className="text-[10px] text-text-secondary leading-normal">{m.desc}</p>
                       </div>
                     ))}
                   </div>
@@ -531,9 +562,9 @@ export default function LandingPage() {
       </section>
 
       {/* Feature Pills */}
-      <section className="py-24 px-6 border-b border-divider bg-surface/30">
+      <section className="py-16 md:py-24 px-6 border-b border-divider bg-surface/30">
         <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="max-w-7xl mx-auto">
-          <div className="mb-16">
+          <div className="mb-10 md:mb-16">
             <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-4">{t('features.title')}</h2>
             <p className="text-text-secondary max-w-2xl">{t('features.subtitle')}</p>
           </div>

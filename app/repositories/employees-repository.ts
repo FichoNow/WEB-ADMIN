@@ -19,6 +19,14 @@ export async function createEmployee(body: CreateEmployeeBody): Promise<Employee
   return json.data as EmployeeResponse
 }
 
+export async function createEmployees(body: CreateEmployeeBody[]): Promise<void> {
+  const res = await fetchWithAuth('/admin/users', { method: 'POST', body: JSON.stringify(body) })
+  if (!res.ok) {
+    const json = await res.json().catch(() => null)
+    throw new Error(json?.error?.message ?? 'Error al crear los empleados')
+  }
+}
+
 export async function updateEmployee(id: number, body: UpdateEmployeeBody): Promise<EmployeeResponse> {
   const res = await fetchWithAuth(`/admin/user/${id}`, { method: 'PATCH', body: JSON.stringify(body) })
   if (!res.ok) {
