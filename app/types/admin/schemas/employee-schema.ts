@@ -1,13 +1,13 @@
 import { z } from 'zod'
 
 const groupIdField = z
-  .union([z.literal(''), z.string().regex(/^\d+$/, 'Grupo inválido')])
+  .union([z.literal(''), z.string().regex(/^\d+$/, 'validation.invalidGroup')])
   .optional()
 
 export const employeeRowSchema = z.object({
-  name:     z.string().min(1, 'Obligatorio'),
-  email:    z.string().min(1, 'Obligatorio').email('Email inválido'),
-  password: z.string().min(8, 'Mínimo 8 caracteres'),
+  name:     z.string().min(1, 'validation.required'),
+  email:    z.string().min(1, 'validation.required').email('validation.invalidEmail'),
+  password: z.string().min(8, 'validation.min8'),
   role:     z.enum(['USER', 'ADMINISTRATOR']),
   group_id: groupIdField,
 })
@@ -17,14 +17,14 @@ export const createEmployeesSchema = z.object({
 })
 
 export const editEmployeeSchema = z.object({
-  name:      z.string().min(1, 'Obligatorio'),
-  email:     z.string().min(1, 'Obligatorio').email('Email inválido'),
+  name:      z.string().min(1, 'validation.required'),
+  email:     z.string().min(1, 'validation.required').email('validation.invalidEmail'),
   password:  z.string().optional(),
   role:      z.enum(['USER', 'ADMINISTRATOR']),
   is_active: z.enum(['true', 'false']),
   group_id:  groupIdField,
 }).refine((d) => !d.password || d.password.length >= 8, {
-  message: 'Mínimo 8 caracteres',
+  message: 'validation.min8',
   path: ['password'],
 })
 

@@ -1,18 +1,17 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { getTranslations } from "next-intl/server"
 import { deleteUserScheduleAssignment } from "@/app/repositories/schedules-repository"
 import type { ScheduleActionState } from "@/app/types/admin/action-states/schedule-state"
 
-/**
- * Server Action para borrar una asignación de horario individual.
- */
 export async function deleteUserScheduleAssignmentAction(
   departmentId: number,
   assignmentId: number,
 ): Promise<ScheduleActionState> {
+  const t = await getTranslations("actions")
   if (!Number.isInteger(assignmentId) || assignmentId <= 0) {
-    return { error: "ID de asignación no válido" }
+    return { error: t("schedules.invalidAssignmentId") }
   }
 
   try {
@@ -21,10 +20,10 @@ export async function deleteUserScheduleAssignmentAction(
     revalidatePath(`/dashboard/${departmentId}/schedules`)
     revalidatePath(`/dashboard/${departmentId}/employees`)
 
-    return { success: "Asignación eliminada correctamente" }
+    return { success: t("schedules.assignmentDeleted") }
   } catch (err) {
     return {
-      error: err instanceof Error ? err.message : "Error al eliminar la asignación",
+      error: err instanceof Error ? err.message : t("errors.scheduleAssignmentDelete"),
     }
   }
 }

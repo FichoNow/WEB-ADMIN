@@ -1,7 +1,9 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { getTranslations } from "next-intl/server"
 import { createEmployee, createEmployees } from "@/app/repositories/employees-repository"
+import { translateFirstIssue } from "@/app/lib/translate-zod"
 import { createEmployeesSchema } from "@/app/types/admin/schemas/employee-schema"
 import type { EmployeeActionState } from "@/app/types/admin/action-states/employee-state"
 import type { CreateEmployeeBody } from "@/app/types/admin/api/employee-request"
@@ -16,10 +18,11 @@ export async function createBulkEmployeesAction(
   departmentId: number,
   rows: unknown[],
 ): Promise<EmployeeActionState> {
+  const t = await getTranslations("actions")
   const result = createEmployeesSchema.safeParse({ rows })
 
   if (!result.success) {
-    return { error: result.error.issues[0].message }
+    return { error: await translateFirstIssue(result.error) }
   }
 
   const body: CreateEmployeeBody[] = result.data.rows.map((row) => ({
@@ -40,11 +43,9 @@ export async function createBulkEmployeesAction(
     }
     revalidatePath(`/dashboard/${departmentId}/employees`)
     return {
-      success: body.length === 1
-        ? "Empleado creado correctamente"
-        : `${body.length} empleados creados correctamente`,
+      success: t("employees.createdSummary", { n: body.length }),
     }
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error al crear los empleados" }
+    return { error: err instanceof Error ? err.message : t("errors.employeesCreate") }
   }
 }

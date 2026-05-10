@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Folder, Clock, Users, Loader2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { X, Folder, Clock, Users, Loader2, Calendar } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import type { ProjectStatsResponse } from '@/app/types/admin/api/stats-response'
 import { getProjectStatsAction } from '@/app/actions/admin/stats/get-project-stats'
 import { minutesToHours, COLORS } from './stats-utils'
@@ -18,21 +20,64 @@ interface Props {
   onClose: () => void
 }
 
+type Filter = 'all' | 'week' | string  // 'all' = histórico, 'week' = esta semana, o "MM-YYYY"
+
 export default function ProjectDetailDialog({ projectName, departmentId, month, year, allTime, open, onClose }: Props) {
+  const t       = useTranslations('statistics.client.projectDetail')
+  const tClient = useTranslations('statistics.client')
+  const months  = (tClient.raw('months') as string[]) ?? []
+
   const [data, setData]       = useState<ProjectStatsResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState<string | null>(null)
+  const [filter, setFilter]   = useState<Filter>(() => {
+    if (allTime) return 'all'
+    if (month && year) return `${month}-${year}`
+    return 'all'
+  })
+
+  // Reset al abrir, respetando los props iniciales
+  useEffect(() => {
+    if (!open) return
+    if (allTime) setFilter('all')
+    else if (month && year) setFilter(`${month}-${year}`)
+    else setFilter('all')
+  }, [open, allTime, month, year])
 
   useEffect(() => {
     if (!open || !projectName) return
     setData(null)
     setError(null)
     setLoading(true)
-    getProjectStatsAction(departmentId, projectName, month, year, allTime)
+
+    let m: number | undefined
+    let y: number | undefined
+    let isAll = false
+    if (filter === 'all') {
+      isAll = true
+    } else if (filter !== 'week') {
+      [m, y] = filter.split('-').map(Number)
+    }
+
+    getProjectStatsAction(departmentId, projectName, m, y, isAll)
       .then(setData)
-      .catch(() => setError('No se pudieron cargar los detalles del proyecto.'))
+      .catch(() => setError(t('loadError')))
       .finally(() => setLoading(false))
-  }, [open, projectName, departmentId, month, year, allTime])
+  }, [open, projectName, departmentId, filter, t])
+
+  // Construye opciones: histórico + año actual hasta el mes presente
+  const now = new Date()
+  const currentMonth = now.getMonth() + 1
+  const currentYear = now.getFullYear()
+  const monthOptions = months.slice(0, currentMonth).map((label, i) => ({
+    value: `${i + 1}-${currentYear}`,
+    label: `${label} ${currentYear}`,
+  }))
+
+  const filterLabel =
+    filter === 'all'  ? t('all') :
+    filter === 'week' ? t('thisWeek') :
+    monthOptions.find((o) => o.value === filter)?.label ?? t('all')
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose() }}>
@@ -48,7 +93,7 @@ export default function ProjectDetailDialog({ projectName, departmentId, month, 
                 <DialogTitle className="text-xl font-bold text-text-primary">
                   {projectName}
                 </DialogTitle>
-                <p className="text-[10px] font-black uppercase tracking-widest text-text-hint">Detalles del Proyecto</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-text-hint">{t('title')}</p>
               </div>
             </div>
             <button
@@ -60,12 +105,29 @@ export default function ProjectDetailDialog({ projectName, departmentId, month, 
           </div>
         </DialogHeader>
 
+        {/* Filtro de período */}
+        <div className="px-8 py-4 border-b border-divider/30 flex items-center gap-3">
+          <Calendar className="w-4 h-4 text-text-hint shrink-0" />
+          <Select value={filter} onValueChange={(v) => setFilter(v as Filter)}>
+            <SelectTrigger className="h-9 bg-surface-variant/20 border-divider/50 rounded-xl text-xs font-medium">
+              <span className="truncate text-left">{filterLabel}</span>
+            </SelectTrigger>
+            <SelectContent className="bg-surface/95 backdrop-blur-xl border-divider">
+              <SelectItem value="all">{t('all')}</SelectItem>
+              <SelectItem value="week">{t('thisWeek')}</SelectItem>
+              {monthOptions.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Body */}
         <div className="p-8 flex flex-col gap-6 overflow-y-auto">
           {loading && (
             <div className="flex flex-col items-center justify-center py-12 gap-3 text-text-hint">
               <Loader2 className="w-8 h-8 animate-spin text-primary" />
-              <p className="text-xs font-black uppercase tracking-widest">Cargando datos...</p>
+              <p className="text-xs font-black uppercase tracking-widest">{t('loading')}</p>
             </div>
           )}
 
@@ -87,23 +149,23 @@ export default function ProjectDetailDialog({ projectName, departmentId, month, 
                   <div className="flex flex-col gap-1 p-5 rounded-2xl bg-primary/5 border border-primary/15">
                     <div className="flex items-center gap-2 text-text-hint">
                       <Clock className="w-3.5 h-3.5" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Total horas</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">{t('kpiTotalHours')}</span>
                     </div>
                     <span className="text-3xl font-light text-text-primary tabular-nums">
                       {minutesToHours(data.total_minutes)}
                     </span>
-                    <span className="text-[10px] text-text-hint font-bold">{data.period_label}</span>
+                    <span className="text-[10px] text-text-hint font-bold">{filterLabel}</span>
                   </div>
                   <div className="flex flex-col gap-1 p-5 rounded-2xl bg-success/5 border border-success/15">
                     <div className="flex items-center gap-2 text-text-hint">
                       <Users className="w-3.5 h-3.5" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Participantes</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">{t('kpiParticipants')}</span>
                     </div>
                     <span className="text-3xl font-light text-text-primary tabular-nums">
                       {data.users.length}
                     </span>
                     <span className="text-[10px] text-text-hint font-bold">
-                      {data.users.length === 1 ? 'empleado' : 'empleados'}
+                      {data.users.length === 1 ? t('employee') : t('employees')}
                     </span>
                   </div>
                 </div>
@@ -112,12 +174,12 @@ export default function ProjectDetailDialog({ projectName, departmentId, month, 
                 {data.users.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 gap-2 text-text-hint opacity-40">
                     <Users className="w-6 h-6" />
-                    <p className="text-[10px] font-black uppercase tracking-widest">Sin registros este período</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest">{t('noRecords')}</p>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-hint mb-1">
-                      Desglose por empleado
+                      {t('breakdown')}
                     </p>
                     {data.users.map((user, i) => {
                       const pct = data.total_minutes > 0 ? (user.minutes / data.total_minutes) * 100 : 0

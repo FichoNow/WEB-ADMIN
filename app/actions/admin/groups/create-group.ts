@@ -1,7 +1,9 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { getTranslations } from "next-intl/server"
 import { createGroup } from "@/app/repositories/groups-repository"
+import { translateFirstIssue } from "@/app/lib/translate-zod"
 import { createGroupSchema } from "@/app/types/admin/schemas/group-schema"
 import type { GroupActionState } from "@/app/types/admin/action-states/group-state"
 
@@ -9,8 +11,9 @@ export async function createGroupAction(
   departmentId: number,
   data: unknown,
 ): Promise<GroupActionState> {
+  const t = await getTranslations("actions")
   const result = createGroupSchema.safeParse(data)
-  if (!result.success) return { error: result.error.issues[0].message }
+  if (!result.success) return { error: await translateFirstIssue(result.error) }
 
   try {
     const group = await createGroup({
@@ -18,8 +21,8 @@ export async function createGroupAction(
       name: result.data.name,
     })
     revalidatePath(`/dashboard/${departmentId}/employees`)
-    return { success: `Grupo "${group.name}" creado correctamente` }
+    return { success: t("groups.createdNamed", { name: group.name }) }
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error al crear el grupo" }
+    return { error: err instanceof Error ? err.message : t("errors.groupCreate") }
   }
 }

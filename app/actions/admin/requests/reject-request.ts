@@ -1,6 +1,7 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { getTranslations } from "next-intl/server"
 import { rejectRequest } from "@/app/repositories/requests-repository"
 import type { RequestActionState } from "@/app/types/admin/action-states/request-state"
 
@@ -9,6 +10,7 @@ export async function rejectRequestAction(
   requestId: number,
   reviewComment?: string,
 ): Promise<RequestActionState> {
+  const t = await getTranslations("actions")
   try {
     await rejectRequest(requestId, {
       review_comment: reviewComment?.trim() || null,
@@ -16,10 +18,10 @@ export async function rejectRequestAction(
 
     revalidatePath(`/dashboard/${departmentId}/requests`)
 
-    return { success: "Solicitud rechazada correctamente" }
+    return { success: t("requests.rejected") }
   } catch (err) {
     return {
-      error: err instanceof Error ? err.message : "Error al rechazar la solicitud",
+      error: err instanceof Error ? err.message : t("errors.requestReject"),
     }
   }
 }

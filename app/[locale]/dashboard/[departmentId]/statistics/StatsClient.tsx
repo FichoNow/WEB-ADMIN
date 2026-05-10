@@ -81,6 +81,7 @@ function MetricCard({ title, value, description, icon, trend, borderColor = 'bor
 export default function StatsClient({ bundle, userStats, employees, projectsOverview, currentUserId, departmentId }: Props) {
   const t = useTranslations('statistics.client')
   const tStats = useTranslations('statistics')
+  const tInsights = useTranslations('statistics.client.insights')
   const MONTH_LABELS = tStats.raw('client.months') as string[]
   const router       = useRouter()
   const pathname     = usePathname()
@@ -115,8 +116,8 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
       overtimeYearly: bundle.overtimeYearly,
       projectHours:   bundle.projectHours,
       activeNow:      bundle.activeNow,
-    }),
-    [bundle],
+    }, tInsights),
+    [bundle, tInsights],
   )
 
   function updateQuery(newParams: Record<string, string | null>) {
@@ -223,22 +224,24 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
                 ))}
               </SelectContent>
             </Select>
-            <Select value={currentGroupId ? String(currentGroupId) : 'all'} onValueChange={(v) => handleGroupChange(v ?? 'all')}>
-              <SelectTrigger className="w-full sm:w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium min-w-0">
-                <Users className="w-4 h-4 mr-2 text-primary shrink-0" />
-                <SelectValue placeholder={t('allGroups')}>
-                  {currentGroupId
-                    ? bundle.groups.groups.find((g) => g.id === currentGroupId)?.name ?? t('allGroups')
-                    : t('allGroups')}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t('allGroups')}</SelectItem>
-                {bundle.groups.groups.map((g) => (
-                  <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {!isIndividualTab && (
+              <Select value={currentGroupId ? String(currentGroupId) : 'all'} onValueChange={(v) => handleGroupChange(v ?? 'all')}>
+                <SelectTrigger className="w-full sm:w-52 h-11 bg-surface border-divider/50 rounded-xl text-xs font-medium min-w-0">
+                  <Users className="w-4 h-4 mr-2 text-primary shrink-0" />
+                  <SelectValue placeholder={t('allGroups')}>
+                    {currentGroupId
+                      ? bundle.groups.groups.find((g) => g.id === currentGroupId)?.name ?? t('allGroups')
+                      : t('allGroups')}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{t('allGroups')}</SelectItem>
+                  {bundle.groups.groups.map((g) => (
+                    <SelectItem key={g.id} value={String(g.id)}>{g.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
             {isIndividualTab && (
               <Select
                 value={currentUserId ? String(currentUserId) : 'all'}
@@ -277,7 +280,7 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
       </div>
 
       {/* KPIs */}
-      {!isProjectsTab && (
+      {!isProjectsTab && !isIndividualTab && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <MetricCard
@@ -393,11 +396,11 @@ export default function StatsClient({ bundle, userStats, employees, projectsOver
               userStats={userStats}
               employees={employees}
               currentUserId={currentUserId}
-              chartData={chartData}
               onUserChange={handleUserChange}
               departmentId={departmentId}
               month={isWeekly ? undefined : currentMonth}
               year={isWeekly ? undefined : currentYear}
+              isWeekly={isWeekly}
             />
           )}
           {tab === 'proyectos' && (

@@ -1,7 +1,9 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { getTranslations } from "next-intl/server"
 import { createGroupScheduleAssignment } from "@/app/repositories/schedules-repository"
+import { translateFirstIssue } from "@/app/lib/translate-zod"
 import { createGroupScheduleAssignmentSchema } from "@/app/types/admin/schemas/schedule-schema"
 import type { ScheduleActionState } from "@/app/types/admin/action-states/schedule-state"
 
@@ -13,6 +15,7 @@ export async function createGroupScheduleAssignmentAction(
   _prev: ScheduleActionState,
   formData: FormData,
 ): Promise<ScheduleActionState> {
+  const t = await getTranslations("actions")
   const parsed = createGroupScheduleAssignmentSchema.safeParse({
     group_id: formData.get("group_id") ?? "",
     template_id: formData.get("template_id") ?? "",
@@ -21,7 +24,7 @@ export async function createGroupScheduleAssignmentAction(
   })
 
   if (!parsed.success) {
-    return { error: parsed.error.issues[0].message }
+    return { error: await translateFirstIssue(parsed.error) }
   }
 
   const data = parsed.data
@@ -36,10 +39,10 @@ export async function createGroupScheduleAssignmentAction(
 
     revalidatePath(`/dashboard/${departmentId}/schedules`)
 
-    return { success: "Horario asignado al grupo correctamente" }
+    return { success: t("schedules.groupAssigned") }
   } catch (err) {
     return {
-      error: err instanceof Error ? err.message : "Error al asignar el horario al grupo",
+      error: err instanceof Error ? err.message : t("errors.scheduleAssignGroup"),
     }
   }
 }

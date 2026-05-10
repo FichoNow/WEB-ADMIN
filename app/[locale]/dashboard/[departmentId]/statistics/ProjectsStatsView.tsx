@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import {
-  Folder, Clock, Layers, Trophy, ChevronRight, BarChart3, Users,
+  Folder, Clock, Layers, Trophy, ChevronRight, BarChart3, Users, Search, X,
 } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -58,13 +59,21 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: Toolti
 }
 
 export default function ProjectsStatsView({ overview, departmentId }: Props) {
+  const t = useTranslations('statistics.client.projects')
   const { projects, total_minutes, total_projects } = overview
   const [selectedProject, setSelectedProject] = useState<string | null>(null)
+  const [query, setQuery] = useState('')
 
   const activeProjects = projects.filter((p) => p.minutes > 0)
   const topProject     = projects[0]
 
-  const chartData = projects.slice(0, 12).map((p) => ({
+  const filteredProjects = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return projects
+    return projects.filter((p) => p.project_name.toLowerCase().includes(q))
+  }, [projects, query])
+
+  const chartData = filteredProjects.slice(0, 12).map((p) => ({
     name:     p.project_name.length > 22 ? `${p.project_name.slice(0, 19)}…` : p.project_name,
     fullName: p.project_name,
     hours:    parseFloat((p.minutes / 60).toFixed(1)),
@@ -78,35 +87,35 @@ export default function ProjectsStatsView({ overview, departmentId }: Props) {
 
       {/* KPIs */}
       <SectionHeader
-        title="Resumen histórico"
-        description="Indicadores acumulados de todos los proyectos del departamento."
+        title={t('summaryTitle')}
+        description={t('summaryDesc')}
       />
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="Horas totales"
+          title={t('totalHours')}
           value={minutesToHours(total_minutes)}
-          sub="Acumulado histórico"
+          sub={t('totalHoursSub')}
           icon={<Clock className="w-4 h-4 text-primary" />}
           borderColor="border-l-primary"
         />
         <StatCard
-          title="Total proyectos"
+          title={t('totalProjects')}
           value={String(total_projects)}
-          sub="En el departamento"
+          sub={t('totalProjectsSub')}
           icon={<Layers className="w-4 h-4 text-success" />}
           borderColor="border-l-success"
         />
         <StatCard
-          title="Con actividad"
+          title={t('withActivity')}
           value={String(activeProjects.length)}
-          sub="Con horas registradas"
+          sub={t('withActivitySub')}
           icon={<Folder className="w-4 h-4 text-warning" />}
           borderColor="border-l-warning"
         />
         <StatCard
-          title="Proyecto líder"
+          title={t('topProject')}
           value={topProject && topProject.minutes > 0 ? minutesToHours(topProject.minutes) : '—'}
-          sub={topProject?.project_name ?? 'Sin datos'}
+          sub={topProject?.project_name ?? t('noData')}
           icon={<Trophy className="w-4 h-4 text-warning" />}
           borderColor="border-l-warning"
         />
@@ -114,9 +123,31 @@ export default function ProjectsStatsView({ overview, departmentId }: Props) {
 
       {/* Chart + list */}
       <SectionHeader
-        title="Comparativa de proyectos"
-        description="Click en una barra o tarjeta para ver el detalle del proyecto."
+        title={t('compareTitle')}
+        description={t('compareDesc')}
       />
+
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-hint pointer-events-none" />
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={t('searchPlaceholder')}
+          className="w-full h-11 pl-10 pr-10 rounded-xl bg-surface border border-divider/60 text-sm text-text-primary placeholder:text-text-hint focus:outline-none focus:border-primary/60 transition-colors"
+        />
+        {query && (
+          <button
+            type="button"
+            onClick={() => setQuery('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md hover:bg-surface-variant/50 text-text-hint hover:text-text-primary transition-colors"
+            aria-label={t('clearSearch')}
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
         {/* Horizontal bar chart */}
@@ -124,14 +155,14 @@ export default function ProjectsStatsView({ overview, departmentId }: Props) {
           <CardHeader className="p-6 pb-3">
             <CardTitle className="flex items-center gap-2 text-sm font-medium text-text-primary">
               <BarChart3 className="w-4 h-4 text-primary" />
-              Horas acumuladas
+              {t('accumulated')}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6 pt-0">
             {projects.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 gap-2 text-text-hint">
                 <Folder className="w-8 h-8" />
-                <p className="text-sm">Sin proyectos registrados.</p>
+                <p className="text-sm">{t('noneRegistered')}</p>
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={chartHeight}>
@@ -178,15 +209,19 @@ export default function ProjectsStatsView({ overview, departmentId }: Props) {
           <CardHeader className="p-6 pb-3">
             <CardTitle className="flex items-center gap-2 text-sm font-medium text-text-primary">
               <Folder className="w-4 h-4 text-primary" />
-              Todos los proyectos
+              {query ? t('results', { n: filteredProjects.length }) : t('allProjects')}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="flex flex-col gap-2 max-h-[640px] overflow-y-auto pr-1">
               {projects.length === 0 ? (
-                <p className="text-sm text-text-hint text-center py-10">Sin proyectos.</p>
+                <p className="text-sm text-text-hint text-center py-10">{t('noProjects')}</p>
+              ) : filteredProjects.length === 0 ? (
+                <p className="text-sm text-text-hint text-center py-10">
+                  {t('noMatch', { query })}
+                </p>
               ) : (
-                projects.map((project, i) => {
+                filteredProjects.map((project, i) => {
                   const pct        = total_minutes > 0 ? (project.minutes / total_minutes) * 100 : 0
                   const isSelected = selectedProject === project.project_name
                   const color      = COLORS[i % COLORS.length]
@@ -220,7 +255,7 @@ export default function ProjectsStatsView({ overview, departmentId }: Props) {
                             <div className="flex items-center gap-1 mt-0.5">
                               <Users className="w-3 h-3 text-text-hint" />
                               <span className="text-xs text-text-hint">
-                                {project.user_count} {project.user_count === 1 ? 'participante' : 'participantes'}
+                                {project.user_count} {project.user_count === 1 ? t('participant') : t('participants')}
                               </span>
                             </div>
                           </div>

@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import type { DayStats } from '@/app/types/admin/api/stats-response'
 import { minutesToHours } from './stats-utils'
 
@@ -8,8 +9,6 @@ interface Props {
   month: number
   year: number
 }
-
-const DOW = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
 
 function getMonthCells(month: number, year: number) {
   const first = new Date(year, month - 1, 1)
@@ -33,6 +32,12 @@ function intensityClass(minutes: number, max: number): { bg: string; ring: strin
 }
 
 export default function MonthHeatmap({ daily, month, year }: Props) {
+  const t       = useTranslations('statistics.client.monthHeatmap')
+  const tClient = useTranslations('statistics.client')
+  const dow = (tClient.raw('daysShort') as string[]) ?? ['L', 'M', 'X', 'J', 'V', 'S', 'D']
+  // Solo usamos la primera letra para el heatmap mensual (cuadrículas pequeñas)
+  const dowChars = dow.map((d) => d.charAt(0))
+
   const cells = getMonthCells(month, year)
   const byDay = new Map<number, DayStats>()
   daily.forEach((d) => {
@@ -45,8 +50,8 @@ export default function MonthHeatmap({ daily, month, year }: Props) {
   return (
     <div className="flex flex-col gap-3 w-full">
       <div className="grid grid-cols-7 gap-1 text-center">
-        {DOW.map((d) => (
-          <div key={d} className="text-[10px] text-text-hint pb-1">{d}</div>
+        {dowChars.map((d, i) => (
+          <div key={i} className="text-[10px] text-text-hint pb-1">{d}</div>
         ))}
         {cells.map((day, i) => {
           if (day === null) return <div key={i} />
@@ -55,11 +60,15 @@ export default function MonthHeatmap({ daily, month, year }: Props) {
           const overtime = stat ? stat.overtime_minutes : 0
           const isOver  = overtime > 540
           const cls     = intensityClass(total, max)
+          const title =
+            total === 0 ? t('tooltipNoActivity', { day }) :
+            overtime > 0 ? t('tooltipDayOvertime', { day, hours: minutesToHours(total), overtime: minutesToHours(overtime) }) :
+            t('tooltipDay', { day, hours: minutesToHours(total) })
           return (
             <div
               key={i}
               className={`relative aspect-square rounded-md flex items-center justify-center text-[10px] ring-1 ${cls.bg} ${cls.ring}`}
-              title={total > 0 ? `Día ${day} · ${minutesToHours(total)}${overtime > 0 ? ` (+${minutesToHours(overtime)} extras)` : ''}` : `Día ${day} · Sin actividad`}
+              title={title}
             >
               <span className="tabular-nums">{day}</span>
               {isOver && (
@@ -71,7 +80,7 @@ export default function MonthHeatmap({ daily, month, year }: Props) {
       </div>
 
       <div className="flex items-center justify-between text-[10px] text-text-hint">
-        <span>Menos</span>
+        <span>{t('less')}</span>
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 rounded-sm bg-surface-variant/20 ring-1 ring-divider/20" />
           <div className="w-2.5 h-2.5 rounded-sm bg-primary/15 ring-1 ring-primary/20" />
@@ -79,7 +88,7 @@ export default function MonthHeatmap({ daily, month, year }: Props) {
           <div className="w-2.5 h-2.5 rounded-sm bg-primary/55 ring-1 ring-primary/50" />
           <div className="w-2.5 h-2.5 rounded-sm bg-primary ring-1 ring-primary" />
         </div>
-        <span>Más</span>
+        <span>{t('more')}</span>
       </div>
     </div>
   )

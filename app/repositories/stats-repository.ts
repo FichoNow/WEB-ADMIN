@@ -84,11 +84,12 @@ export async function getProjectsOverview(departmentId: number): Promise<Project
 }
 
 export async function getProjectStats(
-  departmentId: number, projectName: string, month?: number, year?: number,
+  departmentId: number, projectName: string, month?: number, year?: number, allTime?: boolean,
 ): Promise<ProjectStatsResponse> {
   const params = new URLSearchParams({ departmentId: String(departmentId), projectName })
-  if (month) params.set('month', String(month))
-  if (year)  params.set('year',  String(year))
+  if (allTime) params.set('all_time', 'true')
+  if (month)   params.set('month', String(month))
+  if (year)    params.set('year',  String(year))
   return fetchStats<ProjectStatsResponse>(
     `/admin/stats/project?${params}`,
     'No se pudieron cargar los detalles del proyecto',

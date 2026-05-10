@@ -1,7 +1,9 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { getTranslations } from "next-intl/server"
 import { updateEmployee } from "@/app/repositories/employees-repository"
+import { translateFirstIssue } from "@/app/lib/translate-zod"
 import { editEmployeeSchema } from "@/app/types/admin/schemas/employee-schema"
 import type { EmployeeActionState } from "@/app/types/admin/action-states/employee-state"
 
@@ -16,10 +18,11 @@ export async function updateEmployeeAction(
   employeeId: number,
   data: unknown,
 ): Promise<EmployeeActionState> {
+  const t = await getTranslations("actions")
   const result = editEmployeeSchema.safeParse(data)
 
   if (!result.success) {
-    return { error: result.error.issues[0].message }
+    return { error: await translateFirstIssue(result.error) }
   }
 
   const { name, email, password, role, is_active, group_id } = result.data
@@ -37,8 +40,8 @@ export async function updateEmployeeAction(
   try {
     const employee = await updateEmployee(employeeId, changes)
     revalidatePath(`/dashboard/${departmentId}/employees`)
-    return { success: `"${employee.name}" actualizado correctamente` }
+    return { success: t("employees.updatedNamed", { name: employee.name }) }
   } catch (err) {
-    return { error: err instanceof Error ? err.message : "Error al actualizar el empleado" }
+    return { error: err instanceof Error ? err.message : t("errors.employeeUpdate") }
   }
 }

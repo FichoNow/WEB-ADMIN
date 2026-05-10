@@ -1,7 +1,9 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { getTranslations } from "next-intl/server"
 import { updateSchedule } from "@/app/repositories/schedules-repository"
+import { translateFirstIssue } from "@/app/lib/translate-zod"
 import { createScheduleSchema } from "@/app/types/admin/schemas/schedule-schema"
 import type { ScheduleActionState } from "@/app/types/admin/action-states/schedule-state"
 
@@ -17,6 +19,7 @@ export async function updateScheduleAction(
   _prev: ScheduleActionState,
   formData: FormData,
 ): Promise<ScheduleActionState> {
+  const t = await getTranslations("actions")
   const days = Array.from({ length: 7 }, (_, i) => {
     const weekday = i + 1
     const isWorkingDay = formData.get(`day_${weekday}_is_working_day`) === "on"
@@ -41,7 +44,7 @@ export async function updateScheduleAction(
   })
 
   if (!parsed.success) {
-    return { error: parsed.error.issues[0].message }
+    return { error: await translateFirstIssue(parsed.error) }
   }
 
   const data = parsed.data
@@ -62,10 +65,10 @@ export async function updateScheduleAction(
 
     revalidatePath(`/dashboard/${departmentId}/schedules`)
 
-    return { success: "Plantilla de horario actualizada correctamente" }
+    return { success: t("schedules.templateUpdated") }
   } catch (err) {
     return {
-      error: err instanceof Error ? err.message : "Error al actualizar la plantilla de horario",
+      error: err instanceof Error ? err.message : t("errors.scheduleTemplateUpdate"),
     }
   }
 }

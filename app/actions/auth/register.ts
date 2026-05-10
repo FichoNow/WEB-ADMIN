@@ -1,6 +1,8 @@
 "use server";
 
+import { getTranslations } from "next-intl/server";
 import { registerRequest } from "@/app/repositories/auth-repository";
+import { translateFirstIssue } from "@/app/lib/translate-zod";
 import { registerSchema } from "@/app/types/auth/schemas/register-schema";
 import type { RegisterState } from "@/app/types/auth/action-states/register-state";
 
@@ -8,12 +10,13 @@ export async function register(
   _prevState: RegisterState,
   formData: FormData,
 ): Promise<RegisterState> {
+  const t = await getTranslations("actions.auth");
   const result = registerSchema.safeParse(Object.fromEntries(formData));
 
   if (!result.success) {
     const first = result.error.issues[0];
     return {
-      fieldError: { field: first.path[0] as string, message: first.message },
+      fieldError: { field: first.path[0] as string, message: await translateFirstIssue(result.error) },
     };
   }
 
@@ -43,7 +46,7 @@ export async function register(
       return { fieldError: { field: "company_cif_nif", message: err.message } };
     }
     if (err instanceof Error) return { error: err.message };
-    return { error: "Error de conexión. Comprueba tu internet." };
+    return { error: t("connectionError") };
   }
 
   return { success: true };

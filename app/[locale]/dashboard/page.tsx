@@ -5,8 +5,8 @@ import { Link } from '@/i18n/navigation'
 import { getCompanyInfo, getCompanyDetails, getSuperadmins } from '@/app/repositories/company-repository'
 import type { CompanyInfoDepartment } from '@/app/types/admin/api/company-info-response'
 import type { SuperadminUser } from '@/app/types/superadmin/api/superadmin-response'
-import CreateDepartmentButton from './CreateDepartmentButton'
-import CompanySettingsClient from './CompanySettingsClient'
+import CreateDepartmentButton from './_components/CreateDepartmentButton'
+import CompanySettingsClient from './_components/CompanySettingsClient'
 
 function DepartmentCard({ department }: { department: CompanyInfoDepartment }) {
   return (

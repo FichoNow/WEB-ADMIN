@@ -2,9 +2,10 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { loginRequest } from "@/app/repositories/auth-repository";
+import { translateFirstIssue } from "@/app/lib/translate-zod";
 import { loginSchema } from "@/app/types/auth/schemas/login-schema";
 import type { LoginResponse } from "@/app/types/auth/api/login-response";
 import type { LoginState } from "@/app/types/auth/action-states/login-state";
@@ -13,10 +14,11 @@ export async function login(
   _prevState: LoginState,
   formData: FormData,
 ): Promise<LoginState> {
+  const t = await getTranslations("actions.auth");
   const result = loginSchema.safeParse(Object.fromEntries(formData));
 
   if (!result.success) {
-    return { error: result.error.issues[0].message };
+    return { error: await translateFirstIssue(result.error) };
   }
 
   const { email, password } = result.data;
@@ -27,12 +29,12 @@ export async function login(
     data = await loginRequest({ email, password });
   } catch (err) {
     if (err instanceof Error) return { error: err.message };
-    return { error: "Error de conexión. Comprueba tu internet." };
+    return { error: t("connectionError") };
   }
 
   if (data.userData.role !== "ADMINISTRATOR" && data.userData.role !== "SUPERADMIN") {
     return {
-      error: "No tienes permiso para acceder al panel de administración",
+      error: t("noAdminAccess"),
     };
   }
 

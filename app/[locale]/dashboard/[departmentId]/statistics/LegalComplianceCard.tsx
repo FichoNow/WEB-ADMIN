@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { Coffee, ShieldAlert } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import type { BreaksStats, OvertimeYearlyEntry } from '@/app/types/admin/api/stats-response'
@@ -18,6 +19,7 @@ function gaugeColor(pct: number): { bar: string; text: string } {
 }
 
 export default function LegalComplianceCard({ breaks, overtimeYearly }: Props) {
+  const t = useTranslations('statistics.client.legal')
   const breakAdoption = breaks.total_fichajes > 0
     ? Math.round((breaks.fichajes_with_break / breaks.total_fichajes) * 100)
     : 0
@@ -31,25 +33,25 @@ export default function LegalComplianceCard({ breaks, overtimeYearly }: Props) {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <Coffee className="w-4 h-4 text-text-hint" />
-            <h3 className="text-sm font-medium text-text-primary">Pausas</h3>
+            <h3 className="text-sm font-medium text-text-primary">{t('breaks')}</h3>
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div className="flex flex-col gap-0.5 p-3 rounded-xl bg-surface-variant/30 border border-divider">
-              <span className="text-xs text-text-hint">Pausas totales</span>
+              <span className="text-xs text-text-hint">{t('totalBreaks')}</span>
               <span className="text-xl font-light text-text-primary tabular-nums">{minutesToHours(breaks.total_break_minutes)}</span>
             </div>
             <div className="flex flex-col gap-0.5 p-3 rounded-xl bg-surface-variant/30 border border-divider">
-              <span className="text-xs text-text-hint">Media / jornada</span>
+              <span className="text-xs text-text-hint">{t('avgPerShift')}</span>
               <span className="text-xl font-light text-text-primary tabular-nums">{breaks.avg_break_minutes}m</span>
             </div>
             <div className="flex flex-col gap-0.5 p-3 rounded-xl bg-surface-variant/30 border border-divider">
-              <span className="text-xs text-text-hint">Adopción</span>
+              <span className="text-xs text-text-hint">{t('adoption')}</span>
               <span className={`text-xl font-light tabular-nums ${
                 breakAdoption < 50 ? 'text-error' : breakAdoption < 75 ? 'text-warning' : 'text-success'
               }`}>
                 {breakAdoption}%
               </span>
-              <span className="text-xs text-text-hint">{breaks.fichajes_with_break}/{breaks.total_fichajes} jornadas</span>
+              <span className="text-xs text-text-hint">{t('adoptionSub', { a: breaks.fichajes_with_break, b: breaks.total_fichajes })}</span>
             </div>
           </div>
         </div>
@@ -60,11 +62,11 @@ export default function LegalComplianceCard({ breaks, overtimeYearly }: Props) {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <ShieldAlert className="w-4 h-4 text-text-hint" />
-            <h3 className="text-sm font-medium text-text-primary">Horas extras anuales</h3>
-            <span className="text-xs text-text-hint">· Límite legal 80h (RD 8/2019)</span>
+            <h3 className="text-sm font-medium text-text-primary">{t('yearlyOvertime')}</h3>
+            <span className="text-xs text-text-hint">{t('yearlyLimit')}</span>
           </div>
           {top.length === 0 ? (
-            <p className="text-sm text-text-hint text-center py-4">Sin horas extras este año.</p>
+            <p className="text-sm text-text-hint text-center py-4">{t('noOvertimeThisYear')}</p>
           ) : (
             <div className="flex flex-col gap-3">
               {top.map((o) => {

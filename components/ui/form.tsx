@@ -3,6 +3,7 @@
 import * as React from 'react'
 import * as LabelPrimitive from '@radix-ui/react-label'
 import { Slot } from '@radix-ui/react-slot'
+import { useTranslations } from 'next-intl'
 import {
   Controller,
   FormProvider,
@@ -135,7 +136,15 @@ function FormMessage({
   ...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   const { error, formMessageId } = useFormField()
-  const body = error ? String(error?.message ?? '') : children
+  const t = useTranslations()
+
+  // Si el mensaje empieza por "validation.", lo traducimos automáticamente
+  // (los esquemas Zod devuelven claves en lugar de texto, p. ej. "validation.required").
+  let raw: React.ReactNode = error ? String(error?.message ?? '') : children
+  if (typeof raw === 'string' && raw.startsWith('validation.')) {
+    raw = t(raw)
+  }
+  const body = raw
 
   if (!body) {
     return null

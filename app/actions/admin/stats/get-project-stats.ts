@@ -11,7 +11,7 @@ export async function getProjectStatsAction(
   allTime?: boolean,
 ): Promise<ProjectStatsResponse> {
   if (allTime) {
-    return getProjectStats(departmentId, projectName)
+    return getProjectStats(departmentId, projectName, undefined, undefined, true)
   }
   return getProjectStats(departmentId, projectName, month, year)
 }

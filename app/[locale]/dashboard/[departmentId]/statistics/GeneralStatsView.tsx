@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
   PieChart, Pie, Cell, Tooltip,
@@ -32,6 +33,7 @@ type ActivityFilter = 'both' | 'regular' | 'overtime'
 type RankingSort = 'total' | 'regular' | 'overtime' | 'punctuality'
 
 export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUser, month, year }: Props) {
+  const t = useTranslations('statistics.client.general')
   const { overview, ranking, activeNow, hourly, absences, breaks, overtimeYearly } = bundle
 
   const overtimeEmployees = ranking.employees.filter((e) => e.overtime_minutes > 0)
@@ -62,27 +64,27 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
 
       {/* ── Sección 1: Actividad del período ── */}
       <SectionHeader
-        title="Actividad del período"
-        description="Distribución temporal de horas trabajadas por el departamento."
+        title={t('activitySectionTitle')}
+        description={t('activitySectionDesc')}
       />
 
       <Card className="bg-surface border border-divider rounded-2xl ring-0">
         <CardContent className="p-6 flex flex-col gap-4">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <div>
-              <h3 className="text-sm font-medium text-text-primary">Horas trabajadas</h3>
-              <p className="text-xs text-text-hint">Regulares vs extras a lo largo del período seleccionado.</p>
+              <h3 className="text-sm font-medium text-text-primary">{t('hoursWorked')}</h3>
+              <p className="text-xs text-text-hint">{t('hoursWorkedDesc')}</p>
             </div>
             <Select value={activityFilter} onValueChange={(v) => setActivityFilter((v ?? 'both') as ActivityFilter)}>
               <SelectTrigger className="w-44 bg-surface" size="sm">
                 <SelectValue>
-                  {activityFilter === 'both' ? 'Regulares + Extras' : activityFilter === 'regular' ? 'Solo regulares' : 'Solo extras'}
+                  {activityFilter === 'both' ? t('filterBoth') : activityFilter === 'regular' ? t('filterRegular') : t('filterOvertime')}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="both">Regulares + Extras</SelectItem>
-                <SelectItem value="regular">Solo regulares</SelectItem>
-                <SelectItem value="overtime">Solo extras</SelectItem>
+                <SelectItem value="both">{t('filterBoth')}</SelectItem>
+                <SelectItem value="regular">{t('filterRegular')}</SelectItem>
+                <SelectItem value="overtime">{t('filterOvertime')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -126,8 +128,8 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
             {/* Heatmap */}
             <div className="flex flex-col gap-3 lg:w-96 shrink-0">
               <div>
-                <h3 className="text-sm font-medium text-text-primary">Mapa de actividad mensual</h3>
-                <p className="text-xs text-text-hint">Intensidad de jornada por día. Punto naranja = jornada {'>'}9h.</p>
+                <h3 className="text-sm font-medium text-text-primary">{t('monthlyHeatmap')}</h3>
+                <p className="text-xs text-text-hint">{t('monthlyHeatmapDesc')}</p>
               </div>
               <MonthHeatmap daily={overview.daily} month={month} year={year} />
             </div>
@@ -138,11 +140,11 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
             {/* Distribución horaria */}
             <div className="flex flex-col gap-3 flex-1">
               <div>
-                <h3 className="text-sm font-medium text-text-primary">Distribución horaria de fichajes</h3>
-                <p className="text-xs text-text-hint">A qué horas del día se concentran las entradas.</p>
+                <h3 className="text-sm font-medium text-text-primary">{t('hourlyDistribution')}</h3>
+                <p className="text-xs text-text-hint">{t('hourlyDistributionDesc')}</p>
               </div>
               {hourly.distribution.length === 0 ? (
-                <p className="text-sm text-text-hint py-4">Sin datos.</p>
+                <p className="text-sm text-text-hint py-4">{t('noData')}</p>
               ) : (() => {
                 const total = hourly.distribution.reduce((s, b) => s + b.count, 0)
                 const maxCount = Math.max(...hourly.distribution.map(b => b.count))
@@ -157,7 +159,7 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
                             <span className="text-xs font-medium text-text-secondary">{b.hour}:00 h</span>
                             <div className="flex items-center gap-2">
                               <span className="text-xs text-text-hint">{share}%</span>
-                              <span className="text-sm font-bold text-text-primary tabular-nums">{b.count} entradas</span>
+                              <span className="text-sm font-bold text-text-primary tabular-nums">{b.count} {t('entries')}</span>
                             </div>
                           </div>
                           <div className="h-2 bg-surface-variant/50 rounded-full overflow-hidden">
@@ -166,7 +168,7 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
                         </div>
                       )
                     })}
-                    <p className="text-xs text-text-hint mt-1">Total: <span className="font-bold text-text-secondary">{total} fichajes</span> en el período.</p>
+                    <p className="text-xs text-text-hint mt-1">{t('totalCheckIns', { n: total })}</p>
                   </div>
                 )
               })()}
@@ -177,8 +179,8 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
 
       {/* ── Sección 2: Estado actual ── */}
       <SectionHeader
-        title="Estado actual"
-        description="Quién está fichado ahora, alertas y motivos de ausencia del período."
+        title={t('currentStateTitle')}
+        description={t('currentStateDesc')}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -187,12 +189,12 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
           <CardContent className="p-6 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-success" />
-              <h3 className="text-sm font-medium text-text-primary">En este momento</h3>
+              <h3 className="text-sm font-medium text-text-primary">{t('rightNow')}</h3>
             </div>
-            <p className="text-xs text-text-hint -mt-2">{activeNow.active.length} empleados fichados ahora.</p>
+            <p className="text-xs text-text-hint -mt-2">{t('rightNowDesc', { n: activeNow.active.length })}</p>
             <div className="flex flex-col gap-2 max-h-56 overflow-y-auto">
               {activeNow.active.length === 0 ? (
-                <p className="text-sm text-text-hint text-center py-6">Nadie fichado.</p>
+                <p className="text-sm text-text-hint text-center py-6">{t('noOneClockedIn')}</p>
               ) : activeNow.active.map((emp) => {
                 const since = new Date(emp.clock_in)
                 const mins  = Math.floor((Date.now() - since.getTime()) / 60000)
@@ -215,17 +217,17 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
         <Card className="bg-surface border border-divider rounded-2xl ring-0">
           <CardContent className="p-6 flex flex-col gap-4">
             <div>
-              <h3 className="text-sm font-medium text-text-primary">Ausencias</h3>
-              <p className="text-xs text-text-hint">Reparto por motivo en el período.</p>
+              <h3 className="text-sm font-medium text-text-primary">{t('absences')}</h3>
+              <p className="text-xs text-text-hint">{t('absencesDesc')}</p>
             </div>
             {totalAbsences === 0 ? (
-              <p className="text-sm text-text-hint text-center py-10">Sin ausencias.</p>
+              <p className="text-sm text-text-hint text-center py-10">{t('noAbsences')}</p>
             ) : (
               <>
                 <div className="h-[180px] w-full relative">
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                     <span className="text-2xl font-light text-text-primary tabular-nums">{totalAbsences}</span>
-                    <span className="text-xs text-text-hint">total</span>
+                    <span className="text-xs text-text-hint">{t('totalShort')}</span>
                   </div>
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -255,12 +257,12 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
           <CardContent className="p-6 flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Zap className="w-4 h-4 text-warning" />
-              <h3 className="text-sm font-medium text-text-primary">Alertas de horas extra</h3>
+              <h3 className="text-sm font-medium text-text-primary">{t('overtimeAlerts')}</h3>
             </div>
-            <p className="text-xs text-text-hint -mt-2">Empleados con exceso de jornada en el período.</p>
+            <p className="text-xs text-text-hint -mt-2">{t('overtimeAlertsDesc')}</p>
             <div className="flex flex-col gap-2 max-h-56 overflow-y-auto">
               {overtimeEmployees.length === 0 ? (
-                <p className="text-sm text-text-hint text-center py-6">Todo bajo control.</p>
+                <p className="text-sm text-text-hint text-center py-6">{t('allUnderControl')}</p>
               ) : overtimeEmployees.map((emp) => (
                 <div key={emp.id} className="flex items-center justify-between px-3 py-2 rounded-xl bg-surface-variant/30 border border-divider">
                   <div className="flex items-center gap-2">
@@ -279,37 +281,37 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
 
       {/* ── Sección 3: Cumplimiento legal ── */}
       <SectionHeader
-        title="Cumplimiento legal"
-        description="Pausas obligatorias y límite anual de horas extras (RD 8/2019, máx. 80h/año)."
+        title={t('legalComplianceTitle')}
+        description={t('legalComplianceDesc')}
       />
       <LegalComplianceCard breaks={breaks} overtimeYearly={overtimeYearly.entries} />
 
       {/* ── Sección 4: Ranking del equipo ── */}
       <SectionHeader
-        title="Ranking del equipo"
-        description="Clasificación de empleados por horas y puntualidad. Click en un empleado para ver su detalle."
+        title={t('rankingTitle')}
+        description={t('rankingDesc')}
       />
 
       <Card className="bg-surface border border-divider rounded-2xl ring-0">
         <CardContent className="p-4 flex flex-col gap-3">
           <div className="flex items-center justify-between gap-2 px-2">
-            <p className="text-xs text-text-hint">{ranking.employees.length} empleados · página {rankingPage + 1} de {Math.ceil(sortedRanking.length / RANKING_PAGE_SIZE)}</p>
+            <p className="text-xs text-text-hint">{t('rankingPaging', { count: ranking.employees.length, page: rankingPage + 1, total: Math.ceil(sortedRanking.length / RANKING_PAGE_SIZE) })}</p>
             <div className="flex items-center gap-2">
               <ArrowUpDown className="w-3.5 h-3.5 text-text-hint" />
               <Select value={rankingSort} onValueChange={(v) => { setRankingSort((v ?? 'total') as RankingSort); setRankingPage(0) }}>
                 <SelectTrigger className="w-44 bg-surface" size="sm">
                   <SelectValue>
-                    {rankingSort === 'total' ? 'Total acumulado' :
-                     rankingSort === 'regular' ? 'Horas regulares' :
-                     rankingSort === 'overtime' ? 'Horas extras' :
-                     'Puntualidad'}
+                    {rankingSort === 'total' ? t('sortTotal') :
+                     rankingSort === 'regular' ? t('sortRegular') :
+                     rankingSort === 'overtime' ? t('sortOvertime') :
+                     t('sortPunctuality')}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="total">Total acumulado</SelectItem>
-                  <SelectItem value="regular">Horas regulares</SelectItem>
-                  <SelectItem value="overtime">Horas extras</SelectItem>
-                  <SelectItem value="punctuality">Puntualidad</SelectItem>
+                  <SelectItem value="total">{t('sortTotal')}</SelectItem>
+                  <SelectItem value="regular">{t('sortRegular')}</SelectItem>
+                  <SelectItem value="overtime">{t('sortOvertime')}</SelectItem>
+                  <SelectItem value="punctuality">{t('sortPunctuality')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -320,11 +322,11 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-12 text-center text-xs">#</TableHead>
-                  <TableHead className="text-xs">Empleado</TableHead>
-                  <TableHead className="text-right text-xs">Regulares</TableHead>
-                  <TableHead className="text-right text-xs">Extras</TableHead>
-                  <TableHead className="text-right text-xs">Total</TableHead>
-                  <TableHead className="text-center text-xs">Puntualidad</TableHead>
+                  <TableHead className="text-xs">{t('colEmployee')}</TableHead>
+                  <TableHead className="text-right text-xs">{t('colRegular')}</TableHead>
+                  <TableHead className="text-right text-xs">{t('colOvertime')}</TableHead>
+                  <TableHead className="text-right text-xs">{t('colTotal')}</TableHead>
+                  <TableHead className="text-center text-xs">{t('colPunctuality')}</TableHead>
                   <TableHead className="w-24" />
                 </TableRow>
               </TableHeader>
@@ -370,7 +372,7 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
                         className="opacity-0 group-hover:opacity-100 transition-opacity gap-1"
                         onClick={() => onViewUser(String(emp.id))}
                       >
-                        Detalle
+                        {t('detail')}
                         <ArrowRight className="w-3 h-3" />
                       </Button>
                     </TableCell>
@@ -389,10 +391,14 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
                 onClick={() => setRankingPage(p => p - 1)}
                 className="text-xs border-divider/50 rounded-xl"
               >
-                ← Anterior
+                {t('previous')}
               </Button>
               <span className="text-xs text-text-hint">
-                {rankingPage * RANKING_PAGE_SIZE + 1}–{Math.min((rankingPage + 1) * RANKING_PAGE_SIZE, sortedRanking.length)} de {sortedRanking.length}
+                {t('pagingRange', {
+                  from: rankingPage * RANKING_PAGE_SIZE + 1,
+                  to: Math.min((rankingPage + 1) * RANKING_PAGE_SIZE, sortedRanking.length),
+                  total: sortedRanking.length,
+                })}
               </span>
               <Button
                 variant="outline"
@@ -401,7 +407,7 @@ export default function GeneralStatsView({ bundle, chartData, isWeekly, onViewUs
                 onClick={() => setRankingPage(p => p + 1)}
                 className="text-xs border-divider/50 rounded-xl"
               >
-                Siguiente →
+                {t('next')}
               </Button>
             </div>
           )}

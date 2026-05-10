@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import { X, GitCompare, Users, Loader2, Clock, Target, Zap, Coffee } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
 import type { UserStatsResponse } from '@/app/types/admin/api/stats-response'
 import type { EmployeeListItem } from '@/app/types/admin/api/employee-response'
 import { getUserStatsAction } from '@/app/actions/admin/stats/get-user-stats'
@@ -29,7 +29,11 @@ interface Row {
   hint?: string
 }
 
-function rowsFromStats(a: UserStatsResponse, b: UserStatsResponse): Row[] {
+function rowsFromStats(
+  a: UserStatsResponse,
+  b: UserStatsResponse,
+  t: (key: string) => string,
+): Row[] {
   const breakAdoption = (s: UserStatsResponse) => s.breaks.total_fichajes > 0
     ? Math.round((s.breaks.fichajes_with_break / s.breaks.total_fichajes) * 100)
     : 0
@@ -38,29 +42,29 @@ function rowsFromStats(a: UserStatsResponse, b: UserStatsResponse): Row[] {
 
   return [
     {
-      label: 'Horas trabajadas',
+      label: t('rowHoursWorked'),
       icon:  <Clock className="w-3.5 h-3.5 text-primary" />,
       a:     minutesToHours(a.total_minutes),
       b:     minutesToHours(b.total_minutes),
       winner: winnerHigher(a.total_minutes, b.total_minutes),
     },
     {
-      label: 'Puntualidad',
+      label: t('rowPunctuality'),
       icon:  <Target className="w-3.5 h-3.5 text-success" />,
       a:     `${a.punctuality_rate}%`,
       b:     `${b.punctuality_rate}%`,
       winner: winnerHigher(a.punctuality_rate, b.punctuality_rate),
     },
     {
-      label: 'Horas extra (período)',
+      label: t('rowOvertimePeriod'),
       icon:  <Zap className="w-3.5 h-3.5 text-warning" />,
       a:     minutesToHours(a.overtime_minutes),
       b:     minutesToHours(b.overtime_minutes),
       winner: winnerLower(a.overtime_minutes, b.overtime_minutes),
-      hint:  'Menos extras = mejor distribución',
+      hint:  t('rowOvertimeHint'),
     },
     {
-      label: 'Extras anuales (% límite 80h)',
+      label: t('rowOvertimeYearly'),
       icon:  <Zap className="w-3.5 h-3.5 text-error" />,
       a:     a.overtime_yearly[0] ? `${a.overtime_yearly[0].pct_of_limit}%` : '0%',
       b:     b.overtime_yearly[0] ? `${b.overtime_yearly[0].pct_of_limit}%` : '0%',
@@ -70,14 +74,14 @@ function rowsFromStats(a: UserStatsResponse, b: UserStatsResponse): Row[] {
       ),
     },
     {
-      label: 'Pausas registradas',
+      label: t('rowBreaks'),
       icon:  <Coffee className="w-3.5 h-3.5 text-text-secondary" />,
       a:     `${breakAdoption(a)}%`,
       b:     `${breakAdoption(b)}%`,
       winner: winnerHigher(breakAdoption(a), breakAdoption(b)),
     },
     {
-      label: 'Ausencias activas',
+      label: t('rowAbsences'),
       icon:  <Users className="w-3.5 h-3.5 text-text-secondary" />,
       a:     a.active_absences,
       b:     b.active_absences,
@@ -87,6 +91,7 @@ function rowsFromStats(a: UserStatsResponse, b: UserStatsResponse): Row[] {
 }
 
 export default function EmployeeCompareForm({ open, employees, departmentId, month, year, onClose }: Props) {
+  const t = useTranslations('statistics.client.compare')
   const [userA, setUserA] = useState<number | null>(null)
   const [userB, setUserB] = useState<number | null>(null)
   const [statsA, setStatsA] = useState<UserStatsResponse | null>(null)
@@ -108,13 +113,13 @@ export default function EmployeeCompareForm({ open, employees, departmentId, mon
       getUserStatsAction(departmentId, userB, month, year),
     ])
       .then(([a, b]) => { setStatsA(a); setStatsB(b) })
-      .catch(() => setError('No se pudieron cargar los datos.'))
+      .catch(() => setError(t('loadError')))
       .finally(() => setLoading(false))
-  }, [userA, userB, departmentId, month, year])
+  }, [userA, userB, departmentId, month, year, t])
 
   const empA = employees.find((e) => e.id === userA)
   const empB = employees.find((e) => e.id === userB)
-  const rows = statsA && statsB ? rowsFromStats(statsA, statsB) : []
+  const rows = statsA && statsB ? rowsFromStats(statsA, statsB, t) : []
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose() }}>
@@ -127,9 +132,9 @@ export default function EmployeeCompareForm({ open, employees, departmentId, mon
               </div>
               <div className="flex flex-col">
                 <DialogTitle className="text-xl font-bold text-text-primary">
-                  Comparador de Rendimiento
+                  {t('title')}
                 </DialogTitle>
-                <p className="text-[10px] font-black uppercase tracking-widest text-text-hint">Analítica de Empleados</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-text-hint">{t('subtitle')}</p>
               </div>
             </div>
             <button
@@ -144,10 +149,10 @@ export default function EmployeeCompareForm({ open, employees, departmentId, mon
         <div className="p-8 flex flex-col gap-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-text-hint">Empleado A</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-text-hint">{t('employeeA')}</span>
               <Select value={userA ? String(userA) : ''} onValueChange={(v) => setUserA(Number(v))}>
                 <SelectTrigger className="w-full h-11 bg-surface-variant/20 border-divider/50 text-text-primary rounded-xl">
-                  <span className="truncate text-left">{empA?.name ?? 'Selecciona…'}</span>
+                  <span className="truncate text-left">{empA?.name ?? t('selectPlaceholder')}</span>
                 </SelectTrigger>
                 <SelectContent className="bg-surface/95 backdrop-blur-xl border-divider">
                   {employees.filter((e) => e.id !== userB).map((e) => (
@@ -157,10 +162,10 @@ export default function EmployeeCompareForm({ open, employees, departmentId, mon
               </Select>
             </div>
             <div className="flex flex-col gap-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-text-hint">Empleado B</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-text-hint">{t('employeeB')}</span>
               <Select value={userB ? String(userB) : ''} onValueChange={(v) => setUserB(Number(v))}>
                 <SelectTrigger className="w-full h-11 bg-surface-variant/20 border-divider/50 text-text-primary rounded-xl">
-                  <span className="truncate text-left">{empB?.name ?? 'Selecciona…'}</span>
+                  <span className="truncate text-left">{empB?.name ?? t('selectPlaceholder')}</span>
                 </SelectTrigger>
                 <SelectContent className="bg-surface/95 backdrop-blur-xl border-divider">
                   {employees.filter((e) => e.id !== userA).map((e) => (
@@ -174,7 +179,7 @@ export default function EmployeeCompareForm({ open, employees, departmentId, mon
           {loading && (
             <div className="flex flex-col items-center justify-center py-12 gap-3 text-text-hint">
               <Loader2 className="w-7 h-7 animate-spin text-primary" />
-              <p className="text-xs font-black uppercase tracking-widest">Cargando…</p>
+              <p className="text-xs font-black uppercase tracking-widest">{t('loading')}</p>
             </div>
           )}
 
@@ -187,12 +192,12 @@ export default function EmployeeCompareForm({ open, employees, departmentId, mon
               <div className="grid grid-cols-[1fr_auto_1fr] gap-4 items-center px-4 py-3 rounded-2xl bg-surface-variant/20 border border-divider/30">
                 <div className="text-right">
                   <p className="text-sm font-bold text-text-primary">{empA.name}</p>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-text-hint">Empleado A</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-text-hint">{t('employeeA')}</p>
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-text-hint">vs</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-text-hint">{t('vs')}</span>
                 <div className="text-left">
                   <p className="text-sm font-bold text-text-primary">{empB.name}</p>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-text-hint">Empleado B</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-text-hint">{t('employeeB')}</p>
                 </div>
               </div>
 
@@ -218,19 +223,9 @@ export default function EmployeeCompareForm({ open, employees, departmentId, mon
 
           {!loading && !userA || !userB ? (
             <div className="text-center text-text-hint text-[11px] font-black uppercase tracking-widest py-4 opacity-60">
-              Selecciona dos empleados para comparar
+              {t('selectTwo')}
             </div>
           ) : null}
-
-          <div className="flex justify-end pt-2 border-t border-divider/20">
-            <Button
-              variant="ghost"
-              className="h-10 px-6 rounded-xl text-text-hint hover:bg-surface-variant/30 text-[11px] font-black uppercase tracking-widest"
-              onClick={onClose}
-            >
-              Cerrar
-            </Button>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
