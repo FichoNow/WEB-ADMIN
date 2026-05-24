@@ -138,6 +138,16 @@
       "complianceDesc": "Registros que no se pueden cambiar e informes listos para cualquier inspección."
     }
   },
+  "demo": {
+    "backToHome": "Volver al inicio",
+    "title": "Así se usa FichoNow",
+    "subtitle": "Mira cómo un empleado ficha, consulta su horario y envía solicitudes desde la aplicación móvil.",
+    "expand": "Ampliar vídeo",
+    "close": "Cerrar",
+    "ctaTitle": "¿Listo para empezar?",
+    "ctaSubtitle": "Crea tu empresa en menos de un minuto y empieza a llevar el control de tu equipo.",
+    "ctaButton": "Crear empresa"
+  },
   "about": {
     "backToHome": "Volver al inicio",
     "tag": "Nuestro Proyecto",

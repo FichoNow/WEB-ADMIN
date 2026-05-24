@@ -138,6 +138,16 @@
       "complianceDesc": "Registres que no es poden canviar i informes llestos per a qualsevol inspecció."
     }
   },
+  "demo": {
+    "backToHome": "Tornar a l'inici",
+    "title": "Així s'utilitza FichoNow",
+    "subtitle": "Mira com un empleat fitxa, consulta el seu horari i envia sol·licituds des de l'aplicació mòbil.",
+    "expand": "Ampliar vídeo",
+    "close": "Tancar",
+    "ctaTitle": "Llest per començar?",
+    "ctaSubtitle": "Crea la teva empresa en menys d'un minut i comença a portar el control del teu equip.",
+    "ctaButton": "Crear empresa"
+  },
   "about": {
     "backToHome": "Tornar a l'inici",
     "tag": "El nostre projecte",

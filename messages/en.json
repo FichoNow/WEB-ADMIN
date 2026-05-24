@@ -138,6 +138,16 @@
       "complianceDesc": "Records that can't be changed and reports ready for any inspection."
     }
   },
+  "demo": {
+    "backToHome": "Back to home",
+    "title": "This is FichoNow in use",
+    "subtitle": "See how an employee clocks in, checks their schedule and sends requests from the mobile app.",
+    "expand": "Expand video",
+    "close": "Close",
+    "ctaTitle": "Ready to get started?",
+    "ctaSubtitle": "Create your company in less than a minute and start managing your team.",
+    "ctaButton": "Create company"
+  },
   "about": {
     "backToHome": "Back to home",
     "tag": "Our Project",

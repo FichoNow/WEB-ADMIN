@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { Link } from '@/i18n/navigation'
 import HeroDashboardMock from './HeroDashboardMock'
 
 interface Props {
@@ -27,7 +28,7 @@ export default function HeroSection({ onShowRegister }: Props) {
           {t('hero.subtitle')}
         </motion.p>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }} className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button size="lg" className="w-full sm:w-auto px-10 h-11 text-base text-white shadow-[0_0_24px_rgba(var(--primary),0.4)] hover:shadow-[0_0_32px_rgba(var(--primary),0.6)] transition-all">
+          <Button render={<Link href="/demo" />} size="lg" className="w-full sm:w-auto px-10 h-11 text-base text-white shadow-[0_0_24px_rgba(var(--primary),0.4)] hover:shadow-[0_0_32px_rgba(var(--primary),0.6)] transition-all">
             {t('hero.ctaDemo')}
           </Button>
           <Button variant="outline" size="lg" onClick={onShowRegister} className="w-full sm:w-auto px-10 h-11 text-base border-2 hover:bg-primary/5 transition-colors">
