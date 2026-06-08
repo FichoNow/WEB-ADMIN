@@ -11,7 +11,7 @@ import Footer from '@/components/Footer'
 import { Maximize2, X } from 'lucide-react'
 import CustomVideoPlayer from './CustomVideoPlayer'
 
-const VIDEO_SRC = '/Video_Demo_2_AUDIO.mp4'
+const VIDEO_SRC = '/Video_Demo_3.mp4'
 
 export default function DemoPage() {
   const [showLogin, setShowLogin] = useState(false)
