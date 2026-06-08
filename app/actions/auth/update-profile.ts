@@ -10,7 +10,7 @@ import type { UpdateProfileRequest } from "@/app/types/auth/api/profile-request"
 
 const COOKIE_OPTS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
+  secure: process.env.FORCE_HTTPS === "true",
   sameSite: "lax" as const,
   path: "/",
   maxAge: 60 * 60 * 24 * 7,

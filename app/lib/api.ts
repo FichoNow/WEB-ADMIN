@@ -6,7 +6,7 @@ const API_URL = process.env.API_URL ?? 'http://localhost:3000'
 
 const COOKIE_OPTS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
+  secure: process.env.FORCE_HTTPS === 'true',
   sameSite: 'lax' as const,
   path: '/',
 }

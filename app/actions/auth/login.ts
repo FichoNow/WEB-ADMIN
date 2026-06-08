@@ -42,7 +42,7 @@ export async function login(
 
   cookieStore.set("accessToken", data.accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.FORCE_HTTPS === "true",
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 15,
@@ -50,7 +50,7 @@ export async function login(
 
   cookieStore.set("refreshToken", data.refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.FORCE_HTTPS === "true",
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
@@ -58,7 +58,7 @@ export async function login(
 
   cookieStore.set("userRole", data.userData.role, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.FORCE_HTTPS === "true",
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
@@ -66,7 +66,7 @@ export async function login(
 
   cookieStore.set("userName", data.userData.name, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.FORCE_HTTPS === "true",
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
@@ -74,7 +74,7 @@ export async function login(
 
   cookieStore.set("userEmail", data.userData.email, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.FORCE_HTTPS === "true",
     sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
