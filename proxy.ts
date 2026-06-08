@@ -12,6 +12,20 @@ function isValidJwt(token: string): boolean {
 }
 
 export function proxy(request: NextRequest) {
+  // Detrás del túnel: si el cliente entró por HTTP, redirigir a HTTPS.
+  // El túnel reenvía el esquema real del cliente en X-Forwarded-Proto, así que
+  // por HTTPS esta cabecera vale 'https' y no entra aquí (no hay bucle). En acceso
+  // directo por IP o en desarrollo la cabecera no llega, así que tampoco afecta.
+  if (request.headers.get('x-forwarded-proto') === 'http') {
+    const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host')
+    if (host) {
+      return NextResponse.redirect(
+        `https://${host}${request.nextUrl.pathname}${request.nextUrl.search}`,
+        308,
+      )
+    }
+  }
+
   const path = request.nextUrl.pathname
 
   if (DASHBOARD.test(path)) {
