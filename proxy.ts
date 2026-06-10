@@ -33,7 +33,10 @@ function fixRedirectLocation(request: NextRequest, response: Response): Response
   if (url.host === PUBLIC_ORIGIN.host && url.protocol === PUBLIC_ORIGIN.protocol) return response
 
   url.protocol = PUBLIC_ORIGIN.protocol
-  url.host = PUBLIC_ORIGIN.host
+  url.hostname = PUBLIC_ORIGIN.hostname
+  // Asignar host sin puerto NO borra el puerto anterior (spec de URL): hay que
+  // limpiarlo explícitamente, si no el :3001 interno sobrevive.
+  url.port = PUBLIC_ORIGIN.port
 
   // Las respuestas de next-intl llevan cabeceras inmutables: se devuelve una
   // copia con el Location corregido en lugar de mutar la original.
