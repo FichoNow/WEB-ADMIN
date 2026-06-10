@@ -34,8 +34,12 @@ function fixRedirectLocation(request: NextRequest, response: Response): Response
 
   url.protocol = PUBLIC_ORIGIN.protocol
   url.host = PUBLIC_ORIGIN.host
-  response.headers.set('location', url.toString())
-  return response
+
+  // Las respuestas de next-intl llevan cabeceras inmutables: se devuelve una
+  // copia con el Location corregido en lugar de mutar la original.
+  const headers = new Headers(response.headers)
+  headers.set('location', url.toString())
+  return new Response(response.body, { status: response.status, headers })
 }
 
 export function proxy(request: NextRequest) {
