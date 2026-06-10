@@ -920,6 +920,8 @@
         "tooltipFuture": "Encara no ha passat",
         "tooltipEdited": "{count, plural, one {# fitxatge editat} other {# fitxatges editats}}",
         "edited": "Editats",
+        "tooltipOutside": "{count, plural, one {# fitxatge fora del seu horari} other {# fitxatges fora del seu horari}}",
+        "outsideSchedule": "Fora d'horari",
         "dateOf": "{day} de {month}"
       },
       "monthHeatmap": {

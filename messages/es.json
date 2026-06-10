@@ -920,6 +920,8 @@
         "tooltipFuture": "Aún no ha pasado",
         "tooltipEdited": "{count, plural, one {# fichaje editado} other {# fichajes editados}}",
         "edited": "Editados",
+        "tooltipOutside": "{count, plural, one {# fichaje fuera de su horario} other {# fichajes fuera de su horario}}",
+        "outsideSchedule": "Fuera de horario",
         "dateOf": "{day} de {month}"
       },
       "monthHeatmap": {

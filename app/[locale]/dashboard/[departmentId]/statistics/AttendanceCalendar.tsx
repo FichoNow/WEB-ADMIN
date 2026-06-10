@@ -64,6 +64,7 @@ export default function AttendanceCalendar(props: Props) {
   let attended = 0
   let absent = 0
   let edited = 0
+  let outside = 0
 
   type Cell = { key: string; day: number; date: Date; stat: DayStats | undefined } | { key: string; empty: true }
 
@@ -122,6 +123,8 @@ export default function AttendanceCalendar(props: Props) {
           const overtime = stat ? stat.overtime_minutes : 0
           const editedCount = stat?.edited_count ?? 0
           if (editedCount > 0) edited += editedCount
+          const outsideCount = stat?.outside_schedule_count ?? 0
+          if (outsideCount > 0) outside += outsideCount
 
           let status: Status
           if (total > 0) {
@@ -158,6 +161,9 @@ export default function AttendanceCalendar(props: Props) {
                 {editedCount > 0 && (
                   <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-warning ring-1 ring-surface" />
                 )}
+                {outsideCount > 0 && (
+                  <span className="absolute top-1 left-1 w-2 h-2 rounded-full bg-error ring-1 ring-surface" />
+                )}
               </div>
 
               {/* Tooltip */}
@@ -174,6 +180,9 @@ export default function AttendanceCalendar(props: Props) {
                 <div className="text-[11px] opacity-90">{tooltipText}</div>
                 {editedCount > 0 && (
                   <div className="text-[11px] text-warning">{t('tooltipEdited', { count: editedCount })}</div>
+                )}
+                {outsideCount > 0 && (
+                  <div className="text-[11px] text-error">{t('tooltipOutside', { count: outsideCount })}</div>
                 )}
                 <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-text-primary" />
               </div>
@@ -199,6 +208,12 @@ export default function AttendanceCalendar(props: Props) {
           <span className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-warning" />
             {t('edited')} <span className="tabular-nums text-text-primary font-medium">({edited})</span>
+          </span>
+        )}
+        {outside > 0 && (
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-error" />
+            {t('outsideSchedule')} <span className="tabular-nums text-text-primary font-medium">({outside})</span>
           </span>
         )}
         {isCurrentPeriod && (

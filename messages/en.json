@@ -920,6 +920,8 @@
         "tooltipFuture": "Hasn't happened yet",
         "tooltipEdited": "{count, plural, one {# edited entry} other {# edited entries}}",
         "edited": "Edited",
+        "tooltipOutside": "{count, plural, one {# entry outside their schedule} other {# entries outside their schedule}}",
+        "outsideSchedule": "Off-schedule",
         "dateOf": "{day} {month}"
       },
       "monthHeatmap": {
