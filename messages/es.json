@@ -167,7 +167,8 @@
     "backToWeb": "Volver a la web",
     "myAccount": "Mi cuenta",
     "logout": "Cerrar sesión",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "refresh": "Actualizar"
   },
   "footer": {
     "tagline": "La plataforma definitiva para gestionar fichajes, ausencias y horarios de tu equipo. Rápida, intuitiva y cumpliendo con la normativa actual.",

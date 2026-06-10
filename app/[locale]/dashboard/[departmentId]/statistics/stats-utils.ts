@@ -15,10 +15,9 @@ export function calcTrend(current: number, prev: number): number {
 }
 
 export function minutesToHours(minutes: number): string {
-  const h = Math.floor(minutes / 60)
-  const m = minutes % 60
-  if (m === 0) return `${h}h`
-  return `${h}h ${m}m`
+  // Solo horas redondeadas ("141h"); por debajo de 1h se muestran minutos ("45m").
+  if (minutes < 60) return minutes > 0 ? `${minutes}m` : '0h'
+  return `${Math.round(minutes / 60)}h`
 }
 
 export interface ChartPoint {

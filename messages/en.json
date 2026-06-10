@@ -167,7 +167,8 @@
     "backToWeb": "Back to website",
     "myAccount": "My account",
     "logout": "Sign out",
-    "settings": "Settings"
+    "settings": "Settings",
+    "refresh": "Refresh"
   },
   "footer": {
     "tagline": "The definitive platform to manage time tracking, absences and schedules for your team. Fast, intuitive and compliant with current regulations.",

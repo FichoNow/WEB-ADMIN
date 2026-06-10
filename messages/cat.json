@@ -167,7 +167,8 @@
     "backToWeb": "Tornar al web",
     "myAccount": "El meu compte",
     "logout": "Tancar sessió",
-    "settings": "Configuració"
+    "settings": "Configuració",
+    "refresh": "Actualitza"
   },
   "footer": {
     "tagline": "La plataforma definitiva per gestionar fitxatges, absències i horaris del teu equip. Ràpida, intuïtiva i complint la normativa actual.",
