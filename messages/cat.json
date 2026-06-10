@@ -837,6 +837,7 @@
         "punctuality": "Puntualitat",
         "overtime": "Hores extra",
         "absences": "Absències",
+        "editedFichajes": "Fitxatges editats",
         "trendVsPrev": "{pct}% vs anterior",
         "attendanceWeekTitle": "Assistència de la setmana",
         "attendanceMonthTitle": "Assistència del mes",
@@ -917,6 +918,8 @@
         "tooltipAbsent": "No va fitxar",
         "tooltipWeekend": "Cap de setmana",
         "tooltipFuture": "Encara no ha passat",
+        "tooltipEdited": "{count, plural, one {# fitxatge editat} other {# fitxatges editats}}",
+        "edited": "Editats",
         "dateOf": "{day} de {month}"
       },
       "monthHeatmap": {

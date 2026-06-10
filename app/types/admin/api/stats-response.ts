@@ -3,6 +3,7 @@ export interface DayStats {
   date?: string
   regular_minutes: number
   overtime_minutes: number
+  edited_count?: number
 }
 
 export interface EmployeeRank {
@@ -105,6 +106,7 @@ export interface UserStatsResponse {
   punctuality_rate: number
   active_absences: number
   pending_requests: number
+  edited_fichajes?: number
   daily: DayStats[]
   total_minutes_prev: number
   overtime_minutes_prev: number

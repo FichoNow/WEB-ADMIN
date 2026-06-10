@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { User, Target, Award, Clock, Folder, Trophy, TrendingUp, TrendingDown, GitCompare, Calendar } from 'lucide-react'
+import { User, Target, Award, Clock, Folder, Trophy, TrendingUp, TrendingDown, GitCompare, Calendar, Pencil } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -97,12 +97,13 @@ export default function UserStatsView({ userStats, employees, currentUserId, dep
         <>
           {/* KPIs */}
           <SectionHeader title={t('summaryTitle')} description={t('summaryDesc')} />
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
             {[
               { label: t('totalHours'),  icon: <Clock className="w-4 h-4 text-primary" />,  value: minutesToHours(userStats.total_minutes),    trend: calcTrend(userStats.total_minutes, prevTotal),    color: 'primary' },
               { label: t('punctuality'), icon: <Target className="w-4 h-4 text-success" />, value: `${userStats.punctuality_rate}%`,           trend: calcTrend(userStats.punctuality_rate, prevPunct), color: 'success' },
               { label: t('overtime'),    icon: <Award className="w-4 h-4 text-warning" />,  value: minutesToHours(userStats.overtime_minutes), trend: calcTrend(userStats.overtime_minutes, prevOT),    color: 'warning' },
               { label: t('absences'),    icon: <Calendar className="w-4 h-4 text-error" />, value: String(userStats.active_absences),          trend: undefined,                                         color: 'error' },
+              { label: t('editedFichajes'), icon: <Pencil className="w-4 h-4 text-warning" />, value: String(userStats.edited_fichajes ?? 0),  trend: undefined,                                         color: 'warning' },
             ].map((kpi, i) => (
               <Card key={i} className="bg-surface border border-divider rounded-2xl ring-0 overflow-hidden relative group hover:bg-surface-variant/40 transition-all duration-300">
                 <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${accentBorder[kpi.color]} shadow-[0_0_10px_rgba(0,0,0,0.1)]`} />

@@ -63,6 +63,7 @@ export default function AttendanceCalendar(props: Props) {
 
   let attended = 0
   let absent = 0
+  let edited = 0
 
   type Cell = { key: string; day: number; date: Date; stat: DayStats | undefined } | { key: string; empty: true }
 
@@ -119,6 +120,8 @@ export default function AttendanceCalendar(props: Props) {
 
           const total = stat ? stat.regular_minutes + stat.overtime_minutes : 0
           const overtime = stat ? stat.overtime_minutes : 0
+          const editedCount = stat?.edited_count ?? 0
+          if (editedCount > 0) edited += editedCount
 
           let status: Status
           if (total > 0) {
@@ -144,7 +147,7 @@ export default function AttendanceCalendar(props: Props) {
             <div key={cell.key} className="relative group">
               <div
                 className={`
-                  min-h-[56px] rounded-lg flex flex-col items-center justify-center
+                  relative min-h-[56px] rounded-lg flex flex-col items-center justify-center
                   text-sm font-medium border-2 transition-all
                   ${classes(status)}
                   ${isToday ? 'ring-2 ring-primary ring-offset-2 ring-offset-surface' : ''}
@@ -152,6 +155,9 @@ export default function AttendanceCalendar(props: Props) {
                 `}
               >
                 <span className="tabular-nums">{day}</span>
+                {editedCount > 0 && (
+                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-warning ring-1 ring-surface" />
+                )}
               </div>
 
               {/* Tooltip */}
@@ -166,6 +172,9 @@ export default function AttendanceCalendar(props: Props) {
                   {t('dateOf', { day, month: date.toLocaleDateString(intlLocale, { month: 'long' }) })}
                 </div>
                 <div className="text-[11px] opacity-90">{tooltipText}</div>
+                {editedCount > 0 && (
+                  <div className="text-[11px] text-warning">{t('tooltipEdited', { count: editedCount })}</div>
+                )}
                 <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-px w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-text-primary" />
               </div>
             </div>
@@ -186,6 +195,12 @@ export default function AttendanceCalendar(props: Props) {
           <span className="w-3 h-3 rounded-sm bg-surface-variant/60 border border-divider" />
           {t('weekend')}
         </span>
+        {edited > 0 && (
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-warning" />
+            {t('edited')} <span className="tabular-nums text-text-primary font-medium">({edited})</span>
+          </span>
+        )}
         {isCurrentPeriod && (
           <span className="flex items-center gap-1.5 ml-auto">
             <span className="w-3 h-3 rounded-sm bg-surface-variant/20 border border-divider/40" />

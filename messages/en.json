@@ -837,6 +837,7 @@
         "punctuality": "Punctuality",
         "overtime": "Overtime",
         "absences": "Absences",
+        "editedFichajes": "Edited entries",
         "trendVsPrev": "{pct}% vs previous",
         "attendanceWeekTitle": "Week attendance",
         "attendanceMonthTitle": "Month attendance",
@@ -917,6 +918,8 @@
         "tooltipAbsent": "Did not clock in",
         "tooltipWeekend": "Weekend",
         "tooltipFuture": "Hasn't happened yet",
+        "tooltipEdited": "{count, plural, one {# edited entry} other {# edited entries}}",
+        "edited": "Edited",
         "dateOf": "{day} {month}"
       },
       "monthHeatmap": {

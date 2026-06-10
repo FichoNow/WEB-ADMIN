@@ -837,6 +837,7 @@
         "punctuality": "Puntualidad",
         "overtime": "Horas extra",
         "absences": "Ausencias",
+        "editedFichajes": "Fichajes editados",
         "trendVsPrev": "{pct}% vs anterior",
         "attendanceWeekTitle": "Asistencia de la semana",
         "attendanceMonthTitle": "Asistencia del mes",
@@ -917,6 +918,8 @@
         "tooltipAbsent": "No fichó",
         "tooltipWeekend": "Fin de semana",
         "tooltipFuture": "Aún no ha pasado",
+        "tooltipEdited": "{count, plural, one {# fichaje editado} other {# fichajes editados}}",
+        "edited": "Editados",
         "dateOf": "{day} de {month}"
       },
       "monthHeatmap": {
