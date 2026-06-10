@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react'
 import { useTranslations } from 'next-intl'
 import { Menu } from 'lucide-react'
+import RefreshButton from '@/components/RefreshButton'
 import { useSidebar } from '@/app/[locale]/dashboard/[departmentId]/SidebarContext'
 
 interface Props {
@@ -32,6 +33,10 @@ export default function PageHeader({ title, description, actions }: Props) {
           {description && (
             <p className="text-xs sm:text-sm text-text-hint font-medium leading-relaxed mt-1">{description}</p>
           )}
+        </div>
+
+        <div className="shrink-0 mt-0.5">
+          <RefreshButton />
         </div>
       </div>
 

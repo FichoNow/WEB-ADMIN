@@ -5,7 +5,6 @@ import Navbar from '@/components/Navbar'
 import ThemeToggle from '@/components/ThemeToggle'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import UserMenu from '@/components/UserMenu'
-import RefreshButton from '@/components/RefreshButton'
 import { buttonVariants } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 
@@ -18,7 +17,6 @@ export default async function DashboardNavbar() {
   return (
     <Navbar fullWidth>
       <div className="flex items-center gap-2 sm:gap-3">
-        <RefreshButton />
         <ThemeToggle />
         <LanguageSwitcher />
         <Link
